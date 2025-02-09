@@ -6,6 +6,7 @@ use App\Http\Controllers\ColorController;
 use App\Http\Controllers\MarineTypeController;
 use App\Http\Controllers\PopularQuestionController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\VehicleModelController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -25,3 +26,5 @@ Route::apiResource('colors', ColorController::class);
 Route::apiResource('permissions', PermissionController::class);
 Route::apiResource('marineTypes', MarineTypeController::class);
 Route::apiResource('popularQuestions', PopularQuestionController::class);
+Route::apiResource('vehiclemodels', VehicleModelController::class);
+
