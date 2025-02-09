@@ -4,14 +4,14 @@ namespace App\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
-use App\Models\Color;
+use App\Models\Permission;
 use App\Repositories\BaseRepository;
 
-class ColorRepository extends BaseRepository
+class PermissionRepository extends BaseRepository
 {
-    public function __construct(Color $color)
+    public function __construct(Permission $permission)
     {
-        parent::__construct($color);
+        parent::__construct($permission);
     }
 
 }

@@ -45,7 +45,6 @@ class Handler extends ExceptionHandler
                 'message' => 'URL not found',
             ], 404);
         }
-
         //Handle Not Found Data (ModelNotFoundException)
         if ($exception instanceof ModelNotFoundException) {
             return response()->json([
@@ -53,7 +52,6 @@ class Handler extends ExceptionHandler
                 'message' => 'Resource not found',
             ], 404);
         }
-
 
         // Handle Method Not Allowed (405)
         if ($exception instanceof MethodNotAllowedHttpException) {
