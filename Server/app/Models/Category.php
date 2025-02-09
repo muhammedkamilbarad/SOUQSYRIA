@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Category extends Model
 {
     use HasFactory;
-    
+    protected $fillable = ["name"];
+
     public function advertisements()
     {
         return $this->hasMany(Advertisement::class, 'category_id');
