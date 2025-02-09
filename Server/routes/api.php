@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ColorController;
+use App\Http\Controllers\VehicleModelController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,3 +21,4 @@ use App\Http\Controllers\ColorController;
 
 Route::apiResource('colors', ColorController::class);
 
+Route::apiResource('vehiclemodels', VehicleModelController::class);
