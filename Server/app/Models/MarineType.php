@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MarineType extends Model
 {
-    protected $fillable = ["question","answer"];
+    protected $fillable = ["name"];
 
     public function marineAdvertisements()
     {
