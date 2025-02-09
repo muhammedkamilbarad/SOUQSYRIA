@@ -8,6 +8,7 @@ use App\Http\Controllers\PopularQuestionController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\VehicleModelController;
 use App\Http\Controllers\VehicleBrandController;
+use App\Http\Controllers\CategoryController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -29,4 +30,5 @@ Route::apiResource('marineTypes', MarineTypeController::class);
 Route::apiResource('popularQuestions', PopularQuestionController::class);
 Route::apiResource('vehiclemodels', VehicleModelController::class);
 Route::apiResource('vehiclebrands', VehicleBrandController::class);
+Route::apiResource('categories', CategoryController::class);
 
