@@ -32,7 +32,7 @@ class CategoryController extends Controller
     public function show(int $id)
     {
         $category = $this->categoryService->getCategoryById($id);
-        if (!category)
+        if (!$category)
         {
             return response()->json(['message' => 'Category Not Found'], 404);
         }
