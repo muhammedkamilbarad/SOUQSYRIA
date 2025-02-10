@@ -1,7 +1,5 @@
 <?php
 
-namespace App\Http\Controllers;
-
 namespace App\Services;
 
 use Illuminate\Database\Eloquent\Collection;
