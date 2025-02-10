@@ -27,4 +27,3 @@ Route::apiResource('permissions', PermissionController::class);
 Route::apiResource('marineTypes', MarineTypeController::class);
 Route::apiResource('popularQuestions', PopularQuestionController::class);
 Route::apiResource('vehiclemodels', VehicleModelController::class);
-
