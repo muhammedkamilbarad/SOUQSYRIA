@@ -11,6 +11,7 @@ use App\Http\Controllers\VehicleBrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\RoleController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -35,3 +36,4 @@ Route::apiResource('vehiclebrands', VehicleBrandController::class);
 Route::apiResource('categories', CategoryController::class);
 Route::apiResource('packages', PackageController::class);
 Route::apiResource('users', UserController::class);
+Route::apiResource('roles', RoleController::class);
