@@ -22,8 +22,8 @@ class VehicleBrandRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:100', 'unique:vehicle_brands,name'],
-            'category_id' => ['required'],
+            'name' => ['required', 'string', 'max:100'],
+            'category_id' => ['required', 'exists:categories,id'],
         ];
     }
 }
