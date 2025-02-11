@@ -22,7 +22,7 @@ class UserRequest extends FormRequest
         return [
             'name' => 'required|string|max:100',
             'email' => 'required|string|email|max:255|unique:users,email,',
-            'phone' => 'nullable|string|max:20|regex:/^\+?[0-9]{7,20}$/',
+            'phone' => 'nullable|string|max:20|regex:/^\+?[0-9]{7,20}$/|unique:users,phone,',
             'is_verified' => 'boolean',
             'email_verified_at' => 'nullable|date',
             'password' => 'required|string|min:8|max:255',
@@ -35,7 +35,7 @@ class UserRequest extends FormRequest
         return [
             'name' => 'required|string|max:100',
             'email' => 'required|string|email|max:255|unique:users,email,' . $this->route('user'),
-            'phone' => 'nullable|string|max:20|regex:/^\+?[0-9]{7,20}$/',
+            'phone' => 'nullable|string|max:20|regex:/^\+?[0-9]{7,20}$/|unique:users,phone,' . $this->route('user'),
             'is_verified' => 'boolean',
             'password' => 'nullable|string|min:8|max:255',
             'image' => 'nullable|string|max:255',
