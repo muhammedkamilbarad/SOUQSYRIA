@@ -22,7 +22,7 @@ class VehicleModelRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:100',],
-            'brand_id' => ['required',]
+            'brand_id' => ['required', 'exists:vehicle_brands,id'],
         ];
     }
 }
