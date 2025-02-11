@@ -15,8 +15,25 @@ class PackagesRequest extends FormRequest
     // }
     public function rules(): array
     {
+        return $this->isMethod('put') || $this->isMethod('patch')
+            ? $this->updateRules()
+            : $this->storeRules();
+    }
+
+    public function storeRules(): array
+    {
         return [
-            'name' => 'required|string|max:100',
+            'name' => 'required|string|max:100|unique:packages,name',
+            'properties' => 'required|string',
+            'price' => 'required|numeric',
+            'max_of_ads' => 'required|integer',
+        ];
+    }
+
+    public function updateRules(): array
+    {
+        return [
+            'name' => 'required|string|max:100|unique:packages,name' . $this->route('package'),
             'properties' => 'required|string',
             'price' => 'required|numeric',
             'max_of_ads' => 'required|integer',
