@@ -8,6 +8,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\VerifyAccountRequest;
 use App\Http\Requests\ResendOTPRequest;
 use Illuminate\Http\Request;
+use App\Http\Requests\LoginRequest;
 
 class AuthController extends Controller
 {
@@ -42,6 +43,21 @@ class AuthController extends Controller
             return response()->json(['error' => 'User not found'], 404);
         }
         return response()->json(['message' => 'Neew OTP has been sent to your email'], 200);
+    }
+
+    public function login(LoginRequest $request): JsonResponse
+    {
+        $token = $this->service->loginUser($request->login, $request->password);
+        
+        if ($token === false) {
+            return response()->json(['error' => 'Invalid credentials'], 401);
+        } elseif ($token === null) {
+            return response()->json(['error' => 'Email not verified'], 403);
+        }
+
+        return response()->json([
+            'message' => 'Login successful',
+            'token' => $token], 200);
     }
 
 }

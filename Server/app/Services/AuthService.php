@@ -60,4 +60,19 @@ class AuthService
         Log::info('Regenerated OTP for ' . $email . ': ' . $otp);
         return $otp;
     }
+
+    public function loginUser(string $login, string $password)
+    {
+        $user = $this->repository->findByLogin($login);
+        
+        if (!$user || !Hash::check($password, $user->password)) {
+            return false;
+        }
+
+        if (!$user->is_verified) {
+            return null;
+        }
+
+        return $user->createToken('auth_token')->plainTextToken;
+}
 }

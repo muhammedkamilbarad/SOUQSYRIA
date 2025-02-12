@@ -31,6 +31,7 @@ use App\Http\Controllers\AuthController;
 Route::post('register',[AuthController::class,'register']);
 Route::post('verify-account',[AuthController::class,'verifyAccount']);
 Route::post('resend-otp',[AuthController::class,'resendteOtp']);
+Route::post('/login', [AuthController::class, 'login']);
 
 Route::apiResource('colors', ColorController::class);
 Route::apiResource('permissions', PermissionController::class);
