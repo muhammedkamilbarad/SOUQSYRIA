@@ -38,6 +38,7 @@ class UserRequest extends FormRequest
             'phone' => 'nullable|string|max:20|regex:/^\+?[0-9]{7,20}$/|unique:users,phone,' . $this->route('user'),
             'is_verified' => 'boolean',
             'password' => 'nullable|string|min:8|max:255',
+            'role_id' => 'required|integer|exists:roles,id',
             'image' => 'nullable|string|max:255',
         ];
     }
