@@ -33,4 +33,11 @@ class AuthRepository extends BaseRepository
             'email_verified_at' => Now()
         ]);
     }
+
+    public function findByLogin(string $login): ?User
+    {
+        return $this->model->where('email', $login)
+                        ->orWhere('phone', $login)
+                        ->first();
+    }
 }
