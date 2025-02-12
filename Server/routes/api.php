@@ -12,6 +12,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\AuthController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -26,6 +27,10 @@ use App\Http\Controllers\RoleController;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
+
+Route::post('register',[AuthController::class,'register']);
+Route::post('verify-account',[AuthController::class,'verifyAccount']);
+Route::post('resend-otp',[AuthController::class,'resendteOtp']);
 
 Route::apiResource('colors', ColorController::class);
 Route::apiResource('permissions', PermissionController::class);
