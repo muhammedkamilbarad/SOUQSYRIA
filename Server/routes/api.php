@@ -25,15 +25,23 @@ use App\Http\Controllers\AuthController;
 */
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
+//     Route::post('/logout', [AuthController::class, 'logout']);
+//     Route::apiResource('colors', ColorController::class);
 // });
 
-Route::post('register',[AuthController::class,'register']);
-Route::post('verify-account',[AuthController::class,'verifyAccount']);
-Route::post('resend-otp',[AuthController::class,'resendteOtp']);
+Route::middleware("auth:sanctum")->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::resource("colors", ColorController::class);
+});
+
+Route::post('register', [AuthController::class, 'register']);
+Route::post('verify-account', [AuthController::class, 'verifyAccount']);
+Route::post('resend-otp', [AuthController::class, 'resendteOtp']);
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::apiResource('colors', ColorController::class);
+
+
+// Route::apiResource('colors', ColorController::class);
 Route::apiResource('permissions', PermissionController::class);
 Route::apiResource('marineTypes', MarineTypeController::class);
 Route::apiResource('popularQuestions', PopularQuestionController::class);
