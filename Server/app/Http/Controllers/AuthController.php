@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\User;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
@@ -27,7 +28,7 @@ class AuthController extends Controller
     public function verifyAccount(VerifyAccountRequest $request): JsonResponse
     {
         $token = $this->service->verifyEmail($request->email, $request->otp);
-        if(!$token){
+        if (!$token) {
             return response()->json(['error' => 'Invalid OTP or Emaill'], 400);
         }
         return response()->json([
@@ -48,7 +49,7 @@ class AuthController extends Controller
     public function login(LoginRequest $request): JsonResponse
     {
         $token = $this->service->loginUser($request->login, $request->password);
-        
+
         if ($token === false) {
             return response()->json(['error' => 'Invalid credentials'], 401);
         } elseif ($token === null) {
@@ -57,7 +58,15 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Login successful',
-            'token' => $token], 200);
+            'token' => $token
+        ], 200);
     }
-
+    public function logout(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        if ($user) {
+            $this->service->logoutUser($user);
+            return response()->json(['message' => 'Logged out successfully'], 200);
+        }
+    }
 }

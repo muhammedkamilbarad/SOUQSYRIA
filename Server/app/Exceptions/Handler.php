@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -71,5 +72,12 @@ class Handler extends ExceptionHandler
         }
 
         return parent::render($request, $exception);
+    }
+    public function unauthenticated($request, AuthenticationException $exception)
+    {
+        return response()->json([
+            'status' => false,
+            'message' => 'Unauthenticated error, Please login to access this route',
+        ], 401);
     }
 }

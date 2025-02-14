@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;  // Add this if you're hashing passwords
 use Illuminate\Support\Facades\Log;  // Add this
 use Illuminate\Support\Str;
+use App\Models\User;
 
 class AuthService
 {
@@ -49,7 +50,7 @@ class AuthService
     public function regenerateOtp(string $email)
     {
         $user = $this->repository->findByEmail($email);
-        if(!$user){
+        if (!$user) {
             return false;
         }
         $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
@@ -64,7 +65,7 @@ class AuthService
     public function loginUser(string $login, string $password)
     {
         $user = $this->repository->findByLogin($login);
-        
+
         if (!$user || !Hash::check($password, $user->password)) {
             return false;
         }
@@ -74,5 +75,9 @@ class AuthService
         }
 
         return $user->createToken('auth_token')->plainTextToken;
-}
+    }
+    public function logoutUser(User $user)
+    {
+        $user->tokens()->delete();
+    }
 }
