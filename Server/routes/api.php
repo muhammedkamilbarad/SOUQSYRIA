@@ -45,7 +45,7 @@ Route::resources([
     'vehiclebrands' => VehicleBrandController::class,
     'categories' => CategoryController::class,
     'packages' => PackageController::class,
-    'popularQuestions' => PackageController::class,
+    'popularQuestions' => PopularQuestionController::class,
 ], ['only' => ['index', 'show']]);
 
 // Protected routes
@@ -56,7 +56,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::resource('vehiclebrands', VehicleBrandController::class, ['except' => ['index', 'show']])->middleware('permission:edit vehiclebrands');
     Route::resource('categories', CategoryController::class, ['except' => ['index', 'show']])->middleware('permission:edit categories');
     Route::resource('packages', PackageController::class, ['except' => ['index', 'show']])->middleware('permission:edit packages');
-    Route::resource('popularQuestions', PackageController::class, ['except' => ['index', 'show']])->middleware('permission:edit popularQuestions');
+    Route::resource('popularQuestions', PopularQuestionController::class, ['except' => ['index', 'show']])->middleware('permission:edit popularQuestions');
     Route::apiResource('users', UserController::class)->middleware('permission:edit users');
     Route::apiResource('roles', RoleController::class)->middleware('permission:edit roles');
     Route::resource('permissions', PermissionController::class, ['except' => ['store', 'update','destroy']])->middleware('permission:edit roles');
