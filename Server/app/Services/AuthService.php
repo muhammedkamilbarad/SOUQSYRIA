@@ -62,9 +62,9 @@ class AuthService
         return $otp;
     }
 
-    public function loginUser(string $login, string $password)
+    public function loginUser(string $login_input, string $password)
     {
-        $user = $this->repository->findByLogin($login);
+        $user = $this->repository->findTheUserByEmailOrByPhone($login_input);
 
         if (!$user || !Hash::check($password, $user->password)) {
             return false;
