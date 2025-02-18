@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\Hash;
 
 
 class UserService
@@ -36,11 +37,19 @@ class UserService
 
     public function createUser(array $data): Model
     {
+        if (isset($data['password']))
+        {
+            $data['password'] = Hash::make($data['password']);
+        }
         return $this->userRepository->create($data);
     }
 
     public function updateUser(Model $user, array $data): Model
     {
+        if (isset($data['password']))
+        {
+            $data['password'] = Hash::make($data['password']);
+        }
         return $this->userRepository->update($user, $data);
     }
 
