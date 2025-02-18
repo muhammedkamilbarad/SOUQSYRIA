@@ -34,10 +34,10 @@ class AuthRepository extends BaseRepository
         ]);
     }
 
-    public function findByLogin(string $login): ?User
+    public function findTheUserByEmailOrByPhone(string $login_input): ?User
     {
-        return $this->model->where('email', $login)
-                        ->orWhere('phone', $login)
+        return $this->model->where('email', $login_input)
+                        ->orWhere('phone', $login_input)
                         ->first();
     }
 }

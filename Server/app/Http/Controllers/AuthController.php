@@ -46,9 +46,9 @@ class AuthController extends Controller
         return response()->json(['message' => 'Neew OTP has been sent to your email'], 200);
     }
 
-    public function login(LoginRequest $request): JsonResponse
+    public function loginWithEmailOrPassword(LoginRequest $request): JsonResponse
     {
-        $token = $this->service->loginUser($request->login, $request->password);
+        $token = $this->service->loginUser($request->login_input, $request->password);
 
         if ($token === false) {
             return response()->json(['error' => 'Invalid credentials'], 401);
