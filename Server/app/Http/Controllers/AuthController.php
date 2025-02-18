@@ -46,7 +46,7 @@ class AuthController extends Controller
         return response()->json(['message' => 'Neew OTP has been sent to your email'], 200);
     }
 
-    public function loginWithEmailOrPassword(LoginRequest $request): JsonResponse
+    public function loginWithEmailOrPhone(LoginRequest $request): JsonResponse
     {
         $token = $this->service->loginUser($request->login_input, $request->password);
 
