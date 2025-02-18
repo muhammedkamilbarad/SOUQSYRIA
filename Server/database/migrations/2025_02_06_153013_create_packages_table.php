@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('properties');
             $table->decimal('price', 10, 2);
             $table->integer('max_of_ads');
+            $table->integer('period');
             $table->timestamps();
         });
     }
