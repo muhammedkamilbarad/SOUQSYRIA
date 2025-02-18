@@ -13,6 +13,7 @@ use App\Http\Controllers\PackageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SubscribingController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -60,6 +61,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('users', UserController::class)->middleware('permission:edit users');
     Route::apiResource('roles', RoleController::class)->middleware('permission:edit roles');
     Route::resource('permissions', PermissionController::class, ['except' => ['store', 'update','destroy']])->middleware('permission:edit roles');
+    Route::resource('subscriptions', SubscribingController::class)->middleware('permission:edit subscribing');
 });
 
 
