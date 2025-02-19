@@ -51,6 +51,16 @@ class User extends Authenticatable
         ];
     }
 
+    public function subscribings()
+    {
+        return $this->hasMany(Subscribing::class);
+    }
+
+    public function hasActiveSubscription()
+    {
+        return $this->subscribings()->where('expiry_date','>', now())->where('remaining_ads','>', 0)->exists();
+    }
+
     public function permissions()
     {
         return $this->role->permissions();
@@ -60,6 +70,8 @@ class User extends Authenticatable
     {
         return $this->permissions()->where('name',$permission)->exists();
     }
+
+
 
 
 }
