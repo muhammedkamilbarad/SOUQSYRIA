@@ -19,7 +19,7 @@ class PermissionController extends Controller
     public function index()
     {
         $permissions = $this->permissionService->getAllPermissions();
-        return response()->json($permissions);
+        return response()->json($permissions, 200);
     }
 
     public function store(PermissionRequest $request)
@@ -34,7 +34,7 @@ class PermissionController extends Controller
         if(!$permission) {
             return response()->json(['message' => 'Permission not found'], 404);
         }
-        return response()->json($permission);
+        return response()->json($permission, 200);
     }
 
     public function update(PermissionRequest $request, int $id)
@@ -44,7 +44,7 @@ class PermissionController extends Controller
             return response()->json(['message' => 'Permission not found'], 404);
         }
         $permission = $this->permissionService->updatePermission($permission, $request->all());
-        return response()->json($permission);
+        return response()->json($permission, 200);
     }
 
     public function destroy(int $id)
@@ -54,6 +54,6 @@ class PermissionController extends Controller
             return response()->json(['message' => 'Permission not found'], 404);
         }
         $this->permissionService->deleteColor($permission);
-        return response()->json(['message' => 'Permission deleted successfully']);
+        return response()->json(['message' => 'Permission deleted successfully'], 200);
     }
 }

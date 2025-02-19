@@ -29,7 +29,7 @@ class AuthController extends Controller
     {
         $token = $this->service->verifyEmail($request->email, $request->otp);
         if (!$token) {
-            return response()->json(['error' => 'Invalid OTP or Emaill'], 400);
+            return response()->json(['error' => 'Invalid OTP or email'], 400);
         }
         return response()->json([
             'message' => 'Email verified successfully',
@@ -43,7 +43,7 @@ class AuthController extends Controller
         if (!$newOtp) {
             return response()->json(['error' => 'User not found'], 404);
         }
-        return response()->json(['message' => 'Neew OTP has been sent to your email'], 200);
+        return response()->json(['message' => 'New OTP has been sent to your email'], 200);
     }
 
     public function loginWithEmailOrPhone(LoginRequest $request): JsonResponse
@@ -61,6 +61,7 @@ class AuthController extends Controller
             'token' => $token
         ], 200);
     }
+    
     public function logout(Request $request): JsonResponse
     {
         $user = $request->user();

@@ -33,7 +33,7 @@ class VehicleBrandController extends Controller
         $vehicleBrand = $this->vehicleBrandService->getVehicleBrandById($id);
         if (!$vehicleBrand)
         {
-            return response()->json(['message' => 'Vehicle Brand Not Found'], 404);
+            return response()->json(['message' => 'Vehicle brand not found'], 404);
         }
         return response()->json($vehicleBrand, 200);
     }
@@ -43,7 +43,7 @@ class VehicleBrandController extends Controller
         $vehicleBrand = $this->vehicleBrandService->getVehicleBrandById($id);
         if (!$vehicleBrand)
         {
-            return response()->json(['message' => 'Vehicle Brand Not Found'], 404);
+            return response()->json(['message' => 'Vehicle brand not found'], 404);
         }
         $vehicleBrand = $this->vehicleBrandService->updateVehicleBrand($vehicleBrand, $request->all());
         return response()->json($vehicleBrand, 200);
@@ -54,9 +54,9 @@ class VehicleBrandController extends Controller
         $vehicleBrand = $this->vehicleBrandService->getVehicleBrandById($id);
         if (!$vehicleBrand)
         {
-            return response()->json(['message' => 'Vehicle Brand Not Found'], 404);
+            return response()->json(['message' => 'Vehicle brand not found'], 404);
         }
         $this->vehicleBrandService->deleteVehicleBrand($vehicleBrand);
-        return response()->json(['message' => 'Vehicle Brand Deleted'], 200);
+        return response()->json(['message' => 'Vehicle brand deleted successfully'], 200);
     }
 }
