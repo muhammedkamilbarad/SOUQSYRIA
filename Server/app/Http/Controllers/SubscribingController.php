@@ -30,7 +30,7 @@ class SubscribingController extends Controller
     {
         $subscribing = $this->subscribingService->getSubscribingById($id);
         if (!$subscribing) {
-            return response()->json(['message' => 'Subscribing Not Found'], 404);
+            return response()->json(['message' => 'Subscribing not found'], 404);
         }
         return response()->json($subscribing, 200);
     }
@@ -39,7 +39,7 @@ class SubscribingController extends Controller
     {
         $subscribing = $this->subscribingService->getSubscribingById($id);
         if (!$subscribing) {
-            return response()->json(['message' => 'Subscribing Not Found'], 404);
+            return response()->json(['message' => 'Subscribing not found'], 404);
         }
         
         // If we want to do the "promote" logic (expiry_date, remaining_ads) 
@@ -52,10 +52,10 @@ class SubscribingController extends Controller
     {
         $subscribing = $this->subscribingService->getSubscribingById($id);
         if (!$subscribing) {
-            return response()->json(['message' => 'Subscribing Not Found'], 404);
+            return response()->json(['message' => 'Subscribing not found'], 404);
         }
 
         $this->subscribingService->deleteSubscribing($subscribing);
-        return response()->json(['message' => 'Subscribing Deleted'], 200);
+        return response()->json(['message' => 'Subscribing deleted successfully'], 200);
     }
 }
