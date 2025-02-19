@@ -71,10 +71,16 @@ class SubscribingService
         $newRemainingAds = $subscribing->remaining_ads + $package->max_of_ads;
 
         $updatedData = [
+            'package_id' => $package->id,
             'expiry_date'   => $newExpiry,
             'remaining_ads' => $newRemainingAds,
         ];
-        return $this->subscribingRepository->update($subscribing, $updatedData);
+        // return $this->subscribingRepository->update($subscribing, $updatedData);
+        // Update the model
+        $this->subscribingRepository->update($subscribing, $updatedData);
+
+        // Refresh the model to get the latest data from the database
+        return $subscribing->refresh()->load('package');
     }
 
     public function deleteSubscribing(Model $subscribing)
