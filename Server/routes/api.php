@@ -15,6 +15,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SubscribingController;
 use App\Http\Controllers\AdvertisementController;
+use App\Http\Controllers\SubscriptionRequestController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -86,7 +87,12 @@ Route::apiResource('roles', RoleController::class);
 Route::apiResource('subscriptions', SubscribingController::class);
 //Route::apiResource('advertisements', AdvertisementController::class);
 
+
+
 Route::middleware("auth:sanctum")->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::resource("advertisements", AdvertisementController::class);
+    Route::post('/subscription-requests', [SubscriptionRequestController::class, 'store']);
+    Route::put('/subscription-requests/{id}/process', [SubscriptionRequestController::class, 'process']);
+    Route::get('/subscription-requests', [SubscriptionRequestController::class, 'index']);
 });
