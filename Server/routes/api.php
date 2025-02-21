@@ -85,7 +85,7 @@ Route::apiResource('permissions', PermissionController::class);
 Route::apiResource('users', UserController::class);
 Route::apiResource('roles', RoleController::class);
 Route::apiResource('subscriptions', SubscribingController::class);
-//Route::apiResource('advertisements', AdvertisementController::class);
+
 
 
 
@@ -96,3 +96,5 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::put('/subscription-requests/{id}/process', [SubscriptionRequestController::class, 'process']);
     Route::get('/subscription-requests', [SubscriptionRequestController::class, 'index']);
 });
+
+Route::get('advertisements', [AdvertisementController::class, 'index']);

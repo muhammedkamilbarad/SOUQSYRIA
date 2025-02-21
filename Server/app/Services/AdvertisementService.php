@@ -9,9 +9,21 @@ use Illuminate\Support\Facades\Gate;
 class AdvertisementService
 {
     protected $repository;
+
     public function __construct(AdvertisementRepository $repository)
     {
         $this->repository = $repository;
+    }
+
+    /*
+     * Get all ads with their related details.
+     */
+    public function getAllAdvertisements()
+    {
+        // If you need authorization, you can check here using Gate or policy:
+        // Gate::authorize('viewAny', Advertisement::class);
+
+        return $this->repository->getAllWithRelations();
     }
 
     public function create(array $data, User $user)

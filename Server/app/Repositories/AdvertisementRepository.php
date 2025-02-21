@@ -17,6 +17,27 @@ class AdvertisementRepository extends BaseRepository
         parent::__construct($model);
     }
 
+    /*
+     * Retrieves all advertisements with related models.
+     *
+     */
+    public function getAllWithRelations()
+{
+    return $this->model->with([
+        'user',
+        'city',
+        'category',
+        'images',
+        // Load these as direct relationships to Advertisement
+        'vehicleAdvertisement',
+        'carAdvertisement',
+        'motorcycleAdvertisement', 
+        'marineAdvertisement',
+        'houseAdvertisement',
+        'landAdvertisement',
+    ])->get();
+}
+
     public function createWithRelated(array $advertisementData, array $specificData, string $category)
     {
         \DB::beginTransaction();
