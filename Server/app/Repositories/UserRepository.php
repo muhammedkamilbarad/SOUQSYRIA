@@ -14,4 +14,16 @@ class UserRepository extends BaseRepository
     {
         parent::__construct($model);
     }
+
+    // Geting all users with thier role
+    public function getAllWithRoles(): Collection
+    {
+        return $this->model->with(['role'])->get();
+    }
+
+    // Geting specific users with his role
+    public function getUserWithRole(int $id): User
+    {
+        return $this->model->with(['role'])->findOrFail($id);
+    }
 }
