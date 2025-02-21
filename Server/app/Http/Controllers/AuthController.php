@@ -27,13 +27,14 @@ class AuthController extends Controller
 
     public function verifyAccount(VerifyAccountRequest $request): JsonResponse
     {
-        $token = $this->service->verifyEmail($request->email, $request->otp);
-        if (!$token) {
+        $result = $this->service->verifyEmail($request->email, $request->otp);
+        if ($result === false) {
             return response()->json(['error' => 'Invalid OTP or email'], 400);
         }
         return response()->json([
             'message' => 'Email verified successfully',
-            'token' => $token
+            'token' => $result['token'],
+            'permissions' => $result['permissions']
         ], 200);
     }
 
@@ -48,20 +49,21 @@ class AuthController extends Controller
 
     public function loginWithEmailOrPhone(LoginRequest $request): JsonResponse
     {
-        $token = $this->service->loginUser($request->login_input, $request->password);
+        $result = $this->service->loginUser($request->login_input, $request->password);
 
-        if ($token === false) {
+        if ($result === false) {
             return response()->json(['error' => 'Invalid credentials'], 401);
-        } elseif ($token === null) {
+        } elseif ($result === null) {
             return response()->json(['error' => 'Email not verified'], 403);
         }
 
         return response()->json([
             'message' => 'Login successful',
-            'token' => $token
+            'token' => $result['token'],
+            'permissions' => $result['permissions']
         ], 200);
     }
-    
+
     public function logout(Request $request): JsonResponse
     {
         $user = $request->user();
