@@ -84,9 +84,11 @@ Route::apiResource('permissions', PermissionController::class);
 Route::apiResource('users', UserController::class);
 Route::apiResource('roles', RoleController::class);
 Route::apiResource('subscriptions', SubscribingController::class);
-//Route::apiResource('advertisements', AdvertisementController::class);
+
 
 Route::middleware("auth:sanctum")->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::resource("advertisements", AdvertisementController::class);
 });
+
+Route::get('advertisements', [AdvertisementController::class, 'index']);
