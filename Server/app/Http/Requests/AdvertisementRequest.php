@@ -63,7 +63,7 @@ class AdvertisementRequest extends FormRequest
                 //Add motorcycle-specific rules
                 elseif($this->input('category') === 'motorcycle'){
                     $rules = array_merge($rules, [
-                        'cyclinders' => 'required|integer|min:1'
+                        'cylinders' => 'required|integer|min:1'
                     ]);
                 }
                 //Add marine-specific rules

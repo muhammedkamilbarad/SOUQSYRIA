@@ -44,7 +44,12 @@ class AuthService
         }
         $this->repository->verifyEmail($email);
         Cache::forget('otp_' . $email);
-        return $user->createToken('auth_token')->plainTextToken;
+
+        $permissions = $user->permissions;
+        return [
+            'token' => $user->createToken('auth_token')->plainTextToken,
+            'permissions' => $permissions,
+        ];
     }
 
     public function regenerateOtp(string $email)
@@ -73,8 +78,12 @@ class AuthService
         if (!$user->is_verified) {
             return null;
         }
+        $permissions = $user->permissions;
 
-        return $user->createToken('auth_token')->plainTextToken;
+        return [
+            'token' => $user->createToken('auth_token')->plainTextToken,
+            'permissions' => $permissions
+        ];
     }
     public function logoutUser(User $user)
     {
