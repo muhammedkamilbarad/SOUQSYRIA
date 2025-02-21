@@ -13,6 +13,13 @@ class RoleRepository extends BaseRepository
         parent::__construct($model);
     }
 
+    public function getRoleWithPermissionsAndUserCount(int $id)
+    {
+        return $this->model->with(['permissions'])
+        ->withCount('users')
+        ->findOrFail($id);
+    }
+
     public function create(array $data): Model
     {
         // Validate that `permissions` is present and not empty

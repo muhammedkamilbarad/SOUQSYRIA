@@ -28,7 +28,7 @@ class RoleService
     {
         try
         {
-            return $this->roleRepository->getById($id)->load('permissions');
+            return $this->roleRepository->getRoleWithPermissionsAndUserCount($id);
         }
         catch (RoleNotFoundException $e)
         {
