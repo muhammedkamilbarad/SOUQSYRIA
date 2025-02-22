@@ -19,7 +19,7 @@ class MarineTypeController extends Controller
     public function index()
     {
         $MarineTypes = $this->marineTypeService->getAllMarineTypes();
-        return response()->json($MarineTypes);
+        return response()->json($MarineTypes, 200);
     }
 
     public function store(MarineTypeRequest $request)
@@ -34,7 +34,7 @@ class MarineTypeController extends Controller
         if(!$MarineType) {
             return response()->json(['message' => 'MarineType not found'], 404);
         }
-        return response()->json($MarineType);
+        return response()->json($MarineType, 200);
     }
 
     public function update(MarineTypeRequest $request, int $id)
@@ -44,7 +44,7 @@ class MarineTypeController extends Controller
             return response()->json(['message' => 'MarineType not found'], 404);
         }
         $MarineType = $this->marineTypeService->updateMarineType($MarineType, $request->all());
-        return response()->json($MarineType);
+        return response()->json($MarineType, 200);
     }
 
     public function destroy(int $id)
@@ -54,6 +54,6 @@ class MarineTypeController extends Controller
             return response()->json(['message' => 'MarineType not found'], 404);
         }
         $this->marineTypeService->deleteMarineType($MarineType);
-        return response()->json(['message' => 'MarineType deleted successfully']);
+        return response()->json(['message' => 'MarineType deleted successfully'], 200);
     }
 }

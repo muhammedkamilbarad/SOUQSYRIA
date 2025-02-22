@@ -33,7 +33,7 @@ class RoleController extends Controller
         $role = $this->roleService->getRoleById($id);
         if (!$role)
         {
-            return response()->json(['message' => 'Role Not Found'], 404);
+            return response()->json(['message' => 'Role not found'], 404);
         }
         return response()->json($role, 200);
     }
@@ -43,7 +43,7 @@ class RoleController extends Controller
         $role = $this->roleService->getRoleById($id);
         if (!$role)
         {
-            return response()->json(['message' => 'Role Not Found'], 404);
+            return response()->json(['message' => 'Role not found'], 404);
         }
         $role = $this->roleService->updateRole($role, $request->all());
         return response()->json($role, 200);
@@ -54,9 +54,9 @@ class RoleController extends Controller
         $role = $this->roleService->getRoleById($id);
         if (!$role)
         {
-            return response()->json(['message' => 'Role Not Found'], 404);
+            return response()->json(['message' => 'Role not found'], 404);
         }
         $this->roleService->deleteRole($role);
-        return response()->json(['message' => 'Role Deleted'], 200);
+        return response()->json(['message' => 'Role deleted successfully'], 200);
     }
 }
