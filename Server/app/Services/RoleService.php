@@ -21,7 +21,7 @@ class RoleService
 
     public function getAllRoles(): Collection
     {
-        return $this->roleRepository->getAll()->load('permissions');
+        return $this->roleRepository->getAllRolesWithPermissionsAndUserCount();
     }
 
     public function getRoleById(int $id)

@@ -18,6 +18,8 @@ class RoleRequest extends FormRequest
         // let's assume these are the base rules:
         $rules = [
             'name' => 'required|string|max:50|unique:roles,name',
+            'is_editable' => 'required|boolean',
+            'is_deleteable' => 'required|boolean',
             'permissions' => 'required|array|min:1',
             'permissions.*' => 'required|integer|exists:permissions,id',
         ];
