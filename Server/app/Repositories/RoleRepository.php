@@ -20,6 +20,11 @@ class RoleRepository extends BaseRepository
         ->findOrFail($id);
     }
 
+    public function getAllRolesWithPermissionsAndUserCount()
+    {
+        return $this->model->with(['permissions'])->withCount('users')->get();
+    }
+
     public function create(array $data): Model
     {
         // Validate that `permissions` is present and not empty
