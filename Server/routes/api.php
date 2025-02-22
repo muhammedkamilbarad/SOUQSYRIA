@@ -95,4 +95,6 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::post('/subscription-requests', [SubscriptionRequestController::class, 'store']);
     Route::put('/subscription-requests/{id}/process', [SubscriptionRequestController::class, 'process']);
     Route::get('/subscription-requests', [SubscriptionRequestController::class, 'index']);
+    Route::get('/my-subscription', [SubscribingController::class, 'show_my_subscription'])->name('subscriptions.my');
+    Route::get('subscriptions/{id}', [SubscribingController::class, 'show'])->whereNumber('id')->name('subscriptions.show');
 });
