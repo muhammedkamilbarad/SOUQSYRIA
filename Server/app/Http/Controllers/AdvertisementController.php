@@ -17,6 +17,12 @@ class AdvertisementController extends Controller
         $this->service = $service;
     }
 
+<<<<<<< HEAD
+    public function getUserAdvertisements()
+    {
+        try {
+            $advertisements = $this->service->getAdvertisementsByUser(request()->user());
+=======
     /*
      * Get all advertisements with related details.
      */
@@ -25,16 +31,23 @@ class AdvertisementController extends Controller
         try {
             // Fetch data with all needed eager loads
             $advertisements = $this->service->getAllAdvertisements();
+>>>>>>> f128fb3fe68b735abead26133b825f2eb0f93325
 
             // Transform each advertisement to remove null relationships
             $transformed = $advertisements->map(function ($ad) {
                 $array = $ad->toArray();
+<<<<<<< HEAD
+                return collect($array)->reject(fn($value) => is_null($value))->toArray();
+            });
+
+=======
 
                 // Remove all keys where the value is null
                 return collect($array)->reject(fn($value) => is_null($value))->toArray();
             });
 
             // Return JSON response
+>>>>>>> f128fb3fe68b735abead26133b825f2eb0f93325
             return response()->json([
                 'success' => true,
                 'data'    => $transformed
