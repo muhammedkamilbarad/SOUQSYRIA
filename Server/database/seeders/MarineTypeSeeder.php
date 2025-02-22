@@ -28,7 +28,10 @@ class MarineTypeSeeder extends Seeder
         ];
 
         foreach ($marineTypes as $marineType) {
-            MarineType::create($marineType);
+            MarineType::updateOrCreate(
+                ['name' => $marineType['name']], 
+                $marineType                       
+            );
         }
     }
 }
