@@ -14,6 +14,11 @@ class AdvertisementService
         $this->repository = $repository;
     }
 
+    public function getAdvertisementsByUser(User $user)
+    {
+        return $this->repository->getByUserId($user->id);
+    }
+    
     public function create(array $data, User $user)
     {
         if (Gate::denies('create', Advertisement::class)) {

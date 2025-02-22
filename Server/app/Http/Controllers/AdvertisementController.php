@@ -17,6 +17,30 @@ class AdvertisementController extends Controller
         $this->service = $service;
     }
 
+    public function getUserAdvertisements()
+    {
+        try {
+            $advertisements = $this->service->getAdvertisementsByUser(request()->user());
+
+            // Transform each advertisement to remove null relationships
+            $transformed = $advertisements->map(function ($ad) {
+                $array = $ad->toArray();
+                return collect($array)->reject(fn($value) => is_null($value))->toArray();
+            });
+
+            return response()->json([
+                'success' => true,
+                'data'    => $transformed
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
     public function store(AdvertisementRequest $request)
     {
         try {

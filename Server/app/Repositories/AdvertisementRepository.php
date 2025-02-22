@@ -17,6 +17,22 @@ class AdvertisementRepository extends BaseRepository
         parent::__construct($model);
     }
 
+    public function getByUserId(int $userId)
+    {
+        return $this->model->with([
+            'user',
+            'city',
+            'category',
+            'images',
+            'vehicleAdvertisement',
+            'carAdvertisement',
+            'motorcycleAdvertisement',
+            'marineAdvertisement',
+            'houseAdvertisement',
+            'landAdvertisement',
+        ])->where('user_id', $userId)->get();
+    }
+
     public function createWithRelated(array $advertisementData, array $specificData, string $category)
     {
         \DB::beginTransaction();
