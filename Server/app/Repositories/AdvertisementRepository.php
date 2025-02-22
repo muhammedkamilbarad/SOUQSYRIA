@@ -17,7 +17,7 @@ class AdvertisementRepository extends BaseRepository
         parent::__construct($model);
     }
 
-<<<<<<< HEAD
+
     public function getByUserId(int $userId)
     {
         return $this->model->with([
@@ -33,7 +33,7 @@ class AdvertisementRepository extends BaseRepository
             'landAdvertisement',
         ])->where('user_id', $userId)->get();
     }
-=======
+
     /*
      * Retrieves all advertisements with related models.
      *
@@ -48,13 +48,12 @@ class AdvertisementRepository extends BaseRepository
         // Load these as direct relationships to Advertisement
         'vehicleAdvertisement',
         'carAdvertisement',
-        'motorcycleAdvertisement', 
+        'motorcycleAdvertisement',
         'marineAdvertisement',
         'houseAdvertisement',
         'landAdvertisement',
     ])->get();
 }
->>>>>>> f128fb3fe68b735abead26133b825f2eb0f93325
 
     public function createWithRelated(array $advertisementData, array $specificData, string $category)
     {

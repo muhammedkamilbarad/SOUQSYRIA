@@ -15,13 +15,13 @@ class AdvertisementService
         $this->repository = $repository;
     }
 
-<<<<<<< HEAD
+
     public function getAdvertisementsByUser(User $user)
     {
         return $this->repository->getByUserId($user->id);
     }
-    
-=======
+
+
     /*
      * Get all ads with their related details.
      */
@@ -33,7 +33,6 @@ class AdvertisementService
         return $this->repository->getAllWithRelations();
     }
 
->>>>>>> f128fb3fe68b735abead26133b825f2eb0f93325
     public function create(array $data, User $user)
     {
         if (Gate::denies('create', Advertisement::class)) {
