@@ -33,6 +33,8 @@ class RoleRepository extends BaseRepository
         // Create the role
         $role = parent::create([
             'name' => $data['name'],
+            'is_editable' => $data['is_editable'],
+            'is_deleteable' => $data['is_deleteable'],
         ]);
 
         /*
@@ -54,6 +56,8 @@ class RoleRepository extends BaseRepository
         // Updating the role
         parent::update($model, [
             'name' => $data['name'] ?? $model->name,
+            'is_editable' => $data['is_editable'] ?? $model->is_editable,
+            'is_deleteable' => $data['is_deleteable'] ?? $model->is_deleteable,
         ]);
 
         // Synchronizing permissions if provided
