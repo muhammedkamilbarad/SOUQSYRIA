@@ -23,9 +23,25 @@ class RoleSeeder extends Seeder
         $validPermissions = Permission::pluck('id')->toArray();
 
         $roles = [
-            ['name' => 'User', 'permissions' => [1, 2]],
-            ['name' => 'Admin', 'permissions' => $validPermissions], // Admin gets all permissions
-            ['name' => 'Manager', 'permissions' => [1, 2, 3]],
+
+            [
+                'name' => 'Super Admin',
+                'permissions' => $validPermissions,
+                'is_editable' => false,
+                'is_deleteable' => false
+            ],
+            [
+                'name' => 'Manager',
+                'permissions' => Permission::whereIn('name', ['view_user', 'view_role', 'view_permission', 'view_faq', 'view_package'])->pluck('id')->toArray(),
+                'is_editable' => false,
+                'is_deleteable' => false
+            ],
+            [
+                'name' => 'Normal user',
+                'permissions' => Permission::whereIn('name', ['view_ad'])->pluck('id')->toArray(),
+                'is_editable' => false,
+                'is_deleteable' => false
+            ]
         ];
 
         foreach ($roles as $role) {
@@ -36,7 +52,7 @@ class RoleSeeder extends Seeder
             }
 
             // For non-admin roles, filter out invalid permission IDs
-            if ($role['name'] !== 'Admin') {
+            if ($role['name'] !== 'Super Admin') {
                 $role['permissions'] = array_intersect($role['permissions'], $validPermissions);
             }
 
