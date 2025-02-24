@@ -6,11 +6,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
 
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
     protected $fillable = ['name', 'email', 'password', 'role_id', 'image', 'phone', 'is_verified'];
 
     public function role()
@@ -49,6 +50,28 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function subscribings()
+    {
+        return $this->hasMany(Subscribing::class);
+    }
+
+    public function hasActiveSubscription()
+    {
+        return $this->subscribings()->where('expiry_date','>', now())->where('remaining_ads','>', 0)->exists();
+    }
+
+    public function permissions()
+    {
+        return $this->role->permissions();
+    }
+
+    public function hasPermission($permission)
+    {
+        return $this->permissions()->where('name',$permission)->exists();
+    }
+
+
 
 
 }

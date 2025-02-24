@@ -6,6 +6,46 @@ use Illuminate\Database\Eloquent\Model;
 
 class Advertisement extends Model
 {
+    protected $fillable = [
+        'title',
+        'description',
+        'price',
+        'city_id',
+        'location',
+        'category_id',
+        'user_id',
+        'ads_status',
+        'active_status',
+        'type'
+    ];
+
+
+
+    public function vehicleAdvertisement()
+    {
+        return $this->hasOne(VehicleAdvertisement::class);
+    }
+    public function carAdvertisement()
+    {
+        return $this->hasOne(CarAdvertisement::class);
+    }
+    public function motorcycleAdvertisement()
+    {
+        return $this->hasOne(MotorcycleAdvertisement::class);
+    }
+    public function marineAdvertisement()
+    {
+        return $this->hasOne(MarineAdvertisement::class);
+    }
+    public function houseAdvertisement()
+    {
+        return $this->hasOne(HouseAdvertisement::class);
+    }
+    public function landAdvertisement()
+    {
+        return $this->hasOne(LandAdvertisement::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

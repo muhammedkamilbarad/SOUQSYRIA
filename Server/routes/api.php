@@ -2,9 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-<<<<<<< Updated upstream
-
-=======
 use App\Http\Controllers\ColorController;
 use App\Http\Controllers\MarineTypeController;
 use App\Http\Controllers\PopularQuestionController;
@@ -20,7 +17,7 @@ use App\Http\Controllers\SubscribingController;
 use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\SubscriptionRequestController;
 use App\Http\Controllers\FavoriteController;
->>>>>>> Stashed changes
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -32,10 +29,6 @@ use App\Http\Controllers\FavoriteController;
 |
 */
 
-<<<<<<< Updated upstream
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-=======
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     Route::post('/logout', [AuthController::class, 'logout']);
 //     Route::apiResource('colors', ColorController::class);
@@ -111,5 +104,6 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::post('/favorites', [FavoriteController::class, 'addToFavorites']);
     Route::delete('/favorites/{advs_id}', [FavoriteController::class, 'removeFromFavorites'])->whereNumber('advs_id');
     Route::get('/favorites', [FavoriteController::class, 'getUserFavorites']);
->>>>>>> Stashed changes
 });
+
+Route::get('advertisements', [AdvertisementController::class, 'index']);
