@@ -10,64 +10,82 @@ use Faker\Factory as Faker;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
         $faker = Faker::create();
         
-        // Ensure we have roles in the database
-        $roleIds = Role::pluck('id')->toArray();
+        // Get roles by name
+        $superAdminRole = Role::where('name', 'Super Admin')->first();
+        $normalUserRole = Role::where('name', 'Normal user')->first();
+        $managerRole = Role::where('name', 'Manager')->first();
         
-        // Create an admin user if it doesn't exist
-        User::firstOrCreate(
-            ['email' => 'admin@example.com'],
-            [
-                'name' => 'Admin User',
-                'phone' => '1234567890',
-                'is_verified' => true,
-                'email_verified_at' => now(),
-                'password' => Hash::make('password123'),
-                'role_id' => $roleIds[0] // Admin role
-            ]
-        );
+        // Create super admin user
+        try
+        {
+            User::firstOrCreate(
+                ['email' => 'superadmin@syr-souq.com'],
+                [
+                    'name' => 'Super Admin',
+                    'phone' => '552347789',
+                    'is_verified' => true,
+                    'email_verified_at' => now(),
+                    'password' => Hash::make('Sycoder2025@'),
+                    'role_id' => $superAdminRole->id
+                ]
+            );
+        }
+        catch (\Exception $e) {
+            // Log the error
+            // Log::error('Failed to create super admin user: '. $e->getMessage());
+        }
 
-        // Create an admin user if it doesn't exist
-        User::firstOrCreate(
-            ['email' => 'manager@example.com'],
-            [
-                'name' => 'Manager User',
-                'phone' => '0987654321',
-                'is_verified' => true,
-                'email_verified_at' => now(),
-                'password' => Hash::make('password123'),
-                'role_id' => $roleIds[1] // Manager role
-            ]
-        );
+        // Create a manager user
+        try
+        {
+            User::firstOrCreate(
+                ['email' => 'manager@example.com'],
+                [
+                    'name' => 'Manager User',
+                    'phone' => '0987654321',
+                    'is_verified' => true,
+                    'email_verified_at' => now(),
+                    'password' => Hash::make('password123'),
+                    'role_id' => $managerRole->id
+                ]
+            );
+        }
+        catch (\Exception $e) {
+            // Log the error
+            // Log::error('Failed to create manager user: '. $e->getMessage());
+        }
 
         // Create 20 random users
         for ($i = 0; $i < 20; $i++) {
             $email = $faker->unique()->safeEmail;
-            $phone = $faker->unique()->numerify('##########');
+            $phone = $faker->unique()->phoneNumber;
             
             // Check if user with this email or phone exists
             while (User::where('email', $email)->orWhere('phone', $phone)->exists()) {
                 $email = $faker->unique()->safeEmail;
-                $phone = $faker->unique()->numerify('##########');
+                $phone = $faker->unique()->phoneNumber;
             }
             
-            User::create([
-                'name' => $faker->name,
-                'email' => $email,
-                'phone' => $phone,
-                'is_verified' => $faker->boolean(80), // 80% chance of being verified
-                'email_verified_at' => $faker->boolean(70) ? now() : null, // 70% chance of email verification
-                'password' => Hash::make('password123'),
-                'role_id' => $roleIds[2],
-            ]);
+            try
+            {
+                User::create([
+                    'name' => $faker->name,
+                    'email' => $email,
+                    'phone' => $phone,
+                    'is_verified' => $faker->boolean(80),
+                    'email_verified_at' => $faker->boolean(70) ? now() : null,
+                    'password' => Hash::make('password123'),
+                    'role_id' => $normalUserRole->id,
+                ]);
+            }
+            catch (\Exception $e) {
+                // Log the error
+                // Log::error('Failed to create user: '. $e->getMessage());
+            }
         }
     }
 }
