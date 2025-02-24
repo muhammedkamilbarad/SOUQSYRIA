@@ -17,66 +17,78 @@ class AdvertisementRepository extends BaseRepository
         parent::__construct($model);
     }
 
-
-    public function getByUserId(int $userId)
+    private function getCommonRelations(): array
     {
-        return $this->model->with([
+        return [
             'user',
             'city',
             'category',
             'images',
-            'vehicleAdvertisement',
+            'vehicleAdvertisement' => function($query){
+                $query->with('color', 'vehicleBrand', 'vehicleModel', 'fuelType', 'transmissionType');
+            },
             'carAdvertisement',
             'motorcycleAdvertisement',
-            'marineAdvertisement',
+            'marineAdvertisement' => function($query){
+                $query->with('marineType');
+            },
             'houseAdvertisement',
             'landAdvertisement',
-        ])->where('user_id', $userId)->get();
+        ];
     }
 
-    /*
-     * Retrieves all advertisements with related models.
-     *
-     */
-    public function getAllWithRelations()
-{
-    return $this->model->with([
-        'user',
-        'city',
-        'category',
-        'images',
-        // Load these as direct relationships to Advertisement
-        'vehicleAdvertisement',
-        'carAdvertisement',
-        'motorcycleAdvertisement',
-        'marineAdvertisement',
-        'houseAdvertisement',
-        'landAdvertisement',
-    ])->get();
-}
+    public function getByUserId(int $userId)
+    {
+        return $this->model->with($this->getCommonRelations())->where('user_id', $userId)->get();
+    }
 
-    public function createWithRelated(array $advertisementData, array $specificData, string $category)
+    public function getByIdWithRelations(int $id)
+    {
+        return $this->model->with($this->getCommonRelations())->find($id);
+    }
+
+    public function getAllWithRelations(array $filters = [])
+    {
+        $query = $this->model->with($this->getCommonRelations());
+        $query = $this->applyFilters($query, $filters)->get();
+        return $query;
+    }
+
+    private function applyFilters($query, array $filters)
+    {
+        if(isset($filters['ads_status']))
+        {
+            $query->where('ads_status', $filters['ads_status']);
+        }
+        if(isset($filters['active_status']))
+        {
+            $query->where('active_status', $filters['active_status']);
+        }
+        return $query;
+    }
+
+    public function createWithRelated(array $advertisementData, array $specificData, int $category_id)
     {
         \DB::beginTransaction();
         try{
             $advertisement = $this->create($advertisementData);
-            switch($category){
-                case 'car':
+            switch($category_id){
+                case 3://'car':
                     $advertisement->vehicleAdvertisement()->create($specificData['vehicle']);
                     $advertisement->carAdvertisement()->create($specificData['car']);
                     break;
-                case 'motorcycle':
+                case 5://'motorcycle':
                     $advertisement->vehicleAdvertisement()->create($specificData['vehicle']);
                     $advertisement->motorcycleAdvertisement()->create($specificData['motorcycle']);
                     break;
-                case 'marine':
+                case 4://'marine':
                     $advertisement->vehicleAdvertisement()->create($specificData['vehicle']);
                     $advertisement->marineAdvertisement()->create($specificData['marine']);
                     break;
-                case 'house':
+                case 2://'house':
                     $advertisement->houseAdvertisement()->create($specificData['house']);
                     break;
-                case 'land':
+                case 1://'land':
                     $advertisement->landAdvertisement()->create($specificData['land']);
                     break;
             }

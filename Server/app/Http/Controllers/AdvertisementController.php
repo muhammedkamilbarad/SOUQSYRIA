@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests\AdvertisementRequest;
 use App\Services\AdvertisementService;
 use Illuminate\Http\JsonResponse;
+use App\Http\Resources\AdvertisementDetailResource;
+use App\Http\Resources\AdvertisementCollection;
+use App\Http\Requests\AdvertisementProcessRequest;
 
 class AdvertisementController extends Controller
 {
@@ -16,20 +19,13 @@ class AdvertisementController extends Controller
         $this->service = $service;
     }
 
-    public function getUserAdvertisements()
+    public function getUserAdvertisements(Request $request)
     {
         try {
             $advertisements = $this->service->getAdvertisementsByUser(request()->user());
-
-            // Transform each advertisement to remove null relationships
-            $transformed = $advertisements->map(function ($ad) {
-                $array = $ad->toArray();
-                return collect($array)->reject(fn($value) => is_null($value))->toArray();
-            });
-
             return response()->json([
                 'success' => true,
-                'data'    => $transformed
+                'data'    => new AdvertisementCollection($advertisements),
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -39,25 +35,40 @@ class AdvertisementController extends Controller
         }
     }
 
-    /*
-     * Get all advertisements with related details.
-     */
-    public function index()
+
+    public function index(Request $request)
     {
         try {
-            // Fetch data with all needed eager loads
-            $advertisements = $this->service->getAllAdvertisements();
-
-            // Transform each advertisement to remove null relationships
-            $transformed = $advertisements->map(function ($ad) {
-                $array = $ad->toArray();
-                return collect($array)->reject(fn($value) => is_null($value))->toArray();
-            });
-
-            // Return JSON response
+            $filters = $request->only([
+                'ads_status',
+                'active_status',
+            ]);
+            $advertisements = $this->service->getAllAdvertisements($filters);
             return response()->json([
                 'success' => true,
-                'data'    => $transformed
+                'data'    => new AdvertisementCollection($advertisements),
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function show(int $id)
+    {
+        try {
+            $advertisement = $this->service->getAdvertisementById($id);
+            if (!$advertisement) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Advertisement not found'
+                ], 404);
+            }
+            return response()->json([
+                'success' => true,
+                'data'    => new AdvertisementDetailResource($advertisement)
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -72,6 +83,19 @@ class AdvertisementController extends Controller
         try {
             $result = $this->service->create($request->validated(), $request->user());
             return response()->json($result, 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function process(AdvertisementProcessRequest $request, int $id)
+    {
+        try {
+            $result = $this->service->processAdvertisement($id, $request->validated());
+            return response()->json($result, 200);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
