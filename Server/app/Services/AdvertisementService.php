@@ -21,16 +21,14 @@ class AdvertisementService
         return $this->repository->getByUserId($user->id);
     }
 
-
-    /*
-     * Get all ads with their related details.
-     */
-    public function getAllAdvertisements()
+    public function getAdvertisementById(int $id)
     {
-        // If you need authorization, you can check here using Gate or policy:
-        // Gate::authorize('viewAny', Advertisement::class);
+        return $this->repository->getByIdWithRelations($id);
+    }
 
-        return $this->repository->getAllWithRelations();
+    public function getAllAdvertisements(array $filters = [])
+    {
+        return $this->repository->getAllWithRelations($filters);
     }
 
     public function create(array $data, User $user)
@@ -44,22 +42,22 @@ class AdvertisementService
         $advertisement = $this->repository->createWithRelated(
             $advertisementData,
             $specificData,
-            $data['category']
+            $data['category_id']
         );
         $this->decreaseRemainingAds($user);
 
         $relations = ['images'];
-        if (in_array($data['category'], ['car', 'motorcycle', 'marine'])) {
+        if (in_array($data['category_id'], [3,4,5])) {
             $relations[] = 'vehicleAdvertisement';
-        } elseif ($data['category'] === 'car') {
+        } if ($data['category_id'] == 3) {
             $relations[] = 'carAdvertisement';
-        } elseif ($data['category'] === 'motorcycle') {
+        } elseif ($data['category_id'] == 5) {
             $relations[] = 'motorcycleAdvertisement';
-        } elseif ($data['category'] === 'marine') {
+        } elseif ($data['category_id'] == 4) {
             $relations[] = 'marineAdvertisement';
-        } elseif ($data['category'] === 'house') {
+        } elseif ($data['category_id'] == 2) {
             $relations[] = 'houseAdvertisement';
-        } elseif ($data['category'] === 'land') {
+        } elseif ($data['category_id'] == 1) {
             $relations[] = 'landAdvertisement';
         }
         return [
@@ -86,7 +84,7 @@ class AdvertisementService
     {
         $specificData = [];
 
-        if (in_array($data['category'], ['car', 'motorcycle', 'marine'])) {
+        if (in_array($data['category_id'], [3,4,5])) {
             $specificData['vehicle'] = [
                 'color_id' => $data['color_id'],
                 'mileage' => $data['mileage'],
@@ -101,26 +99,26 @@ class AdvertisementService
             ];
         }
 
-        switch ($data['category']) {
-            case 'car':
+        switch ($data['category_id']) {
+            case 3://'car':
                 $specificData['car'] = [
                     'seats' => $data['seats'],
                     'doors' => $data['doors']
                 ];
                 break;
-            case 'motorcycle':
+            case 5://'motorcycle':
                 $specificData['motorcycle'] = [
                     'cylinders' => $data['cylinders']
                 ];
                 break;
-            case 'marine':
+            case 4://'marine':
                 $specificData['marine'] = [
                     'type_id' => $data['marine_type_id'],
                     'length' => $data['length'],
                     'max_capacity' => $data['max_capacity']
                 ];
                 break;
-            case 'house':
+            case 2://'house':
                 $specificData['house'] = [
                     'number_of_rooms' => $data['number_of_rooms'],
                     'building_age' => $data['building_age'],
@@ -128,7 +126,7 @@ class AdvertisementService
                     'floor' => $data['floor']
                 ];
                 break;
-            case 'land':
+            case 1://'land':
                 $specificData['land'] = [
                     'square_meters' => $data['square_meters']
                 ];
@@ -150,6 +148,19 @@ class AdvertisementService
             throw new \Exception('You do not have an active subscription or remaining ads.');
         }
         $subscription->decrement('remaining_ads');
+    }
+
+    public function processAdvertisement(int $advId, array $data)
+    {
+        $advertisement = $this->repository->getById($advId);
+        if (!$advertisement) {
+            throw new \Exception('Advertisement not found');
+        }
+        $updateData = [
+            'ads_status' => $data['status'],
+            'active_status' => ($data['status'] === 'accepted') ? 'active' : 'inactive'
+        ];
+        return $this->repository->update($advertisement, $updateData);
     }
 
 }

@@ -32,15 +32,15 @@ class AdvertisementRequest extends FormRequest
             'type' => 'required|in:rent,sale',
             'images' => 'required|array|max:5',
             'images.*' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'category' => 'required|in:car,motorcycle,marine,house,land'
+            //'category' => 'required|in:car,motorcycle,marine,house,land'
         ];
         //Add category-specific rules
-        switch($this->input('category'))
+        switch($this->input('category_id'))
         {
             //Add vehicle-specific rules
-            case 'car':
-            case 'motorcycle':
-            case 'marine':
+            case 3://'car':
+            case 5://'motorcycle':
+            case 4://'marine':
                 $rules = array_merge($rules, [
                     'color_id' => 'required|exists:colors,id',
                     'mileage' => 'required|numeric|min:0',
@@ -54,20 +54,20 @@ class AdvertisementRequest extends FormRequest
                     'condition' => 'required|in:NEW,USED'
                 ]);
                 //Add car-specific rules
-                if($this->input('category') === 'car'){
+                if($this->input('category_id') == 3){
                     $rules = array_merge($rules, [
                         'seats' => 'required|integer|min:2|max:9',
                         'doors' => 'required|integer|min:2|max:5'
                     ]);
                 }
                 //Add motorcycle-specific rules
-                elseif($this->input('category') === 'motorcycle'){
+                elseif($this->input('category_id') == 5){
                     $rules = array_merge($rules, [
                         'cylinders' => 'required|integer|min:1'
                     ]);
                 }
                 //Add marine-specific rules
-                elseif($this->input('category') === 'marine'){
+                elseif($this->input('category_id') == 4){
                     $rules = array_merge($rules, [
                         'marine_type_id' => 'required|exists:marine_types,id',
                         'length' => 'required|numeric|min:0',
@@ -76,7 +76,7 @@ class AdvertisementRequest extends FormRequest
                 }
                 break;
             //Add house-specific rules
-            case 'house':
+            case 2://'house':
                 $rules = array_merge($rules, [
                     'number_of_rooms' => 'required|integer|min:1',
                     'building_age' => 'required|integer|min:0',
@@ -85,7 +85,7 @@ class AdvertisementRequest extends FormRequest
                 ]);
                 break;
             //Add land-specific rules
-            case 'land':
+            case 1://'land':
                 $rules = array_merge($rules, [
                     'square_meters' => 'required|string|max:100'
                 ]);
