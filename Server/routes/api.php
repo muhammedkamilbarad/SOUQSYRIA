@@ -16,6 +16,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SubscribingController;
 use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\SubscriptionRequestController;
+use App\Http\Controllers\FavoriteController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -97,6 +99,11 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::get('/subscription-requests', [SubscriptionRequestController::class, 'index']);
     Route::get('/my-subscription', [SubscribingController::class, 'show_my_subscription'])->name('subscriptions.my');
     Route::get('subscriptions/{id}', [SubscribingController::class, 'show'])->whereNumber('id')->name('subscriptions.show');
+
+    // Favorites routes
+    Route::post('/favorites', [FavoriteController::class, 'addToFavorites']);
+    Route::delete('/favorites/{advs_id}', [FavoriteController::class, 'removeFromFavorites'])->whereNumber('advs_id');
+    Route::get('/favorites', [FavoriteController::class, 'getUserFavorites']);
 });
 
 Route::get('advertisements', [AdvertisementController::class, 'index']);
