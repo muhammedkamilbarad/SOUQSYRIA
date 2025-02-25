@@ -37,7 +37,7 @@ class AdvertisementPolicy
      */
     public function update(User $user, Advertisement $advertisement): bool
     {
-        //
+        return $user->id === $advertisement->user_id;
     }
 
     /**
@@ -45,7 +45,7 @@ class AdvertisementPolicy
      */
     public function delete(User $user, Advertisement $advertisement): bool
     {
-        //
+        return $user->id === $advertisement->user_id || $user->hasPermission('delete_ad');
     }
 
     /**

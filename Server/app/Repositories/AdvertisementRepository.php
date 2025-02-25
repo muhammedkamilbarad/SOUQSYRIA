@@ -114,4 +114,114 @@ class AdvertisementRepository extends BaseRepository
         }
         $advertisement->images()->createMany($imagesData);
     }
+
+
+    public function delete(Model $advertisement)
+    {
+        \DB::beginTransaction();
+        try{
+            foreach($advertisement->images as $image)
+            {
+                \Storage::disk('public')->delete($image->url);
+            }
+            $advertisement->images()->delete();
+            if($advertisement->vehicleAdvertisement)
+            {
+                $advertisement->vehicleAdvertisement()->delete();
+            }
+            if($advertisement->carAdvertisement)
+            {
+                $advertisement->carAdvertisement()->delete();
+            }
+            if($advertisement->motorcycleAdvertisement)
+            {
+                $advertisement->motorcycleAdvertisement()->delete();
+            }
+            if($advertisement->marineAdvertisement)
+            {
+                $advertisement->marineAdvertisement()->delete();
+            }
+            if($advertisement->houseAdvertisement)
+            {
+                $advertisement->houseAdvertisement()->delete();
+            }
+            if($advertisement->landAdvertisement)
+            {
+                $advertisement->landAdvertisement()->delete();
+            }
+            $result = $advertisement->delete();
+            \DB::commit();
+            return $result;
+
+        } catch(\Exception $e){
+            \DB::rollBack();
+            throw $e;
+        }
+    }
+
+    public function updateWithRelated(Advertisement $advertisement, array $mainData, array $specificData)
+    {
+        \DB::beginTransaction();
+        try{
+            \Log::info('Main Data:', $mainData);
+            \Log::info('Specific Data:', $specificData);
+
+            $advertisement->update($mainData);
+            switch($advertisement->category_id)
+            {
+                case 3: // car
+                    if (isset($specificData['vehicle'])) {
+                        $advertisement->vehicleAdvertisement()->update($specificData['vehicle']);
+                    }
+                    if (isset($specificData['car'])) {
+                        $advertisement->carAdvertisement()->update($specificData['car']);
+                    }
+                    break;
+                case 5: // motorcycle
+                    if (isset($specificData['vehicle'])) {
+                        $advertisement->vehicleAdvertisement()->update($specificData['vehicle']);
+                    }
+                    if (isset($specificData['motorcycle'])) {
+                        $advertisement->motorcycleAdvertisement()->update($specificData['motorcycle']);
+                    }
+                    break;
+                case 4: // marine
+                    if (isset($specificData['vehicle'])) {
+                        $advertisement->vehicleAdvertisement()->update($specificData['vehicle']);
+                    }
+                    if (isset($specificData['marine'])) {
+                        $advertisement->marineAdvertisement()->update($specificData['marine']);
+                    }
+                    break;
+                case 2: // house
+                    if (isset($specificData['house'])) {
+                        $advertisement->houseAdvertisement()->update($specificData['house']);
+                    }
+                    break;
+                case 1: // land
+                    if (isset($specificData['land'])) {
+                        $advertisement->landAdvertisement()->update($specificData['land']);
+                    }
+                    break;
+            }
+            if (isset($specificData['images']) && !empty($specificData['images'])) {
+                $this->updateImages($advertisement, $specificData['images']);
+            }
+            DB::commit();
+            return $advertisement->fresh();
+
+        } catch (Exception $e) {
+            \DB::rollBack();
+            throw $e;
+        }
+    }
+
+    public function updateImages(Advertisement $advertisement, array $images)
+    {
+        foreach ($advertisement->images as $image) {
+            \Storage::disk('public')->delete($image->url);
+        }
+        $advertisement->images()->delete();
+        $this->createImages($advertisement, $images);
+    }
 }
