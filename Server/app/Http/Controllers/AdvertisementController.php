@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Resources\AdvertisementDetailResource;
 use App\Http\Resources\AdvertisementCollection;
 use App\Http\Requests\AdvertisementProcessRequest;
+use App\Http\Requests\AdvertisementUpdateRequest;
 
 class AdvertisementController extends Controller
 {
@@ -95,6 +96,34 @@ class AdvertisementController extends Controller
     {
         try {
             $result = $this->service->processAdvertisement($id, $request->validated());
+            return response()->json($result, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function destroy(int $advId)
+    {
+        try {
+            $result = $this->service->deleteAdvertisement($advId);
+            return response()->json([
+                'success' => $result,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function update(AdvertisementUpdateRequest $request, int $id)
+    {
+        try {
+            $result = $this->service->updateAdvertisement($id, $request->validated(), $request->user());
             return response()->json($result, 200);
         } catch (\Exception $e) {
             return response()->json([
