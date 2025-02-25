@@ -17,6 +17,7 @@ use App\Http\Controllers\SubscribingController;
 use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\SubscriptionRequestController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\ComplaintController;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,6 +67,11 @@ use App\Http\Controllers\FavoriteController;
 //     Route::apiResource('roles', RoleController::class)->middleware('permission:edit roles');
 //     Route::resource('permissions', PermissionController::class, ['except' => ['store', 'update','destroy']])->middleware('permission:edit roles');
 //     Route::resource('subscriptions', SubscribingController::class)->middleware('permission:edit subscribing');
+
+//     Route::get('/complaints/advertisement/{advertisementId}', [ComplaintController::class, 'getComplaintsForAdvertisement'])->middleware('permission:show complaints');
+//     Route::get('/complaints/user/{userId?}', [ComplaintController::class, 'getAllComplaintsForUser'])->middleware('permission:show complaints');
+//     Route::get('/complaints', [ComplaintController::class, 'index'])->middleware('permission:show complaints');
+//     Route::delete('/complaints/{complaintId}', [ComplaintController::class, 'destroy'])->middleware('permission:delete complaints');
 // });
 
 
@@ -104,6 +110,15 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::post('/favorites', [FavoriteController::class, 'addToFavorites']);
     Route::delete('/favorites/{advs_id}', [FavoriteController::class, 'removeFromFavorites'])->whereNumber('advs_id');
     Route::get('/favorites', [FavoriteController::class, 'getUserFavorites']);
+
+    // Route::post('/ad-complaint/{advs_id}', ) 
+    // Route::get('/complaints/advertisement/{advertisementId}', [ComplaintController::class, 'getComplaintsForAdvertisement']);
+    // Get all complaints for a specific user (or all users if admin)
+    // Route::get('/complaints/user/{userId?}', [ComplaintController::class, 'getAllComplaintsForUser']);
+    Route::post('/complaints/advertisement', [ComplaintController::class, 'complaintAboutAdvertisement']);
+    // Submit a complaint about the system
+    Route::post('/complaints/system', [ComplaintController::class, 'complaintAboutSystem']);
+
 });
 
 Route::get('advertisements', [AdvertisementController::class, 'index']);
