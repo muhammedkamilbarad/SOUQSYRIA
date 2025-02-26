@@ -20,14 +20,14 @@ class UserService
 
     public function getAllUsers(): Collection
     {
-        return $this->userRepository->getAll();
+        return $this->userRepository->getAllWithRoles();
     }
 
     public function getUserById(int $id): ?Model
     {
         try
         {
-            return $this->userRepository->getById($id);
+            return $this->userRepository->getUserWithRole($id);
         }
         catch (ModelNotFoundException $e)
         {

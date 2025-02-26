@@ -19,7 +19,7 @@ class ColorController extends Controller
     public function index()
     {
         $colors = $this->colorService->getAllColors();
-        return response()->json($colors);
+        return response()->json($colors, 200);
     }
 
     public function store(ColorRequest $request)
@@ -34,7 +34,7 @@ class ColorController extends Controller
         if(!$color) {
             return response()->json(['message' => 'Color not found'], 404);
         }
-        return response()->json($color);
+        return response()->json($color, 200);
     }
 
     public function update(ColorRequest $request, int $id)
@@ -44,7 +44,7 @@ class ColorController extends Controller
             return response()->json(['message' => 'Color not found'], 404);
         }
         $color = $this->colorService->updateColor($color, $request->all());
-        return response()->json($color);
+        return response()->json($color, 200);
     }
 
     public function destroy(int $id)
@@ -54,6 +54,6 @@ class ColorController extends Controller
             return response()->json(['message' => 'Color not found'], 404);
         }
         $this->colorService->deleteColor($color);
-        return response()->json(['message' => 'Color deleted successfully']);
+        return response()->json(['message' => 'Color deleted successfully'], 200);
     }
 }

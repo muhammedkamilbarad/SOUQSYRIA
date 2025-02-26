@@ -11,4 +11,9 @@ class Package extends Model
     {
         return $this->belongsToMany(User::class, 'subscribings')->withPivot('remaining_ads', 'purchase_date', 'expiry_date');
     }
+
+    public function subscribings()
+    {
+        return $this->hasMany(Subscribing::class);
+    }
 }

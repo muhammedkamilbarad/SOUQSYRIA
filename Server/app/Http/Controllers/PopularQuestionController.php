@@ -19,7 +19,7 @@ class PopularQuestionController extends Controller
     public function index()
     {
         $PopularQuestion = $this->popularQuestionService->getAllPopularQuestions();
-        return response()->json($PopularQuestion);
+        return response()->json($PopularQuestion, 200);
     }
 
     public function store(PopularQuestionRequest $request)
@@ -34,7 +34,7 @@ class PopularQuestionController extends Controller
         if (!$PopularQuestion) {
             return response()->json(['message' => 'Question not found'], 404);
         }
-        return response()->json($PopularQuestion);
+        return response()->json($PopularQuestion, 200);
     }
 
     public function update(PopularQuestionRequest $request, int $id)
@@ -44,7 +44,7 @@ class PopularQuestionController extends Controller
             return response()->json(['message' => 'Question not found'], 404);
         }
         $PopularQuestion = $this->popularQuestionService->updatePopularQuestion($PopularQuestion, $request->all());
-        return response()->json($PopularQuestion);
+        return response()->json($PopularQuestion, 200);
     }
 
     public function destroy(int $id)
@@ -54,6 +54,6 @@ class PopularQuestionController extends Controller
             return response()->json(['message' => 'Question not found'], 404);
         }
         $this->popularQuestionService->deletePopularQuestion($PopularQuestion);
-        return response()->json(['message' => 'Question deleted successfully']);
+        return response()->json(['message' => 'Question deleted successfully'], 200);
     }
 }

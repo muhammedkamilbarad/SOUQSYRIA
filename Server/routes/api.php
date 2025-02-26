@@ -129,4 +129,5 @@ Route::middleware("auth:sanctum")->group(function () {
 
 });
 
+
 Route::get('advertisements', [AdvertisementController::class, 'index']);

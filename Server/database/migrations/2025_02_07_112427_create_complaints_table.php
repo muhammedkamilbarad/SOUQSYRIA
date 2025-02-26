@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('complaints', function (Blueprint $table) {
             $table->id();
-            $table->string('Title', 100);
-            $table->text('Content');
+            $table->string('title', 100);
+            $table->text('content');
             $table->foreignId('advs_id')->nullable()->constrained("advertisements")->onDelete('set null');
             $table->foreignId('user_id')->nullable()->constrained("users")->onDelete('set null');
             $table->timestamps();
