@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->integer('max_of_ads');
             $table->integer('period');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

@@ -67,11 +67,19 @@ use App\Http\Controllers\ComplaintController;
 //     Route::apiResource('roles', RoleController::class)->middleware('permission:edit roles');
 //     Route::resource('permissions', PermissionController::class, ['except' => ['store', 'update','destroy']])->middleware('permission:edit roles');
 //     Route::resource('subscriptions', SubscribingController::class)->middleware('permission:edit subscribing');
-
+    
+// Complaints
 //     Route::get('/complaints/advertisement/{advertisementId}', [ComplaintController::class, 'getComplaintsForAdvertisement'])->middleware('permission:show complaints');
 //     Route::get('/complaints/user/{userId?}', [ComplaintController::class, 'getAllComplaintsForUser'])->middleware('permission:show complaints');
 //     Route::get('/complaints', [ComplaintController::class, 'index'])->middleware('permission:show complaints');
 //     Route::delete('/complaints/{complaintId}', [ComplaintController::class, 'destroy'])->middleware('permission:delete complaints');
+
+// Package
+//     Route::get('/packages', [PackageController::class, 'index'])->middleware('permission:view_package');
+//     Route::get('/packages/{package_id}', [PackageController::class, 'show'])->middleware('permission:view_package');
+//     Route::post('packages', [PackageController::class, 'store'])->middleware('permission:create_package');
+//     Route::post('packages/{package_id}', [PackageController::class, 'deactivatePackage'])->middleware('permission:deactivate_package');
+//     Route::put('packages/deactivate/{package_id}', [PackageController::class, 'deactivate'])->middleware('permission:update_package');
 // });
 
 
@@ -120,5 +128,6 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::post('/complaints/system', [ComplaintController::class, 'complaintAboutSystem']);
 
 });
+
 
 Route::get('advertisements', [AdvertisementController::class, 'index']);
