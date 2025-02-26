@@ -18,7 +18,7 @@ class PackageService
 
     public function getAllPackages(): Collection
     {
-        return $this->PackageRepository->getAll();
+        return $this->PackageRepository->getPackagesWithSubscribersCount();
     }
 
     public function getPackageById(int $id): ?Model
@@ -40,8 +40,8 @@ class PackageService
         return $this->PackageRepository->update($package, $data);
     }
 
-    public function deletePackage(Model $package)
+    public function deactivatePackage(int $id)
     {
-        $this->PackageRepository->delete($package);
+        return $this->PackageRepository->deactivatePackage($id);
     }
 }

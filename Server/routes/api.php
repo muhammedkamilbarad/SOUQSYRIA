@@ -13,6 +13,12 @@ use App\Http\Controllers\PackageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SubscribingController;
+use App\Http\Controllers\AdvertisementController;
+use App\Http\Controllers\SubscriptionRequestController;
+use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\ComplaintController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -38,29 +44,43 @@ use App\Http\Controllers\AuthController;
 
 
 // Public routes
-Route::resources([
-    'colors' => ColorController::class,
-    'marineTypes' => MarineTypeController::class,
-    'vehiclemodels' => VehicleModelController::class,
-    'vehiclebrands' => VehicleBrandController::class,
-    'categories' => CategoryController::class,
-    'packages' => PackageController::class,
-    'popularQuestions' => PopularQuestionController::class,
-], ['only' => ['index', 'show']]);
+// Route::resources([
+//     'colors' => ColorController::class,
+//     'marineTypes' => MarineTypeController::class,
+//     'vehiclemodels' => VehicleModelController::class,
+//     'vehiclebrands' => VehicleBrandController::class,
+//     'categories' => CategoryController::class,
+//     'packages' => PackageController::class,
+//     'popularQuestions' => PopularQuestionController::class,
+// ], ['only' => ['index', 'show']]);
 
-// Protected routes
-Route::middleware(['auth:sanctum'])->group(function () {
-    Route::resource('colors', ColorController::class, ['except' => ['index', 'show']])->middleware('permission:edit colors');
-    Route::resource('marineTypes', MarineTypeController::class, ['except' => ['index', 'show']])->middleware('permission:edit marineTypes');
-    Route::resource('vehiclemodels', VehicleModelController::class, ['except' => ['index', 'show']])->middleware('permission:edit vehiclemodels');
-    Route::resource('vehiclebrands', VehicleBrandController::class, ['except' => ['index', 'show']])->middleware('permission:edit vehiclebrands');
-    Route::resource('categories', CategoryController::class, ['except' => ['index', 'show']])->middleware('permission:edit categories');
-    Route::resource('packages', PackageController::class, ['except' => ['index', 'show']])->middleware('permission:edit packages');
-    Route::resource('popularQuestions', PopularQuestionController::class, ['except' => ['index', 'show']])->middleware('permission:edit popularQuestions');
-    Route::apiResource('users', UserController::class)->middleware('permission:edit users');
-    Route::apiResource('roles', RoleController::class)->middleware('permission:edit roles');
-    Route::resource('permissions', PermissionController::class, ['except' => ['store', 'update','destroy']])->middleware('permission:edit roles');
-});
+// // Protected routes
+// Route::middleware(['auth:sanctum'])->group(function () {
+//     Route::resource('colors', ColorController::class, ['except' => ['index', 'show']])->middleware('permission:edit colors');
+//     Route::resource('marineTypes', MarineTypeController::class, ['except' => ['index', 'show']])->middleware('permission:edit marineTypes');
+//     Route::resource('vehiclemodels', VehicleModelController::class, ['except' => ['index', 'show']])->middleware('permission:edit vehiclemodels');
+//     Route::resource('vehiclebrands', VehicleBrandController::class, ['except' => ['index', 'show']])->middleware('permission:edit vehiclebrands');
+//     Route::resource('categories', CategoryController::class, ['except' => ['index', 'show']])->middleware('permission:edit categories');
+//     Route::resource('packages', PackageController::class, ['except' => ['index', 'show']])->middleware('permission:edit packages');
+//     Route::resource('popularQuestions', PopularQuestionController::class, ['except' => ['index', 'show']])->middleware('permission:edit popularQuestions');
+//     Route::apiResource('users', UserController::class)->middleware('permission:edit users');
+//     Route::apiResource('roles', RoleController::class)->middleware('permission:edit roles');
+//     Route::resource('permissions', PermissionController::class, ['except' => ['store', 'update','destroy']])->middleware('permission:edit roles');
+//     Route::resource('subscriptions', SubscribingController::class)->middleware('permission:edit subscribing');
+    
+// Complaints
+//     Route::get('/complaints/advertisement/{advertisementId}', [ComplaintController::class, 'getComplaintsForAdvertisement'])->middleware('permission:show complaints');
+//     Route::get('/complaints/user/{userId?}', [ComplaintController::class, 'getAllComplaintsForUser'])->middleware('permission:show complaints');
+//     Route::get('/complaints', [ComplaintController::class, 'index'])->middleware('permission:show complaints');
+//     Route::delete('/complaints/{complaintId}', [ComplaintController::class, 'destroy'])->middleware('permission:delete complaints');
+
+// Package
+//     Route::get('/packages', [PackageController::class, 'index'])->middleware('permission:view_package');
+//     Route::get('/packages/{package_id}', [PackageController::class, 'show'])->middleware('permission:view_package');
+//     Route::post('packages', [PackageController::class, 'store'])->middleware('permission:create_package');
+//     Route::post('packages/{package_id}', [PackageController::class, 'deactivatePackage'])->middleware('permission:deactivate_package');
+//     Route::put('packages/deactivate/{package_id}', [PackageController::class, 'deactivate'])->middleware('permission:update_package');
+// });
 
 
 Route::post('register', [AuthController::class, 'register']);
@@ -70,13 +90,43 @@ Route::post('/login', [AuthController::class, 'loginWithEmailOrPhone']);
 
 
 
-// Route::apiResource('colors', ColorController::class);
-//Route::apiResource('permissions', PermissionController::class);
-// Route::apiResource('marineTypes', MarineTypeController::class);
-// Route::apiResource('popularQuestions', PopularQuestionController::class);
-// Route::apiResource('vehiclemodels', VehicleModelController::class);
-// Route::apiResource('vehiclebrands', VehicleBrandController::class);
-// Route::apiResource('categories', CategoryController::class);
-// Route::apiResource('packages', PackageController::class);
-//Route::apiResource('users', UserController::class);
-//Route::apiResource('roles', RoleController::class);
+ Route::apiResource('colors', ColorController::class);
+Route::apiResource('permissions', PermissionController::class);
+ Route::apiResource('marineTypes', MarineTypeController::class);
+ Route::apiResource('popularQuestions', PopularQuestionController::class);
+ Route::apiResource('vehiclemodels', VehicleModelController::class);
+ Route::apiResource('vehiclebrands', VehicleBrandController::class);
+ Route::apiResource('categories', CategoryController::class);
+ Route::apiResource('packages', PackageController::class);
+Route::apiResource('users', UserController::class);
+Route::apiResource('roles', RoleController::class);
+Route::apiResource('subscriptions', SubscribingController::class);
+
+
+
+
+Route::middleware("auth:sanctum")->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::resource("advertisements", AdvertisementController::class);
+    Route::post('/subscription-requests', [SubscriptionRequestController::class, 'store']);
+    Route::put('/subscription-requests/{id}/process', [SubscriptionRequestController::class, 'process']);
+    Route::get('/subscription-requests', [SubscriptionRequestController::class, 'index']);
+    Route::get('/my-subscription', [SubscribingController::class, 'show_my_subscription'])->name('subscriptions.my');
+    Route::get('subscriptions/{id}', [SubscribingController::class, 'show'])->whereNumber('id')->name('subscriptions.show');
+
+    // Favorites routes
+    Route::post('/favorites', [FavoriteController::class, 'addToFavorites']);
+    Route::delete('/favorites/{advs_id}', [FavoriteController::class, 'removeFromFavorites'])->whereNumber('advs_id');
+    Route::get('/favorites', [FavoriteController::class, 'getUserFavorites']);
+
+    // Route::post('/ad-complaint/{advs_id}', ) 
+    // Route::get('/complaints/advertisement/{advertisementId}', [ComplaintController::class, 'getComplaintsForAdvertisement']);
+    // Get all complaints for a specific user (or all users if admin)
+    // Route::get('/complaints/user/{userId?}', [ComplaintController::class, 'getAllComplaintsForUser']);
+    Route::post('/complaints/advertisement', [ComplaintController::class, 'complaintAboutAdvertisement']);
+    // Submit a complaint about the system
+    Route::post('/complaints/system', [ComplaintController::class, 'complaintAboutSystem']);
+
+});
+
+Route::get('advertisements', [AdvertisementController::class, 'index']);
