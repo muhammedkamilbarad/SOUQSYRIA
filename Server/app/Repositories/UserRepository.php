@@ -26,4 +26,8 @@ class UserRepository extends BaseRepository
     {
         return $this->model->with(['role'])->findOrFail($id);
     }
+    public function findTrashed(int $id): ?Model
+    {
+        return $this->model::onlyTrashed()->find($id);
+    }
 }

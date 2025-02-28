@@ -56,4 +56,26 @@ class UserController extends Controller
         $this->userService->deleteUser($user);
         return response()->json(['message' => 'User deleted successfully'], 200);
     }
+    public function softDelete(int $id)
+    {
+        $user = $this->userService->getUserById($id);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $this->userService->softDeleteUser($user);
+        return response()->json(['message' => 'User soft deleted successfully'], 200);
+    }
+
+
+    public function restore(int $id)
+    {
+        $user = $this->userService->restoreUser(new User(), $id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found or not deleted'], 404);
+        }
+
+        return response()->json(['message' => 'User restored successfully', 'user' => $user], 200);
+    }
 }

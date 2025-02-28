@@ -25,20 +25,16 @@ class UserService
 
     public function getUserById(int $id): ?Model
     {
-        try
-        {
+        try {
             return $this->userRepository->getUserWithRole($id);
-        }
-        catch (ModelNotFoundException $e)
-        {
+        } catch (ModelNotFoundException $e) {
             return null;
         }
     }
 
     public function createUser(array $data): Model
     {
-        if (isset($data['password']))
-        {
+        if (isset($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         }
         return $this->userRepository->create($data);
@@ -46,8 +42,7 @@ class UserService
 
     public function updateUser(Model $user, array $data): Model
     {
-        if (isset($data['password']))
-        {
+        if (isset($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         }
         return $this->userRepository->update($user, $data);
@@ -55,6 +50,20 @@ class UserService
 
     public function deleteUser(Model $user)
     {
+        $user->forceDelete();
+    }
+
+    public function SoftDeleteUser(Model $user)
+    {
         $this->userRepository->delete($user);
+    }
+
+    public function restoreUser(Model $user, int $id): ?Model
+    {
+        $user = $this->userRepository->findTrashed($id);
+        if ($user) {
+            $user->restore();
+        }
+        return $user;
     }
 }
