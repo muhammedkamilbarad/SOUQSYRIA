@@ -67,7 +67,7 @@ use App\Http\Controllers\ComplaintController;
 //     Route::apiResource('roles', RoleController::class)->middleware('permission:edit roles');
 //     Route::resource('permissions', PermissionController::class, ['except' => ['store', 'update','destroy']])->middleware('permission:edit roles');
 //     Route::resource('subscriptions', SubscribingController::class)->middleware('permission:edit subscribing');
-    
+
 // Complaints
 //     Route::get('/complaints/advertisement/{advertisementId}', [ComplaintController::class, 'getComplaintsForAdvertisement'])->middleware('permission:show complaints');
 //     Route::get('/complaints/user/{userId?}', [ComplaintController::class, 'getAllComplaintsForUser'])->middleware('permission:show complaints');
@@ -90,15 +90,15 @@ Route::post('/login', [AuthController::class, 'loginWithEmailOrPhone']);
 
 
 
- Route::apiResource('colors', ColorController::class);
+Route::apiResource('colors', ColorController::class);
 Route::apiResource('permissions', PermissionController::class);
- Route::apiResource('marineTypes', MarineTypeController::class);
- Route::apiResource('popularQuestions', PopularQuestionController::class);
- Route::apiResource('vehiclemodels', VehicleModelController::class);
- Route::apiResource('vehiclebrands', VehicleBrandController::class);
- Route::apiResource('categories', CategoryController::class);
- Route::apiResource('packages', PackageController::class);
-Route::apiResource('users', UserController::class);
+Route::apiResource('marineTypes', MarineTypeController::class);
+Route::apiResource('popularQuestions', PopularQuestionController::class);
+Route::apiResource('vehiclemodels', VehicleModelController::class);
+Route::apiResource('vehiclebrands', VehicleBrandController::class);
+Route::apiResource('categories', CategoryController::class);
+Route::apiResource('packages', PackageController::class);
+// Route::apiResource('users', UserController::class);
 Route::apiResource('roles', RoleController::class);
 Route::apiResource('subscriptions', SubscribingController::class);
 
@@ -119,15 +119,18 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::delete('/favorites/{advs_id}', [FavoriteController::class, 'removeFromFavorites'])->whereNumber('advs_id');
     Route::get('/favorites', [FavoriteController::class, 'getUserFavorites']);
 
-    // Route::post('/ad-complaint/{advs_id}', ) 
+    // Route::post('/ad-complaint/{advs_id}', )
     // Route::get('/complaints/advertisement/{advertisementId}', [ComplaintController::class, 'getComplaintsForAdvertisement']);
     // Get all complaints for a specific user (or all users if admin)
     // Route::get('/complaints/user/{userId?}', [ComplaintController::class, 'getAllComplaintsForUser']);
     Route::post('/complaints/advertisement', [ComplaintController::class, 'complaintAboutAdvertisement']);
     // Submit a complaint about the system
     Route::post('/complaints/system', [ComplaintController::class, 'complaintAboutSystem']);
-
 });
 
 
 Route::get('advertisements', [AdvertisementController::class, 'index']);
+// User Soft Delete Routes
+Route::delete('/users/{id}/soft', [UserController::class, 'softDelete']);
+Route::delete('/users/hard-delete/{id}', [UserController::class, 'destroy']);
+Route::patch('/users/{id}/restore', [UserController::class, 'restore']);
