@@ -18,6 +18,8 @@ use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\SubscriptionRequestController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ComplaintController;
+use App\Http\Middleware\ThrottleLogins;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -83,14 +85,14 @@ use App\Http\Controllers\ComplaintController;
 // });
 
 
-Route::post('register', [AuthController::class, 'register']);
-Route::post('verify-account', [AuthController::class, 'verifyAccount']);
-Route::post('resend-otp', [AuthController::class, 'resendteOtp']);
-Route::post('/login', [AuthController::class, 'loginWithEmailOrPhone']);
+// Route::post('register', [AuthController::class, 'register']);
+// Route::post('verify-account', [AuthController::class, 'verifyAccount']);
+// Route::post('resend-otp', [AuthController::class, 'resendteOtp']);
+// Route::post('/login', [AuthController::class, 'loginWithEmailOrPhone']);
 
 
 
-Route::apiResource('colors', ColorController::class);
+
 Route::apiResource('permissions', PermissionController::class);
 Route::apiResource('marineTypes', MarineTypeController::class);
 Route::apiResource('popularQuestions', PopularQuestionController::class);
@@ -106,6 +108,7 @@ Route::apiResource('subscriptions', SubscribingController::class);
 
 
 Route::middleware("auth:sanctum")->group(function () {
+    Route::apiResource('colors', ColorController::class);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::resource("advertisements", AdvertisementController::class);
     Route::post('/subscription-requests', [SubscriptionRequestController::class, 'store']);
@@ -134,3 +137,27 @@ Route::get('advertisements', [AdvertisementController::class, 'index']);
 Route::delete('/users/{id}/soft', [UserController::class, 'softDelete']);
 Route::delete('/users/hard-delete/{id}', [UserController::class, 'destroy']);
 Route::patch('/users/{id}/restore', [UserController::class, 'restore']);
+
+
+// Authentication routes with specific rate limiting parameters
+Route::post('/register', [AuthController::class, 'register'])
+    ->middleware('throttle.login:3,10') // 3 attempts, 10 minute decay
+    ->name('auth.register');
+
+Route::post('/login', [AuthController::class, 'loginWithEmailOrPhone'])
+    ->middleware('throttle.login:5,10') // 5 attempts, 10 minute decay
+    ->name('auth.login');
+
+Route::post('/refresh', [AuthController::class, 'refreshToken'])
+    ->middleware('throttle.login:10,1') // 10 attempts, 1 minute decay
+    ->name('auth.refresh');
+
+Route::post('/resend-otp', [AuthController::class, 'resendOtp'])
+    ->middleware('throttle.login:3,15') // 3 attempts, 15 minute decay
+    ->name('auth.resend-otp');
+
+// Route::post('/register', [AuthController::class, 'register']);
+Route::post('/verify-account', [AuthController::class, 'verifyAccount']);
+// Route::post('/resend-otp', [AuthController::class, 'resendOtp']);
+// Route::post('/login', [AuthController::class, 'loginWithEmailOrPhone']);
+// Route::post('/refresh', [AuthController::class, 'refreshToken']);
