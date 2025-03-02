@@ -9,6 +9,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Illuminate\Database\QueryException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -70,6 +71,14 @@ class Handler extends ExceptionHandler
                 'errors' => $exception->errors(),
             ], 400);
         }
+
+        if ($exception instanceof QueryException) {
+            if ($exception->errorInfo[1] == 1451) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Unable to delete the item because it is linked to other records. Please remove the associated records first.',
+                ], 400);
+            }}
 
         return parent::render($request, $exception);
     }

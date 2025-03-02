@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Repositories\BaseRepository;
 use App\Models\Advertisement;
 use Illuminate\Support\Facades\DB;
+use App\Enums\CategoryType;
+use App\Repositories\Advertisements\AdvertisementRepositoryFactory;
 use Exception;
 
 
@@ -67,36 +69,20 @@ class AdvertisementRepository extends BaseRepository
         return $query;
     }
 
-    public function createWithRelated(array $advertisementData, array $specificData, int $category_id)
+    public function createWithRelated(array $advertisementData, array $specificData)
     {
         \DB::beginTransaction();
         try{
             $advertisement = $this->create($advertisementData);
-            switch($category_id){
-                case 3://'car':
-                    $advertisement->vehicleAdvertisement()->create($specificData['vehicle']);
-                    $advertisement->carAdvertisement()->create($specificData['car']);
-                    break;
-                case 5://'motorcycle':
-                    $advertisement->vehicleAdvertisement()->create($specificData['vehicle']);
-                    $advertisement->motorcycleAdvertisement()->create($specificData['motorcycle']);
-                    break;
-                case 4://'marine':
-                    $advertisement->vehicleAdvertisement()->create($specificData['vehicle']);
-                    $advertisement->marineAdvertisement()->create($specificData['marine']);
-                    break;
-                case 2://'house':
-                    $advertisement->houseAdvertisement()->create($specificData['house']);
-                    break;
-                case 1://'land':
-                    $advertisement->landAdvertisement()->create($specificData['land']);
-                    break;
-            }
+            $category = CategoryType::tryFrom($advertisementData['category_id']);
+            $repository = AdvertisementRepositoryFactory::create($category);
+            $repository->createSpecific($advertisement, $specificData);
             if(isset($specificData['images'])){
                 $this->createImages($advertisement, $specificData['images']);
             }
             \DB::commit();
-            return $advertisement;
+            $relations = array_merge(['images'], $repository->getRelations());
+            return $advertisement->load($relations);
         } catch(\Exception $e){
             \DB::rollBack();
             throw $e;

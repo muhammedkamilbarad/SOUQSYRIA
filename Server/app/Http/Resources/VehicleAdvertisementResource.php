@@ -26,7 +26,7 @@ class VehicleAdvertisementResource extends JsonResource
             'model' => new VehicleModelResource($this->whenLoaded('model')),
             'color' => new ColorResource($this->whenLoaded('color')),
             'fuel_type' => new FuelTypeResource($this->whenLoaded('fuelType')),
-            'transmission' => new TransmissionResource($this->whenLoaded('transmission')),
+            'transmission' => new TransmissionResource($this->whenLoaded('transmissionType')),
         ];
     }
 }
