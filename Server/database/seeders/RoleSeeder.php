@@ -23,7 +23,12 @@ class RoleSeeder extends Seeder
         $validPermissions = Permission::pluck('id')->toArray();
 
         $roles = [
-
+            [
+                'name' => 'Normal user',
+                'permissions' => Permission::whereIn('name', ['view_ad'])->pluck('id')->toArray(),
+                'is_editable' => false,
+                'is_deleteable' => false
+            ],
             [
                 'name' => 'Super Admin',
                 'permissions' => $validPermissions,
@@ -36,12 +41,6 @@ class RoleSeeder extends Seeder
                 'is_editable' => false,
                 'is_deleteable' => false
             ],
-            [
-                'name' => 'Normal user',
-                'permissions' => Permission::whereIn('name', ['view_ad'])->pluck('id')->toArray(),
-                'is_editable' => false,
-                'is_deleteable' => false
-            ]
         ];
 
         foreach ($roles as $role) {

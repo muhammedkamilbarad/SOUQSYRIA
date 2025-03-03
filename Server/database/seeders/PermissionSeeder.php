@@ -26,12 +26,15 @@ class PermissionSeeder extends Seeder
             ['name' => 'update_faq'],
             ['name' => 'view_package'],
             ['name' => 'create_package'],
-            ['name' => 'delete_package'],
+            ['name' => 'deactivate_package'],
             ['name' => 'update_package'],
             ['name' => 'view_ad'],
             ['name' => 'create_ad'],
             ['name' => 'update_ad'],
             ['name' => 'delete_ad'],
+            ['name' => 'process_ad'],
+            ['name' => 'view_complaint'],
+            ['name' => 'delete_complaint'],
         ];
 
         Log::info('Starting Permission Seeder');
