@@ -33,6 +33,8 @@ class AdvertisementRequest extends FormRequest
             'type' => 'required|in:rent,sale',
             'images' => 'required|array|max:5',
             'images.*' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'features' => 'array',
+            'features.*' => 'exists:features,id'
         ];
         $category = CategoryType::tryFrom((int) $this->input('category_id'));
         //Add category-specific rules

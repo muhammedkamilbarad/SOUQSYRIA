@@ -36,6 +36,7 @@ class AdvertisementRepository extends BaseRepository
             },
             'houseAdvertisement',
             'landAdvertisement',
+            'features'
         ];
     }
 
@@ -80,8 +81,11 @@ class AdvertisementRepository extends BaseRepository
             if(isset($specificData['images'])){
                 $this->createImages($advertisement, $specificData['images']);
             }
+            if(isset($specificData['features'])){
+                $advertisement->features()->sync($specificData['features']);
+            }
             \DB::commit();
-            $relations = array_merge(['images'], $repository->getRelations());
+            $relations = array_merge(['images','features'], $repository->getRelations());
             return $advertisement->load($relations);
         } catch(\Exception $e){
             \DB::rollBack();

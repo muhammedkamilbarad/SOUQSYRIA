@@ -70,4 +70,9 @@ class Advertisement extends Model
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
+
+    public function features()
+    {
+        return $this->belongsToMany(Feature::class, 'advertisement_features');
+    }
 }

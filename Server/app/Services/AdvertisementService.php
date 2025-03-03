@@ -121,6 +121,9 @@ class AdvertisementService
         if (isset($data['images'])) {
             $specificData['images'] = $data['images'];
         }
+        if(isset($data['features'])){
+            $specificData['features'] = $data['features'];
+        }
         return $specificData;
     }
 
