@@ -29,6 +29,7 @@ return new class extends Migration
             $table->index('active_status');
             $table->index(['type']);
             $table->index(['city_id','category_id']);
+            $table->index(['user_id']);
         });
     }
 

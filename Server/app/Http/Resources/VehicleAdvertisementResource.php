@@ -22,8 +22,8 @@ class VehicleAdvertisementResource extends JsonResource
             'horsepower' => $this->horsepower,
             'condition' => $this->condition,
             // Related resources
-            'brand' => new VehicleBrandResource($this->whenLoaded('brand')),
-            'model' => new VehicleModelResource($this->whenLoaded('model')),
+            'brand' => new VehicleBrandResource($this->whenLoaded('vehicleBrand')),
+            'model' => new VehicleModelResource($this->whenLoaded('vehicleModel')),
             'color' => new ColorResource($this->whenLoaded('color')),
             'fuel_type' => new FuelTypeResource($this->whenLoaded('fuelType')),
             'transmission' => new TransmissionResource($this->whenLoaded('transmissionType')),

@@ -110,35 +110,9 @@ class AdvertisementRepository extends BaseRepository
             {
                 \Storage::disk('public')->delete($image->url);
             }
-            $advertisement->images()->delete();
-            if($advertisement->vehicleAdvertisement)
-            {
-                $advertisement->vehicleAdvertisement()->delete();
-            }
-            if($advertisement->carAdvertisement)
-            {
-                $advertisement->carAdvertisement()->delete();
-            }
-            if($advertisement->motorcycleAdvertisement)
-            {
-                $advertisement->motorcycleAdvertisement()->delete();
-            }
-            if($advertisement->marineAdvertisement)
-            {
-                $advertisement->marineAdvertisement()->delete();
-            }
-            if($advertisement->houseAdvertisement)
-            {
-                $advertisement->houseAdvertisement()->delete();
-            }
-            if($advertisement->landAdvertisement)
-            {
-                $advertisement->landAdvertisement()->delete();
-            }
             $result = $advertisement->delete();
             \DB::commit();
             return $result;
-
         } catch(\Exception $e){
             \DB::rollBack();
             throw $e;
