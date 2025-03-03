@@ -28,7 +28,12 @@ class UserRepository extends BaseRepository
         // verify that the user
         $this->authRepository->verifyEmail($user->email);
 
-        // return the user
+        // Refresh the user instance to get the latest data (including verified_at)
+        $user->refresh();
+
+        // Load the role relationship
+        $user->load('role');
+
         return $user;
     }
 
