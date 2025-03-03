@@ -32,31 +32,22 @@ class AdvertisementDetailResource extends JsonResource
             'images' => ImageResource::collection($this->whenLoaded('images')),
         ];
 
-            // 'vehicle_details' => new VehicleAdvertisementResource($this->whenLoaded('vehicleAdvertisement')),
-            // 'car_details' => new CarAdvertisementResource($this->whenLoaded('carAdvertisement')),
-            // 'motorcycle_details' => new MotorcycleAdvertisementResource($this->whenLoaded('motorcycleAdvertisement')),
-            // 'marine_details' => new MarineAdvertisementResource($this->whenLoaded('marineAdvertisement')),
-            // 'house_details' => new HouseAdvertisementResource($this->whenLoaded('houseAdvertisement')),
-            // 'land_details' => new LandAdvertisementResource($this->whenLoaded('landAdvertisement')),
+        $advertisementRelations = [
+            'vehicleAdvertisement' => VehicleAdvertisementResource::class,
+            'carAdvertisement' => CarAdvertisementResource::class,
+            'motorcycleAdvertisement' => MotorcycleAdvertisementResource::class,
+            'marineAdvertisement' => MarineAdvertisementResource::class,
+            'houseAdvertisement' => HouseAdvertisementResource::class,
+            'landAdvertisement' => LandAdvertisementResource::class,
+        ];
 
-            if ($this->relationLoaded('vehicleAdvertisement') && $this->vehicleAdvertisement) {
-                $data['vehicle_details'] = new VehicleAdvertisementResource($this->vehicleAdvertisement);
+        foreach($advertisementRelations as $relation => $resource)
+        {
+            if($this->relationLoaded($relation) && $this->{$relation}){
+                $data["{$relation}_details"] = new $resource($this->{$relation});
             }
-            if ($this->relationLoaded('carAdvertisement') && $this->carAdvertisement) {
-                $data['car_details'] = new CarAdvertisementResource($this->carAdvertisement);
-            }
-            if ($this->relationLoaded('motorcycleAdvertisement') && $this->motorcycleAdvertisement) {
-                $data['motorcycle_details'] = new MotorcycleAdvertisementResource($this->motorcycleAdvertisement);
-            }
-            if ($this->relationLoaded('marineAdvertisement') && $this->marineAdvertisement) {
-                $data['marine_details'] = new MarineAdvertisementResource($this->marineAdvertisement);
-            }
-            if ($this->relationLoaded('houseAdvertisement') && $this->houseAdvertisement) {
-                $data['house_details'] = new HouseAdvertisementResource($this->houseAdvertisement);
-            }
-            if ($this->relationLoaded('landAdvertisement') && $this->landAdvertisement) {
-                $data['land_details'] = new LandAdvertisementResource($this->landAdvertisement);
-            }
+        }
+        
         return $data;
     }
 }

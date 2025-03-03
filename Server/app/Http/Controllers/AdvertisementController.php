@@ -109,9 +109,7 @@ class AdvertisementController extends Controller
     {
         try {
             $result = $this->service->deleteAdvertisement($advId);
-            return response()->json([
-                'success' => $result,
-            ], 200);
+            return response()->json($result, 200);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
