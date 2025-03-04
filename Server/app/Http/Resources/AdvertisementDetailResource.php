@@ -30,7 +30,7 @@ class AdvertisementDetailResource extends JsonResource
             'city' => new CityResource($this->whenLoaded('city')),
             'category' => new CategoryResource($this->whenLoaded('category')),
             'images' => ImageResource::collection($this->whenLoaded('images')),
-            'features' => FeatureResource::collection($this->whenLoaded('features')),
+            'features' => new FeatureCollection($this->whenLoaded('features')),
         ];
 
         $advertisementRelations = [

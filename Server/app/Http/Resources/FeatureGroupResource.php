@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FeatureResource extends JsonResource
+class FeatureGroupResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,8 +17,7 @@ class FeatureResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            //'feature_group_id' => $this->feature_group_id,
-            'group' => new FeatureGroupResource($this->whenLoaded('featureGroup')),
+            'category_id' => $this->category_id,
         ];
     }
 }
