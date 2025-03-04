@@ -24,8 +24,8 @@ use App\Http\Middleware\ThrottleLogins;
 Route::middleware(['auth:sanctum'])->group(function () {
     // Color Routes
     Route::group(['prefix' => 'colors'], function () {
-        Route::get('/colors', [ColorController::class, 'index'])->middleware('permission:view_color');
-        Route::get('/colors/{id}', [ColorController::class, 'show'])->middleware('permission:view_color');
+        Route::get('/', [ColorController::class, 'index'])->middleware('permission:view_color');
+        Route::get('/{id}', [ColorController::class, 'show'])->middleware('permission:view_color');
         Route::post('/', [ColorController::class, 'store'])->middleware('permission:create_color');
         Route::put('/{id}', [ColorController::class, 'update'])->middleware('permission:update_color');
         Route::delete('/{id}', [ColorController::class, 'destroy'])->middleware('permission:delete_color');
@@ -85,8 +85,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Popular Questions Routes
     Route::group(['prefix' => 'popularQuestions'], function () {
-        Route::get('/', [PopularQuestionController::class, 'index']);
-        Route::get('/{id}', [PopularQuestionController::class, 'show']);
+        Route::get('/', [PopularQuestionController::class, 'index'])->middleware('popularQuestion:view_faq');
+        Route::get('/{id}', [PopularQuestionController::class, 'show'])->middleware('permission:view_faq');
         Route::post('/', [PopularQuestionController::class, 'store'])->middleware('permission:create_faq');
         Route::put('/{id}', [PopularQuestionController::class, 'update'])->middleware('permission:update_faq');
         Route::delete('/{id}', [PopularQuestionController::class, 'destroy'])->middleware('permission:delete_faq');
@@ -94,8 +94,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Package Routes
     Route::group(['prefix' => 'packages'], function () {
-        Route::get('/', [PackageController::class, 'index']);
-        Route::get('/{id}', [PackageController::class, 'show']);
+        Route::get('/', [PackageController::class, 'index'])->mimddleware('permission:view_package');
+        Route::get('/{id}', [PackageController::class, 'show'])->middleware('permission:view_package');
         Route::post('/', [PackageController::class, 'store'])->middleware('permission:create_package');
         Route::put('/{id}', [PackageController::class, 'update'])->middleware('permission:update_package');
         Route::put('/{id}/deactivate', [PackageController::class, 'deactivate'])->middleware('permission:deactivate_package');
