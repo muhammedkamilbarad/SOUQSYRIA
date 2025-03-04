@@ -94,7 +94,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Package Routes
     Route::group(['prefix' => 'packages'], function () {
-        Route::get('/', [PackageController::class, 'index'])->mimddleware('permission:view_package');
+        Route::get('/', [PackageController::class, 'index'])->middleware('permission:view_package');
         Route::get('/{id}', [PackageController::class, 'show'])->middleware('permission:view_package');
         Route::post('/', [PackageController::class, 'store'])->middleware('permission:create_package');
         Route::put('/{id}', [PackageController::class, 'update'])->middleware('permission:update_package');
