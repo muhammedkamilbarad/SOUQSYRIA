@@ -85,7 +85,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Popular Questions Routes
     Route::group(['prefix' => 'popularQuestions'], function () {
-        Route::get('/', [PopularQuestionController::class, 'index'])->middleware('popularQuestion:view_faq');
+        Route::get('/', [PopularQuestionController::class, 'index'])->middleware('permission:view_faq');
         Route::get('/{id}', [PopularQuestionController::class, 'show'])->middleware('permission:view_faq');
         Route::post('/', [PopularQuestionController::class, 'store'])->middleware('permission:create_faq');
         Route::put('/{id}', [PopularQuestionController::class, 'update'])->middleware('permission:update_faq');
