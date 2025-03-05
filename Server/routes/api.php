@@ -15,9 +15,6 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SubscribingController;
 use App\Http\Controllers\AdvertisementController;
-use App\Http\Controllers\FeatureGroupController;
-use App\Http\Controllers\FeatureController;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -95,8 +92,3 @@ Route::middleware("auth:sanctum")->group(function () {
 });
 
 Route::get('advertisements', [AdvertisementController::class, 'index']);
-
-Route::resource("feature-groups", FeatureGroupController::class);
-Route::resource("features", FeatureController::class);
-Route::get('category/{id}/feature-groups/', [FeatureGroupController::class, 'categoryFeatuers']);
-
