@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Feature extends Model
 {
     use HasFactory;
-    protected $fillable = ['name','category_id'];
+    protected $fillable = ['name','feature_group_id'];
 
 
     public function advertisements()
@@ -16,8 +16,8 @@ class Feature extends Model
         return $this->belongsToMany(Advertisement::class, 'advertisement_feature');
     }
 
-    public function category()
+    public function featureGroup()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(FeatureGroup::class);
     }
 }

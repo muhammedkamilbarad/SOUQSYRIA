@@ -36,7 +36,9 @@ class AdvertisementRepository extends BaseRepository
             },
             'houseAdvertisement',
             'landAdvertisement',
-            'features'
+            'features' => function($query){
+                $query->with('featureGroup');
+            },
         ];
     }
 

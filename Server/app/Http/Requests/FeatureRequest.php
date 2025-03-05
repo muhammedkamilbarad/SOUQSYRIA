@@ -19,17 +19,17 @@ class FeatureRequest extends FormRequest
                 'string',
                 'max:255',
                 Rule::unique('features')->where(function ($query) {
-                    return $query->where('category_id', $this->category_id);
+                    return $query->where('feature_group_id', $this->feature_group_id);
                 }),
             ],
-            'category_id' => 'required|exists:categories,id',
+            'feature_group_id' => 'required|exists:feature_groups,id',
         ];
     }
 
     public function messages()
     {
         return [
-            'name.unique' => 'The feature name already exists for this category.',
+            'name.unique' => 'The feature name already exists for this group.',
         ];
     }
 
