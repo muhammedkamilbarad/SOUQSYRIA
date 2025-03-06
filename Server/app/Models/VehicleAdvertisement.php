@@ -6,6 +6,25 @@ use Illuminate\Database\Eloquent\Model;
 
 class VehicleAdvertisement extends Model
 {
+    protected $primaryKey = 'advertisement_id';
+    public $incrementing = false;
+    protected $fillable = [
+        'color_id',
+        'mileage',
+        'year',
+        'engine_capacity',
+        'brand_id',
+        'model_id',
+        'fuel_type_id',
+        'horsepower',
+        'transmission_id',
+        'condition'
+    ];
+    public function advertisement(): BelongsTo
+    {
+        return $this->belongsTo(Advertisement::class);
+    }
+
     public function vehicleBrand()
     {
         return $this->belongsTo(VehicleBrand::class, 'brand_id');

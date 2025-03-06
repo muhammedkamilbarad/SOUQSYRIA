@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
 
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
     protected $fillable = ['name', 'email', 'password', 'role_id', 'image', 'phone', 'is_verified'];
+    protected $dates = ['deleted_at'];
 
     public function role()
     {
@@ -51,6 +53,16 @@ class User extends Authenticatable
         ];
     }
 
+    public function subscribings()
+    {
+        return $this->hasMany(Subscribing::class);
+    }
+
+    public function hasActiveSubscription()
+    {
+        return $this->subscribings()->where('expiry_date', '>', now())->where('remaining_ads', '>', 0)->exists();
+    }
+
     public function permissions()
     {
         return $this->role->permissions();
@@ -58,8 +70,6 @@ class User extends Authenticatable
 
     public function hasPermission($permission)
     {
-        return $this->permissions()->where('name',$permission)->exists();
+        return $this->permissions()->where('name', $permission)->exists();
     }
-
-
 }

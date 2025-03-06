@@ -15,7 +15,7 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'login' => [
+            'login_input' => [
                 'required',
                 'string',
                 function ($attribute, $value, $fail) {

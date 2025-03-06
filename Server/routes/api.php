@@ -13,55 +13,15 @@ use App\Http\Controllers\PackageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AuthController;
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
-
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     Route::post('/logout', [AuthController::class, 'logout']);
-//     Route::apiResource('colors', ColorController::class);
-// });
-
-// Route::middleware("auth:sanctum")->group(function () {
-//     Route::post('/logout', [AuthController::class, 'logout']);
-//     #Route::resource("colors", ColorController::class);
-//     Route::post('colors', [ColorController::class, 'store'])->middleware('permission:edit colors');
-//     Route::get('colors', [ColorController::class, 'index']);
-// });
-
-
-// Public routes
-Route::resources([
-    'colors' => ColorController::class,
-    'marineTypes' => MarineTypeController::class,
-    'vehiclemodels' => VehicleModelController::class,
-    'vehiclebrands' => VehicleBrandController::class,
-    'categories' => CategoryController::class,
-    'packages' => PackageController::class,
-    'popularQuestions' => PackageController::class,
-], ['only' => ['index', 'show']]);
+use App\Http\Controllers\SubscribingController;
+use App\Http\Controllers\AdvertisementController;
+use App\Http\Controllers\SubscriptionRequestController;
+use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\ComplaintController;
+use App\Http\Middleware\ThrottleLogins;
 
 // Protected routes
 Route::middleware(['auth:sanctum'])->group(function () {
-<<<<<<< Updated upstream
-    Route::resource('colors', ColorController::class, ['except' => ['index', 'show']])->middleware('permission:edit colors');
-    Route::resource('marineTypes', MarineTypeController::class, ['except' => ['index', 'show']])->middleware('permission:edit marineTypes');
-    Route::resource('vehiclemodels', VehicleModelController::class, ['except' => ['index', 'show']])->middleware('permission:edit vehiclemodels');
-    Route::resource('vehiclebrands', VehicleBrandController::class, ['except' => ['index', 'show']])->middleware('permission:edit vehiclebrands');
-    Route::resource('categories', CategoryController::class, ['except' => ['index', 'show']])->middleware('permission:edit categories');
-    Route::resource('packages', PackageController::class, ['except' => ['index', 'show']])->middleware('permission:edit packages');
-    Route::resource('popularQuestions', PackageController::class, ['except' => ['index', 'show']])->middleware('permission:edit popularQuestions');
-    Route::apiResource('users', UserController::class)->middleware('permission:edit users');
-    Route::apiResource('roles', RoleController::class)->middleware('permission:edit roles');
-    Route::resource('permissions', PermissionController::class, ['except' => ['store', 'update','destroy']])->middleware('permission:edit roles');
-=======
     // Color Routes
     Route::group(['prefix' => 'colors'], function () {
         Route::get('/', [ColorController::class, 'index'])->middleware('permission:view_color');
@@ -102,7 +62,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::group(['prefix' => 'users'], function () {
         Route::get('/', [UserController::class, 'index'])->middleware('permission:view_user');
         Route::get('/{id}', [UserController::class, 'show'])->middleware('permission:view_user');
-        Route::post('/', [UserController::class, 'store'])->middleware('permission:create_user');
+        Route::post('/', [UserController::class, 'store'])->middleware('permission:add_user');
         Route::put('/{id}', [UserController::class, 'update'])->middleware('permission:update_user');
         Route::delete('/{id}/soft', [UserController::class, 'softDelete'])->middleware('permission:delete_user');
         Route::delete('/hard-delete/{id}', [UserController::class, 'destroy'])->middleware('permission:delete_user');
@@ -194,24 +154,24 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Auth
     Route::post('/logout', [AuthController::class, 'logout']);
->>>>>>> Stashed changes
 });
 
 
-Route::post('register', [AuthController::class, 'register']);
-Route::post('verify-account', [AuthController::class, 'verifyAccount']);
-Route::post('resend-otp', [AuthController::class, 'resendteOtp']);
-Route::post('/login', [AuthController::class, 'login']);
+// Authentication routes with specific rate limiting parameters
+Route::post('/register', [AuthController::class, 'register'])
+    ->middleware('throttle.login:3,10') // 3 attempts, 10 minute decay
+    ->name('auth.register');
 
+Route::post('/login', [AuthController::class, 'loginWithEmailOrPhone'])
+    ->middleware('throttle.login:5,10') // 5 attempts, 10 minute decay
+    ->name('auth.login');
 
+Route::post('/refresh', [AuthController::class, 'refreshToken'])
+    ->middleware('throttle.login:10,1') // 10 attempts, 1 minute decay
+    ->name('auth.refresh');
 
-// Route::apiResource('colors', ColorController::class);
-//Route::apiResource('permissions', PermissionController::class);
-// Route::apiResource('marineTypes', MarineTypeController::class);
-// Route::apiResource('popularQuestions', PopularQuestionController::class);
-// Route::apiResource('vehiclemodels', VehicleModelController::class);
-// Route::apiResource('vehiclebrands', VehicleBrandController::class);
-// Route::apiResource('categories', CategoryController::class);
-// Route::apiResource('packages', PackageController::class);
-//Route::apiResource('users', UserController::class);
-//Route::apiResource('roles', RoleController::class);
+Route::post('/resend-otp', [AuthController::class, 'resendOtp'])
+    ->middleware('throttle.login:3,15') // 3 attempts, 15 minute decay
+    ->name('auth.resend-otp');
+
+Route::post('/verify-account', [AuthController::class, 'verifyAccount']);

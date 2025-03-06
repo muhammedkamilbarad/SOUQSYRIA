@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('favoris', function (Blueprint $table) {
+        Schema::create('advertisement_features', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained("users")->onDelete('cascade');
-            $table->foreignId('advs_id')->constrained("advertisements")->onDelete('cascade');
+            $table->foreignId('advertisement_id')->constrained('advertisements')->onDelete('cascade');
+            $table->foreignId('feature_id')->constrained('features')->onDelete('cascade');
             $table->timestamps();
+            $table->unique(['advertisement_id', 'feature_id']);
         });
     }
 
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('favoris');
+        Schema::dropIfExists('advertisement_features');
     }
 };

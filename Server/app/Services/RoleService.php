@@ -21,14 +21,14 @@ class RoleService
 
     public function getAllRoles(): Collection
     {
-        return $this->roleRepository->getAll()->load('permissions');
+        return $this->roleRepository->getAllRolesWithPermissionsAndUserCount();
     }
 
     public function getRoleById(int $id)
     {
         try
         {
-            return $this->roleRepository->getById($id)->load('permissions');
+            return $this->roleRepository->getRoleWithPermissionsAndUserCount($id);
         }
         catch (RoleNotFoundException $e)
         {

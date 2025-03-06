@@ -27,16 +27,18 @@ class PackagesRequest extends FormRequest
             'properties' => 'required|string',
             'price' => 'required|numeric',
             'max_of_ads' => 'required|integer',
+            'period' => 'required|integer|min:1',
         ];
     }
 
     public function updateRules(): array
     {
         return [
-            'name' => 'required|string|max:100|unique:packages,name' . $this->route('package'),
+            'name' => 'required|string|max:100|unique:packages,name,' . $this->route('package'),
             'properties' => 'required|string',
             'price' => 'required|numeric',
             'max_of_ads' => 'required|integer',
+            'period' => 'required|integer|min:1', 
         ];
     }
 }

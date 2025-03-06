@@ -33,7 +33,7 @@ class VehicleModelController extends Controller
         $vehicleModel = $this->vehicleModelService->getVehicleModelById($id);
         if (!$vehicleModel)
         {
-            return response()->json(['message' => 'Vehicle Model Not Found'], 404);
+            return response()->json(['message' => 'Vehicle model not found'], 404);
         }
         return response()->json($vehicleModel, 200);
     }
@@ -43,7 +43,7 @@ class VehicleModelController extends Controller
         $vehicleModel = $this->vehicleModelService->getVehicleModelById($id);
         if (!$vehicleModel)
         {
-            return response()->json(['message' => 'Vehicle Model Not Found'], 404);
+            return response()->json(['message' => 'Vehicle model not found'], 404);
         }
         $vehicleModel = $this->vehicleModelService->updateVehicleModel($vehicleModel, $request->all());
         return response()->json($vehicleModel, 200);
@@ -54,9 +54,9 @@ class VehicleModelController extends Controller
         $vehicleModel = $this->vehicleModelService->getVehicleModelById($id);
         if (!$vehicleModel)
         {
-            return response()->json(['message' => 'Vehicle Model Not Found'], 404);
+            return response()->json(['message' => 'Vehicle model not found'], 404);
         }
         $this->vehicleModelService->deleteVehicleModel($vehicleModel);
-        return response()->json(['message' => 'Vehicle Model Deleted Successfully'], 200);
+        return response()->json(['message' => 'Vehicle model deleted successfully'], 200);
     }
 }

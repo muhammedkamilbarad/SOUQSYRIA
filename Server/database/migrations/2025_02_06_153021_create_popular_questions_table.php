@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('question', 255);
             $table->text('answer');
+            $table->enum('category', ['Payment', 'Subscribtion', 'Advertisement', 'System', 'General']);
+            $table->enum('priority', ['High', 'Medium', 'Low']);
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

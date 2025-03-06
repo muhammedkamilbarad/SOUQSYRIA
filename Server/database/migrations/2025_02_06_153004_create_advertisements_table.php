@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained('categories')->onDelete('restrict');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->Enum('ads_status', ['pending', 'accepted', 'rejected'])->default('pending');
-            $table->Enum('active_status', ['active', 'inactive'])->default('active');
+            $table->Enum('active_status', ['active', 'inactive'])->default('inactive');
             $table->enum('type', ['rent', 'sale']);
             $table->timestamps();
 
@@ -29,6 +29,7 @@ return new class extends Migration
             $table->index('active_status');
             $table->index(['type']);
             $table->index(['city_id','category_id']);
+            $table->index(['user_id']);
         });
     }
 

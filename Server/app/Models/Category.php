@@ -20,4 +20,10 @@ class Category extends Model
     {
         return $this->hasMany(VehicleBrand::class, 'category_id');
     }
+
+    public function FeatureGroups()
+    {
+        return $this->hasMany(FeatureGroup::class, 'category_id');
+    }
+
 }

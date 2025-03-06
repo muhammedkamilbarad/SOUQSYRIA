@@ -19,7 +19,7 @@ class PackageController extends Controller
     public function index()
     {
         $packages = $this->packageService->getAllPackages();
-        return response()->json($packages);
+        return response()->json($packages, 200);
     }
 
     public function store(PackagesRequest $request)
@@ -34,7 +34,7 @@ class PackageController extends Controller
         if (!$package) {
             return response()->json(['message' => 'Package not found'], 404);
         }
-        return response()->json($package);
+        return response()->json($package, 200);
     }
 
     public function update(PackagesRequest $request, int $id)
@@ -44,16 +44,19 @@ class PackageController extends Controller
             return response()->json(['message' => 'Package not found'], 404);
         }
         $package = $this->packageService->updatePackage($package, $request->all());
-        return response()->json($package);
+        return response()->json($package, 200);
     }
 
-    public function destroy(int $id)
+    public function deactivate(int $id)
     {
-        $package = $this->packageService->getPackageById($id);
+        $package = $this->packageService->deactivatePackage($id);
         if (!$package) {
             return response()->json(['message' => 'Package not found'], 404);
         }
-        $this->packageService->deletePackage($package);
-        return response()->json(['message' => 'Package deleted successfully']);
+
+        return response()->json([
+            'message' => 'Package deactivated successfully',
+            'data' => $package
+        ], 200);
     }
 }

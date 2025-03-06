@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('land_advertisements', function (Blueprint $table) {
             $table->foreignId('advertisement_id')->primary()->constrained('advertisements')->onDelete('cascade');
-            $table->string('square_meters', 100);
+            $table->decimal('square_meters', 10, 2);
             $table->timestamps();
         });
     }
