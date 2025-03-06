@@ -25,9 +25,6 @@ class UserRepository extends BaseRepository
     {
         $user = $this->model->create($data);
 
-        // verify that the user
-        $this->authRepository->verifyEmail($user->email);
-
         // Refresh the user instance to get the latest data (including verified_at)
         $user->refresh();
 
