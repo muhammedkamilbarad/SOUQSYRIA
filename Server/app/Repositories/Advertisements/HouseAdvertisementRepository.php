@@ -12,6 +12,13 @@ class HouseAdvertisementRepository extends SpecificAdvertisementRepository
     {
         $advertisement->houseAdvertisement()->create($specificData['house']);
     }
+    public function updateSpecific(Advertisement $advertisement, array $specificData): void
+    {
+        if(isset($specificData['house']))
+        {
+            $advertisement->houseAdvertisement()->update($specificData['house']);
+        }
+    }
     public function getRelations(): array
     {
         return ['houseAdvertisement'];

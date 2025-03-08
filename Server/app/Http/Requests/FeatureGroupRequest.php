@@ -46,7 +46,7 @@ class FeatureGroupRequest extends FormRequest
                     return $query->where('category_id', $this->category_id);
                 })->ignore($this->route('feature_group'))
             ],
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => 'sometimes|exists:categories,id',
             'features' => 'array|min:1',
             'features.*' => 'string',
         ];

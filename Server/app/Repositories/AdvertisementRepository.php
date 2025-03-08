@@ -51,12 +51,11 @@ class AdvertisementRepository extends BaseRepository
     {
         return $this->model->with($this->getCommonRelations())->find($id);
     }
-
+    
     public function getAllWithRelations(array $filters = [])
     {
         $query = $this->model->with($this->getCommonRelations());
-        $query = $this->applyFilters($query, $filters)->get();
-        return $query;
+        return $this->applyFilters($query, $filters)->get();
     }
 
     private function applyFilters($query, array $filters)
@@ -125,64 +124,30 @@ class AdvertisementRepository extends BaseRepository
         }
     }
 
-    public function updateWithRelated(Advertisement $advertisement, array $mainData, array $specificData)
+    public function updateWithRelated(Advertisement $advertisement, array $advertisementData, array $specificData)
     {
         \DB::beginTransaction();
         try{
-            \Log::info('Main Data:', $mainData);
-            \Log::info('Specific Data:', $specificData);
-
-            $advertisement->update($mainData);
-            switch($advertisement->category_id)
-            {
-                case 3: // car
-                    if (isset($specificData['vehicle'])) {
-                        $advertisement->vehicleAdvertisement()->update($specificData['vehicle']);
-                    }
-                    if (isset($specificData['car'])) {
-                        $advertisement->carAdvertisement()->update($specificData['car']);
-                    }
-                    break;
-                case 5: // motorcycle
-                    if (isset($specificData['vehicle'])) {
-                        $advertisement->vehicleAdvertisement()->update($specificData['vehicle']);
-                    }
-                    if (isset($specificData['motorcycle'])) {
-                        $advertisement->motorcycleAdvertisement()->update($specificData['motorcycle']);
-                    }
-                    break;
-                case 4: // marine
-                    if (isset($specificData['vehicle'])) {
-                        $advertisement->vehicleAdvertisement()->update($specificData['vehicle']);
-                    }
-                    if (isset($specificData['marine'])) {
-                        $advertisement->marineAdvertisement()->update($specificData['marine']);
-                    }
-                    break;
-                case 2: // house
-                    if (isset($specificData['house'])) {
-                        $advertisement->houseAdvertisement()->update($specificData['house']);
-                    }
-                    break;
-                case 1: // land
-                    if (isset($specificData['land'])) {
-                        $advertisement->landAdvertisement()->update($specificData['land']);
-                    }
-                    break;
-            }
+            $advertisement->update($advertisementData);
+            $category = CategoryType::tryFrom((int) $advertisement->category_id);
+            $repository = AdvertisementRepositoryFactory::create($category);
+            $repository->updateSpecific($advertisement, $specificData);
             if (isset($specificData['images']) && !empty($specificData['images'])) {
                 $this->updateImages($advertisement, $specificData['images']);
             }
+            if (isset($specificData['features'])) {
+                $advertisement->features()->sync($specificData['features']);
+            }
             DB::commit();
-            return $advertisement->fresh();
-
+            $relations = array_merge(['images','features'], $repository->getRelations());
+            return $advertisement->load($relations);
         } catch (Exception $e) {
             \DB::rollBack();
             throw $e;
         }
     }
 
-    public function updateImages(Advertisement $advertisement, array $images)
+    protected function updateImages(Advertisement $advertisement, array $images)
     {
         foreach ($advertisement->images as $image) {
             \Storage::disk('public')->delete($image->url);

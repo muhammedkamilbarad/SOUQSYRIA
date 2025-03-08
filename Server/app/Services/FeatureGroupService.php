@@ -24,7 +24,7 @@ class FeatureGroupService
     public function getFeatureGroupById(int $id): ?Model
     {
         try {
-            return $this->featureGroupRepository->getById($id);
+            return $this->featureGroupRepository->getByIdWithFeatures($id);
         } catch (ModelNotFoundException $e) {
             return null;
         }
