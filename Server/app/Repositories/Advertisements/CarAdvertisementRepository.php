@@ -13,6 +13,17 @@ class  CarAdvertisementRepository extends SpecificAdvertisementRepository
         $advertisement->vehicleAdvertisement()->create($specificData['vehicle']);
         $advertisement->carAdvertisement()->create($specificData['car']);
     }
+    public function updateSpecific(Advertisement $advertisement, array $specificData): void
+    {
+        if(isset($specificData['vehicle']))
+        {
+            $advertisement->vehicleAdvertisement()->update($specificData['vehicle']);
+        }
+        if(isset($specificData['car']))
+        {
+            $advertisement->carAdvertisement()->update($specificData['car']);
+        }
+    }
     public function getRelations(): array
     {
         return ['vehicleAdvertisement','carAdvertisement'];

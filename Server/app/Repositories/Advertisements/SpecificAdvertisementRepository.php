@@ -14,6 +14,11 @@ abstract class SpecificAdvertisementRepository
     abstract public function createSpecific(Advertisement $advertisement, array $specificData): void;
 
     /**
+     * Update specific advertisement data
+     */
+    abstract public function updateSpecific(Advertisement $advertisement, array $specificData): void;
+
+    /**
      * Get the relations to load
      */
     abstract public function getRelations(): array;

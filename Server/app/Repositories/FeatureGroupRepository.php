@@ -53,7 +53,6 @@ class FeatureGroupRepository extends BaseRepository
         }
         $model->features()->createMany($featureData);
     }
-
     return $model->load('features');
     }
 
@@ -71,5 +70,10 @@ class FeatureGroupRepository extends BaseRepository
                 ];
             });
         return $featureGroups;
+    }
+
+    public function getByIdWithFeatures(int $Id)
+    {
+        return parent::getById($Id)->load('features');
     }
 }
