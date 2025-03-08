@@ -154,6 +154,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Auth
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/profile', [UserController::class, 'getProfile']);
 });
 
 

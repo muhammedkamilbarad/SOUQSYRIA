@@ -43,7 +43,7 @@ class UserRepository extends BaseRepository
     // Geting specific users with his role
     public function getUserWithRole(int $id): User
     {
-        return $this->model->with(['role'])->findOrFail($id);
+        return $this->model->with(['role', 'role.permissions'])->findOrFail($id);
     }
     public function findTrashed(int $id): ?Model
     {
