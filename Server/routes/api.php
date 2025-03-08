@@ -62,7 +62,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::group(['prefix' => 'users'], function () {
         Route::get('/', [UserController::class, 'index'])->middleware('permission:view_user');
         Route::get('/{id}', [UserController::class, 'show'])->middleware('permission:view_user');
-        Route::post('/', [UserController::class, 'store'])->middleware('permission:add_user');
+        Route::post('/', [UserController::class, 'store'])->middleware('permission:create_user');
         Route::put('/{id}', [UserController::class, 'update'])->middleware('permission:update_user');
         Route::delete('/{id}/soft', [UserController::class, 'softDelete'])->middleware('permission:delete_user');
         Route::delete('/hard-delete/{id}', [UserController::class, 'destroy'])->middleware('permission:delete_user');
