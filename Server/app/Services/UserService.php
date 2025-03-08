@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 
 class UserService
@@ -23,11 +24,23 @@ class UserService
         return $this->userRepository->getAllWithRoles();
     }
 
-    public function getUserById(int $id): ?Model
+    public function getUserWithRoleById(int $id): ?Model
     {
         try {
             return $this->userRepository->getUserWithRole($id);
         } catch (ModelNotFoundException $e) {
+            return null;
+        }
+    }
+
+    public function getUserById(int $id): ?Model
+    {
+        try
+        {
+            return $this->userRepository->getById($id);
+        }
+        catch (ModelNotFoundException $e)
+        {
             return null;
         }
     }
@@ -37,7 +50,15 @@ class UserService
         if (isset($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         }
-        return $this->userRepository->create($data);
+        
+        // set email_verified_at date if the email is verified
+        if (isset($data['is_verified']) && $data['is_verified'] === true) {
+            $data['email_verified_at'] = Carbon::now()->format('Y-m-d H:i:s');
+        }
+
+        $user = $this->userRepository->create($data);
+        
+        return $user;
     }
 
     public function updateUser(Model $user, array $data): Model

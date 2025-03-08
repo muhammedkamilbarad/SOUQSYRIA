@@ -30,7 +30,7 @@ class UserController extends Controller
 
     public function show(int $id)
     {
-        $user = $this->userService->getUserById($id);
+        $user = $this->userService->getUserWithRoleById($id);
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
@@ -39,7 +39,7 @@ class UserController extends Controller
 
     public function update(UserRequest $request, int $id)
     {
-        $user = $this->userService->getUserById($id);
+        $user = $this->userService->getUserWithRoleById($id);
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
@@ -49,7 +49,7 @@ class UserController extends Controller
 
     public function destroy(int $id)
     {
-        $user = $this->userService->getUserById($id);
+        $user = $this->userService->getUserWithRoleById($id);
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
@@ -77,5 +77,12 @@ class UserController extends Controller
         }
 
         return response()->json(['message' => 'User restored successfully', 'user' => $user], 200);
+    }
+
+    public function getProfile(Request $request)
+    {
+        $user = $request->user();
+        $user = $this->userService->getUserById($user->id);
+        return $user;
     }
 }
