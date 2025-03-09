@@ -47,7 +47,11 @@ class UserController extends Controller
         return response()->json($user, 200);
     }
 
+<<<<<<< Updated upstream
     public function destroy(int $id)
+=======
+    public function restore(int $id)
+>>>>>>> Stashed changes
     {
         $user = $this->userService->getUserWithRoleById($id);
         if (!$user) {
@@ -62,6 +66,7 @@ class UserController extends Controller
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
+<<<<<<< Updated upstream
 
         $this->userService->softDeleteUser($user);
         return response()->json(['message' => 'User soft deleted successfully'], 200);
@@ -75,6 +80,12 @@ class UserController extends Controller
         if (!$user) {
             return response()->json(['message' => 'User not found or not deleted'], 404);
         }
+=======
+<<<<<<< Updated upstream
+        $this->userService->deleteUser($user);
+        return response()->json(['message' => 'User deleted successfully']);
+=======
+>>>>>>> Stashed changes
 
         return response()->json(['message' => 'User restored successfully', 'user' => $user], 200);
     }
@@ -83,6 +94,18 @@ class UserController extends Controller
     {
         $user = $request->user();
         $user = $this->userService->getUserById($user->id);
+<<<<<<< Updated upstream
         return $user;
+=======
+        return response()->json($user, 200);
+    }
+
+    public function getUserPermissions(Request $request)
+    {
+        $user = $request->user();
+        $user = $this->userService->getUserWithRoleById($user->id);
+        return response()->json($user, 200);
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     }
 }
