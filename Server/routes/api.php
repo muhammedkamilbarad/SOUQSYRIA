@@ -154,16 +154,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Auth
     Route::post('/logout', [AuthController::class, 'logout']);
-<<<<<<< Updated upstream
+
     Route::get('/profile', [UserController::class, 'getProfile']);
-=======
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
-    Route::get('/profile', [UserController::class, 'getProfile']);
-    Route::get('/user/permissions', [UserController::class, 'getUserPermissions']);
->>>>>>> Stashed changes
->>>>>>> Stashed changes
+    Route::get('/user-permissions', [UserController::class, 'getUserPermissions']);
 });
 
 
