@@ -15,10 +15,20 @@ use App\Http\Requests\RefreshTokenRequest;
 class AuthController extends Controller
 {
     protected $service;
+<<<<<<< Updated upstream
     // Token expiration times
     protected $accessTokenExpiresInMinutes = 2; // 1 hour default
     protected $refreshTokenExpiresInMinutes = 3; // 30 days default
 
+=======
+<<<<<<< Updated upstream
+=======
+    // Token expiration times
+    protected $accessTokenExpiresInMinutes = 1; // 1 hour default
+    protected $refreshTokenExpiresInMinutes = 30; // 30 days default
+
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     public function __construct(AuthService $service)
     {
         $this->service = $service;
@@ -31,14 +41,27 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request): JsonResponse
     {
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+        $user = $this->service->registerUser($request->validated());
+        return response()->json(['message' => 'OTP sent to your email', 'user' => $user], 201);
+=======
+>>>>>>> Stashed changes
         $result = $this->service->registerUser($request->validated());
         
         return response()->json([
             'message' => 'OTP sent to your email', 
             'user' => $result['user']
         ], 200)
+<<<<<<< Updated upstream
         ->cookie('access_token', $result['access_token'], $this->accessTokenExpiresInMinutes, '/', null, true, true, false, 'Strict')
         ->cookie('refresh_token', $result['refresh_token'], $this->refreshTokenExpiresInMinutes, '/', null, true, true, false, 'Strict');
+=======
+        ->cookie('access_token', $result['access_token'], $this->accessTokenExpiresInMinutes, '/', null, true, true, false, 'none')
+        ->cookie('refresh_token', $result['refresh_token'], $this->refreshTokenExpiresInMinutes, '/', null, true, true, false, 'none');
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     }
 
     public function verifyAccount(VerifyAccountRequest $request): JsonResponse
@@ -50,10 +73,22 @@ class AuthController extends Controller
         
         return response()->json([
             'message' => 'Email verified successfully',
+<<<<<<< Updated upstream
             'permissions' => $result['permissions']
         ], 200)
         ->cookie('access_token', $result['token'], $this->accessTokenExpiresInMinutes, '/', null, true, true, false, 'Strict')
         ->cookie('refresh_token', $result['refresh_token'], $this->refreshTokenExpiresInMinutes, '/', null, true, true, false, 'Strict');
+=======
+<<<<<<< Updated upstream
+            'token' => $token
+        ], 200);
+=======
+            'permissions' => $result['permissions']
+        ], 200)
+        ->cookie('access_token', $result['token'], $this->accessTokenExpiresInMinutes, '/', null, true, true, false, 'none')
+        ->cookie('refresh_token', $result['refresh_token'], $this->refreshTokenExpiresInMinutes, '/', null, true, true, false, 'none');
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     }
 
     public function resendOtp(ResendOTPRequest $request): JsonResponse
@@ -78,11 +113,26 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Login successful',
+<<<<<<< Updated upstream
             'permissions' => $result['permissions']
         ], 200)
         ->cookie('access_token', $result['access_token'], $this->accessTokenExpiresInMinutes, '/', null, true, true, false, 'Strict')
         ->cookie('refresh_token', $result['refresh_token'], $this->refreshTokenExpiresInMinutes, '/', null, true, true, false, 'Strict');
     }
+=======
+<<<<<<< Updated upstream
+            'token' => $token
+        ], 200);
+    }
+=======
+            'access_token' => $result['access_token'],
+            'refresh_token' => $result['refresh_token']
+            
+        ], 200)
+        ->cookie('access_token', $result['access_token'], $this->accessTokenExpiresInMinutes, '/', null, true, true, false, 'none')
+        ->cookie('refresh_token', $result['refresh_token'], $this->refreshTokenExpiresInMinutes, '/', null, true, true, false, 'none');
+    }
+>>>>>>> Stashed changes
 
     public function refreshToken(RefreshTokenRequest $request): JsonResponse
     {
@@ -104,12 +154,24 @@ class AuthController extends Controller
         
         return response()->json([
             'message' => 'Token refreshed successfully',
+<<<<<<< Updated upstream
             'permissions' => $result['permissions']
         ], 200)
         ->cookie('access_token', $result['token'], $this->accessTokenExpiresInMinutes, '/', null, true, true, false, 'Strict')
         ->cookie('refresh_token', $result['refresh_token'], $this->refreshTokenExpiresInMinutes, '/', null, true, true, false, 'Strict');
     }
 
+=======
+            'access_token' => $result['token'],
+            'refresh_token' => $result['refresh_token'],
+            'permissions' => $result['permissions']
+        ], 200)
+        ->cookie('access_token', $result['token'], $this->accessTokenExpiresInMinutes, '/', null, true, true, false, 'none')
+        ->cookie('refresh_token', $result['refresh_token'], $this->refreshTokenExpiresInMinutes, '/', null, true, true, false, 'none');
+    }
+
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     public function logout(Request $request): JsonResponse
     {
         $user = $request->user();

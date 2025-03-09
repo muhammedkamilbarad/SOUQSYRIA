@@ -155,6 +155,7 @@ return [
     |
     */
 
+    // 'domain' => env('SESSION_DOMAIN', '.syr-souq.com'),
     'domain' => env('SESSION_DOMAIN'),
 
     /*
@@ -168,7 +169,7 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE'),
+    'secure' => env('SESSION_SECURE_COOKIE', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -196,7 +197,7 @@ return [
     |
     */
 
-    'same_site' => 'lax',
+    'same_site' => 'none',
 
     /*
     |--------------------------------------------------------------------------

@@ -128,6 +128,12 @@ class AuthService
             return null;
         }
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+        return $user->createToken('auth_token')->plainTextToken;
+=======
+>>>>>>> Stashed changes
         // Delete existing tokens
         $this->repository->deleteAllUserTokens($user);
 
@@ -142,6 +148,7 @@ class AuthService
         );
         Log::info('Refresh token for ' . $user['email'] . ': ' . $refreshToken);
 
+<<<<<<< Updated upstream
         $permissions = $user->permissions;
 
         return [
@@ -149,6 +156,13 @@ class AuthService
             'refresh_token' => $refreshToken,
             'permissions' => $permissions
         ];
+=======
+        return [
+            'access_token' => $accessToken,
+            'refresh_token' => $refreshToken
+        ];
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     }
 
     public function refreshToken(string $refreshToken)
