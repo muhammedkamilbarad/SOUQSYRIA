@@ -57,7 +57,16 @@ class PermissionSeeder extends Seeder
             ['name' => 'view_subscription'],
             ['name' => 'create_subscription'],
             ['name' => 'update_subscription'],
-            ['name' => 'delete_subscription']
+            ['name' => 'delete_subscription'],
+            ['name' => 'view_feature'],
+            ['name' => 'create_feature'],
+            ['name' => 'update_feature'],
+            ['name' => 'delete_feature'],
+            ['name' => 'view_feature_group'],
+            ['name' => 'create_feature_group'],
+            ['name' => 'update_feature_group'],
+            ['name' => 'delete_feature_group'],
+            ['name' => 'view_category_features']
         ];
 
         Log::info('Starting Permission Seeder');

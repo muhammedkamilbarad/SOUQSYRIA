@@ -18,6 +18,8 @@ use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\SubscriptionRequestController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ComplaintController;
+use App\Http\Controllers\FeatureGroupController;
+use App\Http\Controllers\FeatureController;
 use App\Http\Middleware\ThrottleLogins;
 
 // Protected routes
@@ -150,6 +152,25 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('/{id}', [AdvertisementController::class, 'update'])->middleware('permission:update_ad');
         Route::delete('/{id}', [AdvertisementController::class, 'destroy'])->middleware('permission:delete_ad');
         Route::post('/process', [AdvertisementController::class, 'process'])->middleware('permission:process_ad');
+    });
+
+    // Feature Routes
+    Route::group(['prefix' => 'features'], function () {
+        Route::get('/', [FeatureController::class, 'index'])->middleware('permission:view_feature');
+        Route::get('/{id}', [FeatureController::class, 'show'])->middleware('permission:view_feature');
+        Route::post('/', [FeatureController::class, 'store'])->middleware('permission:create_feature');
+        Route::put('/{id}', [FeatureController::class, 'update'])->middleware('permission:update_feature');
+        Route::delete('/{id}', [FeatureController::class, 'destroy'])->middleware('permission:delete_feature');
+    });
+
+    // Feature Group Routes
+    Route::group(['prefix' => 'feature-groups'], function () {
+        Route::get('/', [FeatureGroupController::class, 'index'])->middleware('permission:view_feature_group');
+        Route::get('/{id}', [FeatureGroupController::class, 'show'])->middleware('permission:view_feature_group');
+        Route::post('/', [FeatureGroupController::class, 'store'])->middleware('permission:create_feature_group');
+        Route::put('/{id}', [FeatureGroupController::class, 'update'])->middleware('permission:update_feature_group');
+        Route::delete('/{id}', [FeatureGroupController::class, 'destroy'])->middleware('permission:delete_feature_group');
+        Route::get('category/{id}', [FeatureGroupController::class, 'categoryFeatuers'])->middleware('permission:view_category_features');
     });
 
     // Auth
