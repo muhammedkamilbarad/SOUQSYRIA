@@ -34,6 +34,9 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             SubscriptionRequestSeeder::class,
             MarineTypeSeeder::class,
+            FeatureGroupSeeder::class,
+            FeatureSeeder::class,
+            AdvertisementSeeder::class,
         ]);
     }
 }
