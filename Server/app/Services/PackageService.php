@@ -40,8 +40,8 @@ class PackageService
         return $this->PackageRepository->update($package, $data);
     }
 
-    public function deactivatePackage(int $id)
+    public function changeStatus(int $id)
     {
-        return $this->PackageRepository->deactivatePackage($id);
+        return $this->PackageRepository->changeStatus($id);
     }
 }

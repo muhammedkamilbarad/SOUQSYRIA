@@ -47,9 +47,9 @@ class PackageController extends Controller
         return response()->json($package, 200);
     }
 
-    public function deactivate(int $id)
+    public function changeStatus(int $id)
     {
-        $package = $this->packageService->deactivatePackage($id);
+        $package = $this->packageService->changeStatus($id);
         if (!$package) {
             return response()->json(['message' => 'Package not found'], 404);
         }

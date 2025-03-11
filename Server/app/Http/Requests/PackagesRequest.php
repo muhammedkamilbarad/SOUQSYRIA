@@ -33,8 +33,11 @@ class PackagesRequest extends FormRequest
 
     public function updateRules(): array
     {
+
+        $id = $this->route('package') ?? $this->route('id');
+
         return [
-            'name' => 'required|string|max:100|unique:packages,name,' . $this->route('package'),
+            'name' => 'required|string|max:100|unique:packages,name,' . $id,
             'properties' => 'required|string',
             'price' => 'required|numeric',
             'max_of_ads' => 'required|integer',

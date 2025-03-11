@@ -100,7 +100,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/{id}', [PackageController::class, 'show'])->middleware('permission:view_package');
         Route::post('/', [PackageController::class, 'store'])->middleware('permission:create_package');
         Route::put('/{id}', [PackageController::class, 'update'])->middleware('permission:update_package');
-        Route::put('/{id}/deactivate', [PackageController::class, 'deactivate'])->middleware('permission:deactivate_package');
+        Route::put('/{id}/change-status', [PackageController::class, 'changeStatus'])->middleware('permission:package_status_change');
     });
 
     // Complaints Routes
