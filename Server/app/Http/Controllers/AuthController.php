@@ -35,12 +35,8 @@ class AuthController extends Controller
         
         return response()->json([
             'message' => 'OTP sent to your email', 
-            'user' => $result['user'],
-            'access_token' => $result['access_token'],
-            'refresh_token' => $result['refresh_token']
-        ], 200)
-        ->cookie('access_token', $result['access_token'], $this->accessTokenExpiresInMinutes, '/', null, true, true, false, 'none')
-        ->cookie('refresh_token', $result['refresh_token'], $this->refreshTokenExpiresInMinutes, '/', null, true, true, false, 'none');
+            'user' => $result['user']
+        ], 200);
     }
 
     public function verifyAccount(VerifyAccountRequest $request): JsonResponse
@@ -52,9 +48,10 @@ class AuthController extends Controller
         
         return response()->json([
             'message' => 'Email verified successfully',
-            'permissions' => $result['permissions']
+            'access_token' => $result['access_token'],
+            'refresh_token' => $result['refresh_token'],
         ], 200)
-        ->cookie('access_token', $result['token'], $this->accessTokenExpiresInMinutes, '/', null, true, true, false, 'none')
+        ->cookie('access_token', $result['access_token'], $this->accessTokenExpiresInMinutes, '/', null, true, true, false, 'none')
         ->cookie('refresh_token', $result['refresh_token'], $this->refreshTokenExpiresInMinutes, '/', null, true, true, false, 'none');
     }
 
