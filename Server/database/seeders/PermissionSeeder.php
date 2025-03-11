@@ -26,7 +26,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'update_faq'],
             ['name' => 'view_package'],
             ['name' => 'create_package'],
-            ['name' => 'deactivate_package'],
+            ['name' => 'package_status_change'],
             ['name' => 'update_package'],
             ['name' => 'view_ad'],
             ['name' => 'create_ad'],
