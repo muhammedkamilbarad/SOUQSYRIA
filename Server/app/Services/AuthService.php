@@ -42,21 +42,8 @@ class AuthService
         //@@ TO-DO Send OTP to email
         Log::info('OTP for ' . $data['email'] . ': ' . $otp);
 
-        // Generate access token
-        $accessToken = $user->createToken('access_token', [], now()->addMinutes($this->accessTokenExpiresInMinutes))->plainTextToken;
-        Log::info('Access token for ' . $data['email'] . ': ' . $accessToken);
-
-        // Generate refresh token
-        $refreshToken = $this->repository->createRefreshToken(
-            $user->id, 
-            $this->refreshTokenExpiresInMinutes
-        );
-        Log::info('Refresh token for ' . $data['email'] . ': ' . $refreshToken);
-
         return [
-            'user' => $user,
-            'access_token' => $accessToken,
-            'refresh_token' => $refreshToken
+            'user' => $user
         ];
     }
 
@@ -89,13 +76,10 @@ class AuthService
             $user->id, 
             $this->refreshTokenExpiresInMinutes
         );
-
-        $permissions = $user->permissions;
         
         return [
-            'token' => $accessToken,
-            'refresh_token' => $refreshToken,
-            'permissions' => $permissions,
+            'access_token' => $accessToken,
+            'refresh_token' => $refreshToken
         ];
     }
 
