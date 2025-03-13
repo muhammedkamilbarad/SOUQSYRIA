@@ -42,10 +42,10 @@ class RoleRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => '.اسم الوظيفة مطلوب',
-            'name.string' => '.يجب أن يكون اسم الوظيفة نصًا صالحًا',
-            'name.max' => '.يجب ألا يتجاوز اسم الوظيفة 50 حرفًا',
-            'name.unique' => '.اسم الوظيفة هذا مستخدم بالفعل',
+            'name.required' => '.اسم الدور مطلوب',
+            'name.string' => '.يجب أن يكون اسم الدور نصًا صالحًا',
+            'name.max' => '.يجب ألا يتجاوز اسم الدور 50 حرفًا',
+            'name.unique' => '.اسم الدور هذا مستخدم بالفعل',
 
             'is_editable.required' => '.حالة التحرير (هل يقبل التعديل عليه) مطلوبة',
             'is_editable.boolean' => '.يجب أن تكون حالة التحرير إما صحيحة أو خاطئة',
