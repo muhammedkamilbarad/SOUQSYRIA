@@ -12,4 +12,14 @@ class SubscriptionRequestProcessRequest extends FormRequest
             'message' => 'required_if:status,rejected',
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'status.required' => '.الحالة مطلوبة',
+            'status.in' => '.يجب أن تكون الحالة إما مقبول أو مرفوض',
+
+            'message.required_if' => '.يجب تقديم رسالة عند رفض طلب الاشتراك (رسالة لتبين سبب الرفض)',
+        ];
+    }
 }

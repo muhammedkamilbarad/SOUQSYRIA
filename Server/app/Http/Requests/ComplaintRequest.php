@@ -13,4 +13,15 @@ class ComplaintRequest extends FormRequest
             'content' => 'required|string',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'title.required' => '.العنوان مطلوب',
+            'title.string' => '.يجب أن يكون العنوان نصًا صالحًا',
+            'title.max' => '.يجب ألا يتجاوز العنوان 100 حرف',
+            'content.required' => '.المحتوى مطلوب',
+            'content.string' => '.يجب أن يكون المحتوى نصًا صالحًا'
+        ];
+    }
 }
