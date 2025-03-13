@@ -6,13 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class PackagesRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    // public function authorize(): bool
-    // {
-    //     return false;
-    // }
     public function rules(): array
     {
         return $this->isMethod('put') || $this->isMethod('patch')
@@ -42,6 +35,25 @@ class PackagesRequest extends FormRequest
             'price' => 'required|numeric',
             'max_of_ads' => 'required|integer',
             'period' => 'required|integer|min:1', 
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => '.اسم الباقة مطلوب',
+            'name.string' => '.يجب أن يكون اسم الباقة نصًا صالحًا',
+            'name.max' => '.يجب ألا يتجاوز اسم الباقة 100 حرف',
+            'name.unique' => '.اسم الباقة هذا مستخدم بالفعل. يرجى اختيار اسم آخر',
+            'properties.required' => '.حقل الخصائص مطلوب',
+            'properties.string' => '.يجب أن يكون حقل الخصائص نصًا صالحًا',
+            'price.required' => '.السعر مطلوب',
+            'price.numeric' => '.يجب أن يكون السعر رقمًا صالحًا',
+            'max_of_ads.required' => '.الحد الأقصى لعدد الإعلانات مطلوب',
+            'max_of_ads.integer' => '.يجب أن يكون الحد الأقصى لعدد الإعلانات عددًا صحيحًا',
+            'period.required' => '.مدة الباقة مطلوبة',
+            'period.integer' => '.يجب أن تكون مدة الباقة عددًا صحيحًا',
+            'period.min' => '.يجب ألا تقل مدة الباقة عن 1يوم',
         ];
     }
 }

@@ -43,7 +43,7 @@ class AuthController extends Controller
     {
         $result = $this->service->verifyEmail($request->email, $request->otp);
         if ($result === false) {
-            return response()->json(['error' => 'Invalid OTP or email'], 400);
+            return response()->json(['error' => '.رقم التحقق غير صالح'], 400);
         }
         
         return response()->json([
@@ -62,7 +62,7 @@ class AuthController extends Controller
             return response()->json(['error' => 'User not found'], 404);
         }
         
-        return response()->json(['message' => 'New OTP has been sent to your email'], 200);
+        return response()->json(['message' => '.تم ارسال رمز تحقق جديد'], 200);
     }
 
     public function loginWithEmailOrPhone(LoginRequest $request): JsonResponse
@@ -70,9 +70,9 @@ class AuthController extends Controller
         $result = $this->service->loginUser($request->login_input, $request->password);
 
         if ($result === false) {
-            return response()->json(['error' => 'Invalid credentials'], 401);
+            return response()->json(['error' => '.معلومات تسجيل الدخول غير صحيحة'], 401);
         } elseif ($result === null) {
-            return response()->json(['error' => 'Email not verified'], 403);
+            return response()->json(['error' => 'هذا الحساب غير مؤكد يرجى تأكيده'], 403);
         }
 
         return response()->json([
@@ -118,7 +118,7 @@ class AuthController extends Controller
         if ($user) {
             $this->service->logoutUser($user);
             
-            return response()->json(['message' => 'Logged out successfully'], 200)
+            return response()->json(['message' => '.تم تسجيل الخروج بنجاح'], 200)
                 ->cookie('access_token', '', -1)
                 ->cookie('refresh_token', '', -1);
         }

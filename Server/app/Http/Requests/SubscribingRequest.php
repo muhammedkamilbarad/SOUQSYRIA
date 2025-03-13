@@ -31,4 +31,15 @@ class SubscribingRequest extends FormRequest
             // if "update" in your case means "promote", then we need the new package
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'user_id.required' => '.معرف المستخدم مطلوب',
+            'user_id.exists' => '.معرف المستخدم المحدد غير صالح',
+            
+            'package_id.required' => '.معرف الحزمة مطلوب',
+            'package_id.exists' => '.معرف الحزمة المحدد غير صالح',
+        ];
+    }
 }
