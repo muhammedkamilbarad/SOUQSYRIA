@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Enums\Colors;
 
 return new class extends Migration
 {
@@ -15,6 +16,7 @@ return new class extends Migration
             $table->foreignId('advertisement_id')->primary()->constrained('advertisements')->onDelete('cascade');
             $table->integer('seats')->unsigned();
             $table->integer('doors')->unsigned();
+            $table->Enum('seats_color', array_column(Colors::cases(), 'name'));
             $table->timestamps();
         });
     }

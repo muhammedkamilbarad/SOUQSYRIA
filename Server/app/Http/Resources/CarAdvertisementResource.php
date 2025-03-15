@@ -18,6 +18,7 @@ class CarAdvertisementResource extends JsonResource
             'id' => $this->advertisement_id,
             'seats' => $this->seats,
             'doors' => $this->doors,
+            'seats_color' => $this->seats_color,
         ];
     }
 }

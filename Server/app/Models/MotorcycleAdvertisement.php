@@ -10,7 +10,8 @@ class MotorcycleAdvertisement extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'cylinders'
+        'cooling_type',
+        'motorcycle_type',
     ];
 
     protected $casts = [

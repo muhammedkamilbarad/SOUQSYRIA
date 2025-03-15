@@ -11,6 +11,7 @@ class HouseAdvertisement extends Model
 
     protected $fillable = [
         'number_of_rooms',
+        'number_of_bathrooms',
         'building_age',
         'square_meters',
         'floor'

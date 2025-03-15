@@ -16,7 +16,9 @@ class MotorcycleAdvertisementResource extends JsonResource
     {
         return [
             'id' => $this->advertisement_id,
-            'cylinders' => $this->cylinders,
+            'cooling_type' => $this->cooling_type,
+            'motorcycle_type' => $this->motorcycle_type,
+            //'cylinders' => $this->cylinders,
         ];
     }
 }

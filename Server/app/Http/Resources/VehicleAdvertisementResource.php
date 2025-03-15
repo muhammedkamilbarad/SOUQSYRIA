@@ -20,13 +20,17 @@ class VehicleAdvertisementResource extends JsonResource
             'year' => $this->year,
             'engine_capacity' => $this->engine_capacity,
             'horsepower' => $this->horsepower,
+            'cylinders' => $this->cylinders,
             'condition' => $this->condition,
             // Related resources
             'brand' => new VehicleBrandResource($this->whenLoaded('vehicleBrand')),
             'model' => new VehicleModelResource($this->whenLoaded('vehicleModel')),
-            'color' => new ColorResource($this->whenLoaded('color')),
-            'fuel_type' => new FuelTypeResource($this->whenLoaded('fuelType')),
-            'transmission' => new TransmissionResource($this->whenLoaded('transmissionType')),
+            'color' => $this->color,
+            'fuel_type' => $this->fuel_type,
+            'transmission_type' => $this->transmission_type,
+            //'color' => new ColorResource($this->whenLoaded('color')),
+            //'fuel_type' => new FuelTypeResource($this->whenLoaded('fuelType')),
+            //'transmission' => new TransmissionResource($this->whenLoaded('transmissionType')),
         ];
     }
 }

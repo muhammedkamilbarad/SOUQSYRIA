@@ -8,8 +8,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Arr;
 use App\Enums\CategoryType;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-
+use Illuminate\Support\Facades\Log;
 
 
 class AdvertisementService
@@ -61,11 +60,12 @@ class AdvertisementService
             'title' => $data['title'],
             'description' => $data['description'],
             'price' => $data['price'],
-            'city_id' => $data['city_id'],
+            'currency' => $data['currency'],
+            'city' => $data['city'],
             'location' => $data['location'],
             'category_id' => $data['category_id'],
             'user_id' => $user->id,
-            'type' => $data['type']
+            'type' => $data['type'],
         ];
     }
 
@@ -75,15 +75,16 @@ class AdvertisementService
         $category = CategoryType::tryFrom((int) $data['category_id']);
         if (in_array($category, [CategoryType::CAR, CategoryType::MOTORCYCLE, CategoryType::MARINE])) {
             $specificData['vehicle'] = [
-                'color_id' => $data['color_id'],
+                'color' => $data['color'],
                 'mileage' => $data['mileage'],
                 'year' => $data['year'],
-                'engine_capacity' => $data['engine_capacity'],
+                'engine_capacity' => $data['fuel_type'] === 'ELECTRIC' ? null : $data['engine_capacity'],
                 'brand_id' => $data['brand_id'],
                 'model_id' => $data['model_id'],
-                'fuel_type_id' => $data['fuel_type_id'],
+                'fuel_type' => $data['fuel_type'],
                 'horsepower' => $data['horsepower'],
-                'transmission_id' => $data['transmission_id'],
+                'cylinders' => $data['fuel_type'] === 'ELECTRIC' ? null : $data['cylinders'],
+                'transmission_type' => $data['transmission_type'],
                 'condition' => $data['condition']
             ];
         }
@@ -91,24 +92,27 @@ class AdvertisementService
             case CategoryType::CAR:
                 $specificData['car'] = [
                     'seats' => $data['seats'],
-                    'doors' => $data['doors']
+                    'doors' => $data['doors'],
+                    'seats_color' => $data['seats_color']
                 ];
                 break;
             case CategoryType::MOTORCYCLE:
                 $specificData['motorcycle'] = [
-                    'cylinders' => $data['cylinders']
+                    'cooling_type' => $data['cooling_type'],
+                    'motorcycle_type' => $data['motorcycle_type']
                 ];
                 break;
             case CategoryType::MARINE:
                 $specificData['marine'] = [
-                    'type_id' => $data['marine_type_id'],
-                    'length' => $data['length'],
-                    'max_capacity' => $data['max_capacity']
+                    'marine_type' => $data['marine_type'],
+                    'length' => $data['length'] ?? null,
+                    'max_capacity' => $data['max_capacity'] ?? null,
                 ];
                 break;
             case CategoryType::HOUSE:
                 $specificData['house'] = [
                     'number_of_rooms' => $data['number_of_rooms'],
+                    'number_of_bathrooms' => $data['number_of_bathrooms'],
                     'building_age' => $data['building_age'],
                     'square_meters' => $data['square_meters'],
                     'floor' => $data['floor']
@@ -125,6 +129,12 @@ class AdvertisementService
         }
         if(isset($data['features'])){
             $specificData['features'] = $data['features'];
+        }
+        if(isset($data['sale_details'])){
+            $specificData['sale_details'] = $data['sale_details'];
+        }
+        if(isset($data['rent_details'])){
+            $specificData['rent_details'] = $data['rent_details'];
         }
         return $specificData;
     }
@@ -186,7 +196,6 @@ class AdvertisementService
             $advertisementData,
             $specificData
         );
-
         return [
             'success' => true,
             'message' => 'Advertisement updated successfully. It is now pending review.',
@@ -197,7 +206,7 @@ class AdvertisementService
     protected function prepareAdvertisementUpdateData(array $data)
     {
         $updateData = [];
-        $allowed_fileds = ['title', 'description', 'price', 'location', 'city_id', 'type'];
+        $allowed_fileds = ['title', 'description', 'price', 'currency', 'city', 'location'];
         foreach($allowed_fileds as $filed)
         {
             if(isset($data[$filed]))
@@ -211,56 +220,19 @@ class AdvertisementService
     protected function prepareSpecificUpdateData(array $data, int $categoryId)
     {
         $specificData = [];
-        $category = CategoryType::tryFrom((int) $categoryId);
-        if (in_array($category, [CategoryType::CAR, CategoryType::MOTORCYCLE, CategoryType::MARINE]))
-        {
-            $vehicleFields = [
-                'color_id', 'mileage', 'year', 'engine_capacity',
-                'fuel_type_id', 'horsepower', 'transmission_id', 'condition'
-            ];
-            $vehicleData = $this->extractDataForFields($data, $vehicleFields);
-            if (!empty($vehicleData)) {
-                $specificData['vehicle'] = $vehicleData;
-            }
-        }
-        switch ($category)
-        {
-            case CategoryType::CAR:
-                $specificData['car'] = $this->extractDataForFields($data, ['seats', 'doors']);
-                break;
-            case CategoryType::MOTORCYCLE:
-                $specificData['motorcycle'] = $this->extractDataForFields($data, ['cylinders']);
-                break;
-            case CategoryType::MARINE:
-                $specificData['marine'] = $this->extractDataForFields($data,['marine_type_id', 'length', 'max_capacity']);
-                break;
-            case CategoryType::HOUSE:
-                $specificData['house'] = $this->extractDataForFields($data,['number_of_rooms', 'building_age', 'square_meters', 'floor']);
-                break;
-            case CategoryType::LAND:
-                $specificData['land'] = $this->extractDataForFields($data, ['square_meters']);
-                break;
-        }
         if (isset($data['images'])) {
             $specificData['images'] = $data['images'];
         }
         if (isset($data['features'])) {
             $specificData['features'] = $data['features'];
         }
-        return $specificData;
-    }
-
-    protected function extractDataForFields(array $data, array $fields): array
-    {
-        $result = [];
-        foreach ($fields as $key => $field) {
-            $dataField = is_string($key) ? $key : $field;
-            $resultField = is_string($key) ? $field : $field;
-            if (isset($data[$dataField])) {
-                $result[$resultField] = $data[$dataField];
-            }
+        if (isset($data['sale_details'])) {
+            $specificData['sale_details'] = $data['sale_details'];
         }
-        return $result;
+        if (isset($data['rent_details'])) {
+            $specificData['rent_details'] = $data['rent_details'];
+        }
+        return $specificData;
     }
 }
 

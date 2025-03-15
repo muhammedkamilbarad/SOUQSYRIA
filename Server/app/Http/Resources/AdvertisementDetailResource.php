@@ -19,21 +19,23 @@ class AdvertisementDetailResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'price' => $this->price,
+            'currency' => $this->currency,
+            'city' => $this->city,
             'location' => $this->location,
             'type' => $this->type,
             'ads_status' => $this->ads_status,
             'active_status' => $this->active_status,
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
-
             'user' => new UserResource($this->whenLoaded('user')),
-            'city' => new CityResource($this->whenLoaded('city')),
             'category' => new CategoryResource($this->whenLoaded('category')),
             'images' => ImageResource::collection($this->whenLoaded('images')),
             'features' => new FeatureCollection($this->whenLoaded('features')),
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
         ];
 
         $advertisementRelations = [
+            'rentDetail' => rentDetailResource::class,
+            'saleDetail' => saleDetailResource::class,
             'vehicleAdvertisement' => VehicleAdvertisementResource::class,
             'carAdvertisement' => CarAdvertisementResource::class,
             'motorcycleAdvertisement' => MotorcycleAdvertisementResource::class,

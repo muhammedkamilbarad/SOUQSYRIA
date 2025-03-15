@@ -11,7 +11,8 @@ class CarAdvertisement extends Model
 
     protected $fillable = [
         'seats',
-        'doors'
+        'doors',
+        'seats_color'
     ];
 
     public function advertisement(): BelongsTo
