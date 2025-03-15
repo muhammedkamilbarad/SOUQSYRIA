@@ -2,21 +2,35 @@
 
 namespace Database\Seeders;
 
-use App\Models\FeatureGroup;
 use Illuminate\Database\Seeder;
+use App\Models\FeatureGroup;
 
 class FeatureGroupSeeder extends Seeder
 {
     public function run()
     {
         $featureGroups = [
-            ['name' => 'Vehicle Features', 'category_id' => 3],  // car
-            ['name' => 'House Features', 'category_id' => 2],    // house
-            ['name' => 'Land Features', 'category_id' => 1],     // land
-            ['name' => 'Marine Features', 'category_id' => 4],   // marine
-            ['name' => 'General Features', 'category_id' => 1]   // using land as default for general features
+            // Land (category_id: 1)
+            ['name' => 'Land Features', 'category_id' => 1],
+            ['name' => 'Location Features', 'category_id' => 1],
+            
+            // House (category_id: 2)
+            ['name' => 'House Amenities', 'category_id' => 2],
+            ['name' => 'Building Features', 'category_id' => 2],
+            
+            // Car (category_id: 3)
+            ['name' => 'Car Features', 'category_id' => 3],
+            ['name' => 'Safety Features', 'category_id' => 3],
+            
+            // Marine (category_id: 4)
+            ['name' => 'Marine Equipment', 'category_id' => 4],
+            ['name' => 'Navigation Features', 'category_id' => 4],
+            
+            // Motorcycle (category_id: 5)
+            ['name' => 'Motorcycle Features', 'category_id' => 5],
+            ['name' => 'Performance Features', 'category_id' => 5],
         ];
-        
+
         foreach ($featureGroups as $group) {
             FeatureGroup::create($group);
         }
