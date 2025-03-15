@@ -20,10 +20,10 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
-            ColorSeeder::class,
-            CitySeeder::class,
-            TransmissionTypeSeeder::class,
-            FuelTypeSeeder::class,
+            // ColorSeeder::class,
+            // CitySeeder::class,
+            // TransmissionTypeSeeder::class,
+            // FuelTypeSeeder::class,
             PopularQuestionSeeder::class,
             CategorySeeder::class,
             VehicleBrandSeeder::class,
@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             UserSeeder::class,
             SubscriptionRequestSeeder::class,
-            MarineTypeSeeder::class,
+            // MarineTypeSeeder::class,
             FeatureGroupSeeder::class,
             FeatureSeeder::class,
             AdvertisementSeeder::class,
