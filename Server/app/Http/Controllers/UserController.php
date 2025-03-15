@@ -92,4 +92,29 @@ class UserController extends Controller
         $user = $this->userService->getUserWithRoleById($user->id);
         return response()->json($user->role, 200);
     }
+
+    public function getAuthMe(Request $request)
+    {
+        $user = $request->user();
+        $user = $this->userService->getUserWithRoleById($user->id);
+
+        return response()->json([
+            'profile' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'is_verified' => $user->is_verified,
+                'email_verified_at' => $user->email_verified_at,
+                'image' => $user->image,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+            ],
+            'role' => [
+                'id' => $user->role->id,
+                'name' => $user->role->name,
+                'permissions' => $user->role->permissions->pluck('name'),
+            ],
+        ], 200);
+    }
 }
