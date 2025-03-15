@@ -9,16 +9,17 @@ class VehicleAdvertisement extends Model
     protected $primaryKey = 'advertisement_id';
     public $incrementing = false;
     protected $fillable = [
-        'color_id',
+        'color',
         'mileage',
         'year',
         'engine_capacity',
         'brand_id',
         'model_id',
-        'fuel_type_id',
+        'fuel_type',
         'horsepower',
-        'transmission_id',
-        'condition'
+        'transmission_type',
+        'condition',
+        'cylinders'
     ];
     public function advertisement(): BelongsTo
     {

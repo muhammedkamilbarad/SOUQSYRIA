@@ -3,6 +3,9 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Enums\FuelType;
+use App\Enums\TransmissionType;
+use App\Enums\Colors;
 
 return new class extends Migration
 {
@@ -13,16 +16,17 @@ return new class extends Migration
     {
         Schema::create('vehicle_advertisements', function (Blueprint $table) {
             $table->foreignId('advertisement_id')->primary()->constrained('advertisements')->onDelete('cascade');
-            $table->foreignId('color_id')->constrained('colors')->onDelete('restrict');
+            $table->Enum('color', array_column(Colors::cases(), 'name'));
             $table->integer('mileage')->unsigned();
             $table->integer('year');
-            $table->decimal('engine_capacity', 8, 2);
             $table->foreignId('brand_id')->constrained('vehicle_brands')->onDelete('restrict');
             $table->foreignId('model_id')->constrained('vehicle_models')->onDelete('restrict');
-            $table->foreignId('fuel_type_id')->constrained('fuel_types')->onDelete('restrict');
+            $table->Enum('transmission_type', array_column(TransmissionType::cases(), 'name'));
+            $table->Enum('fuel_type', array_column(FuelType::cases(), 'name'));
             $table->integer('horsepower')->unsigned();
-            $table->foreignId('transmission_id')->constrained('transmission_types')->onDelete('restrict');
-            $table->enum('condition', ['NEW', 'USED'])->default('USED');
+            $table->tinyInteger('cylinders')->unsigned()->nullable();
+            $table->decimal('engine_capacity', 8, 2)->nullable();
+            $table->Enum('condition', ['NEW', 'USED'])->default('USED');
             $table->timestamps();
 
             $table->index('condition');

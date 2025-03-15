@@ -13,4 +13,11 @@ class FeatureRepository extends BaseRepository
     {
         parent::__construct($feature);
     }
+
+    public function getAll(): Collection
+    {
+        return $this->model->with(['featureGroup'])->get();
+    }
+
+
 }

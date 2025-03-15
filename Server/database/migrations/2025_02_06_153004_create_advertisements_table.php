@@ -3,6 +3,8 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Enums\SyriaCities;
+use App\Enums\CategoryType;
 
 return new class extends Migration
 {
@@ -16,19 +18,20 @@ return new class extends Migration
             $table->string('title', 255);
             $table->text('description');
             $table->decimal('price', 12, 2);
-            $table->foreignId('city_id')->constrained('cities')->onDelete('restrict');
+            $table->Enum('currency',['SYP ','TRY','USD'])->default('USD');
+            $table->Enum('city', array_column(SyriaCities::cases(), 'name'));
             $table->string('location', 255);
             $table->foreignId('category_id')->constrained('categories')->onDelete('restrict');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->Enum('ads_status', ['pending', 'accepted', 'rejected'])->default('pending');
             $table->Enum('active_status', ['active', 'inactive'])->default('inactive');
-            $table->enum('type', ['rent', 'sale']);
+            $table->Enum('type', ['rent', 'sale']);
             $table->timestamps();
 
             $table->index('ads_status');
             $table->index('active_status');
             $table->index(['type']);
-            $table->index(['city_id','category_id']);
+            $table->index(['city','category_id']);
             $table->index(['user_id']);
         });
     }

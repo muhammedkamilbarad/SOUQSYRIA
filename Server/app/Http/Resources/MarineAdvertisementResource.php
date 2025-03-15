@@ -18,7 +18,8 @@ class MarineAdvertisementResource extends JsonResource
             'id' => $this->advertisement_id,
             'length' => $this->length,
             'max_capacity' => $this->max_capacity,
-            'type' => new MarineTypeResource($this->whenLoaded('marineType')),
+            'marine_type' => $this->marine_type,
+            //'type' => new MarineTypeResource($this->whenLoaded('marineType')),
         ];
     }
 }

@@ -12,4 +12,14 @@ class AdvertisementProcessRequest extends FormRequest
             'message' => 'required_if:status,rejected',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'status.required' => '.حقل الحالة مطلوب',
+            'status.in' => '.يجب أن تكون الحالة إما مقبولة أو مرفوضة',
+            'message.required_if' => '.يجب إدخال الرسالة في حالة رفض الطلب',
+        ];
+    }
+
 }

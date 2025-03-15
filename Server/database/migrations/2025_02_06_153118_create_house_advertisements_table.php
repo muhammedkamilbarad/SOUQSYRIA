@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('house_advertisements', function (Blueprint $table) {
             $table->foreignId('advertisement_id')->primary()->constrained('advertisements')->onDelete('cascade');
             $table->integer('number_of_rooms')->unsigned();
+            $table->integer('number_of_bathrooms')->unsigned();
             $table->integer('building_age')->unsigned();
             $table->decimal('square_meters', 10, 2);
             $table->integer('floor')->unsigned();

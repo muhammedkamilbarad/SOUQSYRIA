@@ -10,7 +10,7 @@ class MarineAdvertisement extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'type_id',
+        'marine_type',
         'length',
         'max_capacity'
     ];

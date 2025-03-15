@@ -9,17 +9,26 @@ class Advertisement extends Model
     protected $fillable = [
         'title',
         'description',
+        'city',
         'price',
-        'city_id',
+        'currency',
         'location',
         'category_id',
         'user_id',
         'ads_status',
         'active_status',
-        'type'
+        'type',
     ];
 
+    public function saleDetail()
+    {
+        return $this->hasOne(SaleDetail::class, 'advertisement_id');
+    }
 
+    public function rentDetail()
+    {
+        return $this->hasOne(RentDetail::class, 'advertisement_id');
+    }
 
     public function vehicleAdvertisement()
     {

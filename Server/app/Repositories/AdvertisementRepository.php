@@ -22,18 +22,17 @@ class AdvertisementRepository extends BaseRepository
     private function getCommonRelations(): array
     {
         return [
+            'saleDetail',
+            'rentDetail',
             'user',
-            'city',
             'category',
             'images',
             'vehicleAdvertisement' => function($query){
-                $query->with('color', 'vehicleBrand', 'vehicleModel', 'fuelType', 'transmissionType');
+                $query->with('vehicleBrand', 'vehicleModel');
             },
             'carAdvertisement',
             'motorcycleAdvertisement',
-            'marineAdvertisement' => function($query){
-                $query->with('marineType');
-            },
+            'marineAdvertisement',
             'houseAdvertisement',
             'landAdvertisement',
             'features' => function($query){
@@ -51,7 +50,7 @@ class AdvertisementRepository extends BaseRepository
     {
         return $this->model->with($this->getCommonRelations())->find($id);
     }
-    
+
     public function getAllWithRelations(array $filters = [])
     {
         $query = $this->model->with($this->getCommonRelations());
@@ -73,6 +72,7 @@ class AdvertisementRepository extends BaseRepository
 
     public function createWithRelated(array $advertisementData, array $specificData)
     {
+        $relations = [];
         \DB::beginTransaction();
         try{
             $advertisement = $this->create($advertisementData);
@@ -81,12 +81,22 @@ class AdvertisementRepository extends BaseRepository
             $repository->createSpecific($advertisement, $specificData);
             if(isset($specificData['images'])){
                 $this->createImages($advertisement, $specificData['images']);
+                $relations = ['images'];
             }
             if(isset($specificData['features'])){
                 $advertisement->features()->sync($specificData['features']);
+                $relations = array_merge($relations, ['features']);
+            }
+            if(isset($specificData['sale_details'])){
+                $advertisement->saleDetail()->create($specificData['sale_details']);
+                $relations = array_merge($relations, ['saleDetail']);
+            }
+            if(isset($specificData['rent_details'])){
+                $advertisement->rentDetail()->create($specificData['rent_details']);
+                $relations = array_merge($relations, ['rentDetail']);
             }
             \DB::commit();
-            $relations = array_merge(['images','features'], $repository->getRelations());
+            $relations = array_merge($relations, $repository->getRelations());
             return $advertisement->load($relations);
         } catch(\Exception $e){
             \DB::rollBack();
@@ -126,20 +136,30 @@ class AdvertisementRepository extends BaseRepository
 
     public function updateWithRelated(Advertisement $advertisement, array $advertisementData, array $specificData)
     {
+        $relations = [];
         \DB::beginTransaction();
         try{
             $advertisement->update($advertisementData);
             $category = CategoryType::tryFrom((int) $advertisement->category_id);
             $repository = AdvertisementRepositoryFactory::create($category);
-            $repository->updateSpecific($advertisement, $specificData);
             if (isset($specificData['images']) && !empty($specificData['images'])) {
                 $this->updateImages($advertisement, $specificData['images']);
+                $relations[] = 'images';
             }
             if (isset($specificData['features'])) {
                 $advertisement->features()->sync($specificData['features']);
+                $relations[] = 'features';
+            }
+            if (isset($specificData['sale_details'])) {
+                $advertisement->saleDetail()->update($specificData['sale_details']);
+                $relations[] = 'saleDetail';
+            }
+            if(isset($specificData['rent_details'])){
+                $advertisement->rentDetail()->update($specificData['rent_details']);
+                $relations[] = 'rentDetail';
             }
             DB::commit();
-            $relations = array_merge(['images','features'], $repository->getRelations());
+            $relations = array_merge($relations, $repository->getRelations());
             return $advertisement->load($relations);
         } catch (Exception $e) {
             \DB::rollBack();
