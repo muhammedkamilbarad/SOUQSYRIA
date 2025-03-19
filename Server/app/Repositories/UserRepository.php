@@ -46,7 +46,7 @@ class UserRepository extends BaseRepository
 
     public function getUsersWithFiltersAndSearch(array $filters = [], array $searchTerms = [], int $page = 1, int $perPage = 15): array
     {
-        $query = $this->model->with(['role']);
+        $query = $this->model->with(['role', 'role.permissions']);
 
         // Applying Filters
         $query = $this->applyFilters($query, $filters);
