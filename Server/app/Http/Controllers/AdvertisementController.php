@@ -44,8 +44,7 @@ class AdvertisementController extends Controller
                 'ads_status',
                 'active_status',
                 'category_id',
-                'email',
-                'phone',
+                'user_query',
                 'city',
             ]);
             $perPage = $request->get('per_page', 5);
