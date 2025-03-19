@@ -44,7 +44,7 @@ class UserRepository extends BaseRepository
         return $this->model::onlyTrashed()->find($id);
     }
 
-    public function getUsersWithFiltersAndSearch(array $filters = [], array $searchTerms = [], ?string $cursor = null, int $limit = 15): array
+    public function getUsersWithFiltersAndSearch(array $filters = [], array $searchTerms = [], int $page = 1, int $perPage = 15): array
     {
         $query = $this->model->with(['role']);
 
@@ -54,30 +54,19 @@ class UserRepository extends BaseRepository
         // Applying Search Terms
         $query = $this->applySearchTerms($query, $searchTerms);
 
-        // Apply cursor pagination
-        $users = $this->applyCursorPagination($query, $cursor, $limit);
+        // Apply Laravel's pagination
+        $paginator = $query->paginate($perPage, ['*'], 'page', $page);
 
-        // Check if we have more records thean requested
-        $hasMore = $users->count() > $limit;
-
-        // If we have more records than requested, remove the extra one
-        if ($hasMore) {
-            // Store the ID of the last item before removing it
-            $lastId = $users[$limit - 1]->id;
-
-            // Remove items beyond our limit
-            $users = $users->take($limit);
-
-            // Create the next cursor
-            $nextCursor = $this->encodeCursor($lastId);
-        } else {
-            $nextCursor = null;
-        }
-
+        // Format the response
         return [
-            'data' => $users,
-            'next_cursor' => $nextCursor,
-            'has_more' => !empty($nextCursor)
+            'success' => true,
+            'data' => [
+                'cursor_page' => $page,
+                'per_page' => $perPage,
+                'total' => $paginator->total(),
+                'next_page' => $paginator->hasMorePages() ? $page + 1 : null,
+                'users' => $paginator->items()
+            ]
         ];
     }
 
@@ -141,30 +130,4 @@ class UserRepository extends BaseRepository
         return $query;
     }
 
-    // Cursor-based Pagination
-    protected function applyCursorPagination($query, ?string $cursor, int $limit)
-    {
-        // Default ordering by id
-        $query->orderBy('id', 'asc');
-        
-        // If cursor is provided, get records after the cursor
-        if ($cursor) {
-            $decodedCursor = $this->decodeCursor($cursor);
-            $query->where('id', '>', $decodedCursor);
-        }
-        
-        return $query->limit($limit + 1)->get(); // Get one extra record to determine if there are more pages
-    }
-
-    // Encode the cursor value
-    protected function encodeCursor($value)
-    {
-        return base64_encode($value);
-    }
-
-    // Decode the cursor value
-    protected function decodeCursor(string $cursor)
-    {
-        return base64_decode($cursor);
-    }
 }

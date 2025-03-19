@@ -21,11 +21,11 @@ class UserController extends Controller
         $filters = $this->extractFilters($request);
         $searchTerms = $this->extractSearchTerms($request);
 
-        // Extract cursor parameters
-        $cursor = $request->input('cursor');
-        $limit = (int) $request->input('limit', 15); // Default to 15 records per page
+        // Extract pagination parameters
+        $page = (int) $request->input('page', 1);
+        $perPage = (int) $request->input('per_page', 15);
 
-        $users = $this->userService->getAllUsers($filters, $searchTerms, $cursor, $limit);
+        $users = $this->userService->getAllUsers($filters, $searchTerms, $page, $perPage);
         return response()->json($users, 200);
     }
 
