@@ -31,9 +31,9 @@ class AdvertisementService
         return $this->repository->getByIdWithRelations($id);
     }
 
-    public function getAllAdvertisements(array $filters = [])
+    public function getAllAdvertisements(array $filters = [], int $perPage = 5)
     {
-        return $this->repository->getAllWithRelations($filters);
+        return $this->repository->getAllWithRelations($filters, $perPage);
     }
 
     public function create(array $data, User $user)

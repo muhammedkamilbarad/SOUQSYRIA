@@ -51,10 +51,10 @@ class AdvertisementRepository extends BaseRepository
         return $this->model->with($this->getCommonRelations())->find($id);
     }
 
-    public function getAllWithRelations(array $filters = [])
+    public function getAllWithRelations(array $filters = [], int $perPage = 5)
     {
         $query = $this->model->with($this->getCommonRelations());
-        return $this->applyFilters($query, $filters)->get();
+        return $this->applyFilters($query, $filters)->paginate($perPage);
     }
 
     private function applyFilters($query, array $filters)
@@ -66,6 +66,26 @@ class AdvertisementRepository extends BaseRepository
         if(isset($filters['active_status']))
         {
             $query->where('active_status', $filters['active_status']);
+        }
+        if(isset($filters['email']))
+        {
+            $query->whereHas('user', function($q) use ($filters){
+                $q->where('email', $filters['email']);
+            });
+        }
+        if(isset($filters['phone']))
+        {
+            $query->whereHas('user', function($q) use ($filters){
+                $q->where('phone', $filters['phone']);
+            });
+        }
+        if(isset($filters['category_id']))
+        {
+            $query->where('category_id', $filters['category_id']);
+        }
+        if(isset($filters['city']))
+        {
+            $query->where('city', 'like', "%{$filters['city']}%");
         }
         return $query;
     }

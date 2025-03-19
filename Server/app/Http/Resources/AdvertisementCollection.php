@@ -14,8 +14,15 @@ class AdvertisementCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
-        return $this->collection->map(function ($advertisement) {
-            return new AdvertisementDetailResource($advertisement);
-        })->toArray();
+        return [
+            'current_page' => $this->currentPage(),
+            'per_page' => $this->perPage(),
+            'total' => $this->total(),
+            'total_pages' => $this->lastPage(),
+            'next_page' => $this->nextPageUrl() ? $this->currentPage() + 1 : null,
+            'advertisements' => $this->collection->map(function ($advertisement) {
+                return new AdvertisementDetailResource($advertisement);
+            }),
+        ];
     }
 }

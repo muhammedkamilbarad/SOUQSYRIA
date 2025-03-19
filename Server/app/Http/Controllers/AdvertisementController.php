@@ -43,8 +43,13 @@ class AdvertisementController extends Controller
             $filters = $request->only([
                 'ads_status',
                 'active_status',
+                'category_id',
+                'email',
+                'phone',
+                'city',
             ]);
-            $advertisements = $this->service->getAllAdvertisements($filters);
+            $perPage = $request->get('per_page', 5);
+            $advertisements = $this->service->getAllAdvertisements($filters, $perPage);
             return response()->json([
                 'success' => true,
                 'data'    => new AdvertisementCollection($advertisements),
