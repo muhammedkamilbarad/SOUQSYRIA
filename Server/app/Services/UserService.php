@@ -83,8 +83,8 @@ class UserService
         return $user;
     }
 
-    public function getAllUsers(array $filters = [], array $searchTerms = []): Collection
+    public function getAllUsers(array $filters = [], array $searchTerms = [], ?string $cursor = null, int $limit = 15): array
     {
-        return $this->userRepository->getUsersWithFiltersAndSearch($filters, $searchTerms);
+        return $this->userRepository->getUsersWithFiltersAndSearch($filters, $searchTerms, $cursor, $limit);
     }
 }

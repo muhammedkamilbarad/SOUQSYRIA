@@ -44,7 +44,7 @@ class UserRepository extends BaseRepository
         return $this->model::onlyTrashed()->find($id);
     }
 
-    public function getUsersWithFiltersAndSearch(array $filters = [], array $searchTerms = []): Collection
+    public function getUsersWithFiltersAndSearch(array $filters = [], array $searchTerms = [], ?string $cursor = null, int $limit = 15): array
     {
         $query = $this->model->with(['role']);
 
@@ -54,7 +54,31 @@ class UserRepository extends BaseRepository
         // Applying Search Terms
         $query = $this->applySearchTerms($query, $searchTerms);
 
-        return $query->get();
+        // Apply cursor pagination
+        $users = $this->applyCursorPagination($query, $cursor, $limit);
+
+        // Check if we have more records thean requested
+        $hasMore = $users->count() > $limit;
+
+        // If we have more records than requested, remove the extra one
+        if ($hasMore) {
+            // Store the ID of the last item before removing it
+            $lastId = $users[$limit - 1]->id;
+
+            // Remove items beyond our limit
+            $users = $users->take($limit);
+
+            // Create the next cursor
+            $nextCursor = $this->encodeCursor($lastId);
+        } else {
+            $nextCursor = null;
+        }
+
+        return [
+            'data' => $users,
+            'next_cursor' => $nextCursor,
+            'has_more' => !empty($nextCursor)
+        ];
     }
 
     protected function applyFilters($query, array $filters)
@@ -107,16 +131,40 @@ class UserRepository extends BaseRepository
         // General search across multiple fields
         if (!empty($searchTerms['search'])) {
             $searchTerm = $searchTerms['search'];
-            if (!empty($searchTerms['search'])) {
-                $searchTerm = $searchTerms['search'];
-                $query->where(function($q) use ($searchTerm) {
-                    $q->where('name', 'LIKE', "%{$searchTerm}%")
-                      ->orWhere('email', 'LIKE', "%{$searchTerm}%")
-                      ->orWhere('phone', 'LIKE', "%{$searchTerm}%");
-                });
-            }
-        }
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('email', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('phone', 'LIKE', "%{$searchTerm}%");
+            });
+        }        
         
         return $query;
+    }
+
+    // Cursor-based Pagination
+    protected function applyCursorPagination($query, ?string $cursor, int $limit)
+    {
+        // Default ordering by id
+        $query->orderBy('id', 'asc');
+        
+        // If cursor is provided, get records after the cursor
+        if ($cursor) {
+            $decodedCursor = $this->decodeCursor($cursor);
+            $query->where('id', '>', $decodedCursor);
+        }
+        
+        return $query->limit($limit + 1)->get(); // Get one extra record to determine if there are more pages
+    }
+
+    // Encode the cursor value
+    protected function encodeCursor($value)
+    {
+        return base64_encode($value);
+    }
+
+    // Decode the cursor value
+    protected function decodeCursor(string $cursor)
+    {
+        return base64_decode($cursor);
     }
 }

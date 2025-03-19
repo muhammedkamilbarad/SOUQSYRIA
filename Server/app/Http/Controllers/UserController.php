@@ -21,7 +21,11 @@ class UserController extends Controller
         $filters = $this->extractFilters($request);
         $searchTerms = $this->extractSearchTerms($request);
 
-        $users = $this->userService->getAllUsers($filters, $searchTerms);
+        // Extract cursor parameters
+        $cursor = $request->input('cursor');
+        $limit = (int) $request->input('limit', 15); // Default to 15 records per page
+
+        $users = $this->userService->getAllUsers($filters, $searchTerms, $cursor, $limit);
         return response()->json($users, 200);
     }
 
