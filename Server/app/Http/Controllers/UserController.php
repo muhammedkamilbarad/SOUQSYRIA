@@ -16,10 +16,33 @@ class UserController extends Controller
         $this->userService = $userService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $users = $this->userService->getAllUsers();
+        $filters = $this->extractFilters($request);
+        $searchTerms = $this->extractSearchTerms($request);
+
+        $users = $this->userService->getAllUsers($filters, $searchTerms);
         return response()->json($users, 200);
+    }
+
+    protected function extractFilters(Request $request)
+    {
+        return [
+            'role' => $request->input('role'),
+            'created_at_from' => $request->input('created_at_from'),
+            'created_at_to' => $request->input('created_at_to'),
+            'updated_at_from' => $request->input('updated_at_from'),
+            'updated_at_to' => $request->input('updated_at_to'),
+            'deleted_at_from' => $request->input('deleted_at_from'),
+            'deleted_at_to' => $request->input('deleted_at_to'),
+        ];
+    }
+
+    protected function extractSearchTerms(Request $request)
+    {
+        return [
+            'search' => $request->input('search'),
+        ];
     }
 
     public function store(UserRequest $request)
