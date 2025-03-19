@@ -67,17 +67,11 @@ class AdvertisementRepository extends BaseRepository
         {
             $query->where('active_status', $filters['active_status']);
         }
-        if(isset($filters['email']))
+        if(isset($filters['user_query']))
         {
             $query->whereHas('user', function($q) use ($filters){
-                $q->where('email', $filters['email']);
-            });
-        }
-        if(isset($filters['phone']))
-        {
-            $query->whereHas('user', function($q) use ($filters){
-                $q->where('phone', $filters['phone']);
-            });
+                        $q->where('phone', $filters['user_query'])->orwhere('email', $filters['user_query']);
+                    });
         }
         if(isset($filters['category_id']))
         {
@@ -85,7 +79,7 @@ class AdvertisementRepository extends BaseRepository
         }
         if(isset($filters['city']))
         {
-            $query->where('city', 'like', "%{$filters['city']}%");
+            $query->where('city', $filters['city']);
         }
         return $query;
     }
