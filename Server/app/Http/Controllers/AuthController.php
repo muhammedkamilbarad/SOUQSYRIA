@@ -16,8 +16,8 @@ class AuthController extends Controller
 {
     protected $service;
     // Token expiration times
-    protected $accessTokenExpiresInMinutes = 1; // 1 minutes default
-    protected $refreshTokenExpiresInMinutes = 30; // 30 minutes default
+    protected $accessTokenExpiresInMinutes = 1000; // 1000 minutes default
+    protected $refreshTokenExpiresInMinutes = 3000; // 3000 minutes default
 
     public function __construct(AuthService $service)
     {

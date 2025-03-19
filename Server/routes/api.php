@@ -176,6 +176,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Auth
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [UserController::class, 'getProfile']);
+    Route::get('/auth-me', [UserController::class, 'getAuthMe']);
     Route::get('/user-permissions', [UserController::class, 'getUserPermissions']);
 });
 

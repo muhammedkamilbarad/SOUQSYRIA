@@ -19,11 +19,6 @@ class UserService
         $this->userRepository = $userRepository;
     }
 
-    public function getAllUsers(): Collection
-    {
-        return $this->userRepository->getAllWithRoles();
-    }
-
     public function getUserWithRoleById(int $id): ?Model
     {
         try {
@@ -86,5 +81,10 @@ class UserService
             $user->restore();
         }
         return $user;
+    }
+
+    public function getAllUsers(array $filters = [], array $searchTerms = [], int $page = 1, int $perPage = 15): array
+    {
+        return $this->userRepository->getUsersWithFiltersAndSearch($filters, $searchTerms, $page, $perPage);
     }
 }

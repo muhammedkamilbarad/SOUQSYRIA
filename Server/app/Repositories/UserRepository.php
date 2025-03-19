@@ -34,12 +34,6 @@ class UserRepository extends BaseRepository
         return $user;
     }
 
-    // Geting all users with thier role
-    public function getAllWithRoles(): Collection
-    {
-        return $this->model->with(['role'])->get();
-    }
-
     // Geting specific users with his role
     public function getUserWithRole(int $id): User
     {
@@ -49,4 +43,91 @@ class UserRepository extends BaseRepository
     {
         return $this->model::onlyTrashed()->find($id);
     }
+
+    public function getUsersWithFiltersAndSearch(array $filters = [], array $searchTerms = [], int $page = 1, int $perPage = 15): array
+    {
+        $query = $this->model->with(['role']);
+
+        // Applying Filters
+        $query = $this->applyFilters($query, $filters);
+
+        // Applying Search Terms
+        $query = $this->applySearchTerms($query, $searchTerms);
+
+        // Apply Laravel's pagination
+        $paginator = $query->paginate($perPage, ['*'], 'page', $page);
+
+        // Format the response
+        return [
+            'success' => true,
+            'data' => [
+                'cursor_page' => $page,
+                'per_page' => $perPage,
+                'total' => $paginator->total(),
+                'next_page' => $paginator->hasMorePages() ? $page + 1 : null,
+                'users' => $paginator->items()
+            ]
+        ];
+    }
+
+    protected function applyFilters($query, array $filters)
+    {
+        // Ensure soft-deleted records are considered if filtering by deleted_at
+        if (!empty($filters['deleted_at_from']) || !empty($filters['deleted_at_to'])) {
+            $query->withTrashed(); // Include both deleted and non-deleted records
+        }
+        
+        // Filter by role
+        if (!empty($filters['role']))
+        {
+            $query->whereHas('role', function($q) use ($filters) {
+                $q->where('name', $filters['role']);
+            });
+        }
+
+        // Filter by created_at range
+        if (!empty($filters['created_at_from'])) {
+            $query->whereDate('created_at', '>=', $filters['created_at_from']);
+        }
+        
+        if (!empty($filters['created_at_to'])) {
+            $query->whereDate('created_at', '<=', $filters['created_at_to']);
+        }
+        
+        // Filter by updated_at range
+        if (!empty($filters['updated_at_from'])) {
+            $query->whereDate('updated_at', '>=', $filters['updated_at_from']);
+        }
+        
+        if (!empty($filters['updated_at_to'])) {
+            $query->whereDate('updated_at', '<=', $filters['updated_at_to']);
+        }
+
+        // Filter by deleted_at range (only if we're working with trashed records)
+        if (!empty($filters['deleted_at_from'])) {
+            $query->whereDate('deleted_at', '>=', $filters['deleted_at_from']);
+        }
+        
+        if (!empty($filters['deleted_at_to'])) {
+            $query->whereDate('deleted_at', '<=', $filters['deleted_at_to']);
+        }
+        
+        return $query;
+    }
+
+    protected function applySearchTerms($query, array $searchTerms)
+    {
+        // General search across multiple fields
+        if (!empty($searchTerms['search'])) {
+            $searchTerm = $searchTerms['search'];
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('email', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('phone', 'LIKE', "%{$searchTerm}%");
+            });
+        }        
+        
+        return $query;
+    }
+
 }
