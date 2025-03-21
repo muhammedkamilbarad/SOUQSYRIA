@@ -39,6 +39,8 @@ class UserController extends Controller
             'updated_at_to' => $request->input('updated_at_to'),
             'deleted_at_from' => $request->input('deleted_at_from'),
             'deleted_at_to' => $request->input('deleted_at_to'),
+            'email_verified_at_from' => $request->input('email_verified_at_from'),
+            'email_verified_at_to' => $request->input('email_verified_at_to'),
         ];
     }
 
