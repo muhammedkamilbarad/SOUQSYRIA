@@ -46,7 +46,13 @@ class UserRepository extends BaseRepository
 
     public function getUsersWithFiltersAndSearch(array $filters = [], array $searchTerms = [], int $page = 1, int $perPage = 15): array
     {
-        $query = $this->model->with(['role', 'role.permissions']);
+        // Use withTrashed() by default to include soft-deleted records
+        $query = $this->model->with(['role', 'role.permissions'])->withTrashed();
+
+        // Exclude current user if authenticated
+        if (auth()->check()) {
+            $query->where('id', '!=', auth()->id());
+        }
 
         // Applying Filters
         $query = $this->applyFilters($query, $filters);
@@ -57,13 +63,17 @@ class UserRepository extends BaseRepository
         // Apply Laravel's pagination
         $paginator = $query->paginate($perPage, ['*'], 'page', $page);
 
+        // Calculate total pages
+        $totalPages = ceil($paginator->total() / $perPage);
+
         // Format the response
         return [
             'success' => true,
             'data' => [
-                'cursor_page' => $page,
+                'current_page' => $page,
                 'per_page' => $perPage,
                 'total' => $paginator->total(),
+                'total_pages' => $totalPages,
                 'next_page' => $paginator->hasMorePages() ? $page + 1 : null,
                 'users' => $paginator->items()
             ]
@@ -73,9 +83,9 @@ class UserRepository extends BaseRepository
     protected function applyFilters($query, array $filters)
     {
         // Ensure soft-deleted records are considered if filtering by deleted_at
-        if (!empty($filters['deleted_at_from']) || !empty($filters['deleted_at_to'])) {
-            $query->withTrashed(); // Include both deleted and non-deleted records
-        }
+        // if (!empty($filters['deleted_at_from']) || !empty($filters['deleted_at_to'])) {
+        //     $query->withTrashed(); // Include both deleted and non-deleted records
+        // }
         
         // Filter by role
         if (!empty($filters['role']))
@@ -110,6 +120,15 @@ class UserRepository extends BaseRepository
         
         if (!empty($filters['deleted_at_to'])) {
             $query->whereDate('deleted_at', '<=', $filters['deleted_at_to']);
+        }
+
+        // Filter by deleted_at range (only if we're working with trashed records)
+        if (!empty($filters['email_verified_at_from'])) {
+            $query->whereDate('email_verified_at', '>=', $filters['email_verified_at_from']);
+        }
+        
+        if (!empty($filters['email_verified_at_to'])) {
+            $query->whereDate('email_verified_at', '<=', $filters['email_verified_at_to']);
         }
         
         return $query;
