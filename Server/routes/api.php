@@ -187,11 +187,11 @@ Route::post('/register', [AuthController::class, 'register'])
     ->name('auth.register');
 
 Route::post('/login', [AuthController::class, 'loginWithEmailOrPhone'])
-    ->middleware('throttle.login:5,10') // 5 attempts, 10 minute decay
+    ->middleware('throttle.login:5,5') // 5 attempts, 10 minute decay
     ->name('auth.login');
 
 Route::post('/dashboard/login', [AuthController::class, 'dashboardLogin'])
-    ->middleware('throttle.login:5,10')
+    ->middleware('throttle.login:5,5')
     ->name('auth.dashboard.login');
 
 Route::post('/refresh', [AuthController::class, 'refreshToken'])
