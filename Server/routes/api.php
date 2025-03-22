@@ -21,6 +21,7 @@ use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\FeatureGroupController;
 use App\Http\Controllers\FeatureController;
 use App\Http\Middleware\ThrottleLogins;
+use App\Http\Controllers\HomePageController;
 
 // Protected routes
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -178,6 +179,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/profile', [UserController::class, 'getProfile']);
     Route::get('/auth-me', [UserController::class, 'getAuthMe']);
     Route::get('/user-permissions', [UserController::class, 'getUserPermissions']);
+
+    // Landing Page
+    Route::get('/home-page', [HomePageController::class, 'index']);
 });
 
 
