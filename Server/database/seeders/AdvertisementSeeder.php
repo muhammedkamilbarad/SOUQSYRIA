@@ -23,6 +23,8 @@ use App\Enums\FuelType;
 use App\Enums\CoolingType;
 use App\Enums\MotorcycleType;
 use App\Enums\MarineType;
+use App\Enums\HouseType;
+use App\Enums\CarType;
 
 class AdvertisementSeeder extends Seeder
 {
@@ -33,11 +35,11 @@ class AdvertisementSeeder extends Seeder
          | 1) Configure how many ads for each category
          |----------------------------------------------------------------------
          */
-        $landCount       = 5;
-        $houseCount      = 6;
-        $carCount        = 5;
-        $marineCount     = 5;
-        $motorcycleCount = 5;
+        $landCount       = 1000;
+        $houseCount      = 2500;
+        $carCount        = 2500;
+        $marineCount     = 1000;
+        $motorcycleCount = 2000;
 
         /*
          |----------------------------------------------------------------------
@@ -86,6 +88,8 @@ class AdvertisementSeeder extends Seeder
         $coolingTypes    = array_map(fn($c) => $c->name, CoolingType::cases());
         $motorcycleTypes = array_map(fn($m) => $m->name, MotorcycleType::cases());
         $marineTypes     = array_map(fn($m) => $m->name, MarineType::cases());
+        $houseTypes = array_map(fn($h) => $h->name, HouseType::cases());
+        $carTypes = array_map(fn($c) => $c->name, CarType::cases());
 
         // Example IDs, must exist in your database
         $userIds   = [1, 2];
@@ -167,6 +171,7 @@ class AdvertisementSeeder extends Seeder
                 'building_age'       => rand(0, 20),
                 'square_meters'      => rand(80, 300),
                 'floor'              => rand(0, 5),
+                'house_type' => $houseTypes[array_rand($houseTypes)],
             ]);
 
             // If the ad is for sale, create SaleDetail
@@ -229,6 +234,7 @@ class AdvertisementSeeder extends Seeder
                 'seats'            => rand(2, 7),
                 'doors'            => rand(2, 5),
                 'seats_color'      => $colors[array_rand($colors)],
+                'car_type' => $carTypes[array_rand($carTypes)],
             ]);
 
             // If the ad is for sale, create SaleDetail
