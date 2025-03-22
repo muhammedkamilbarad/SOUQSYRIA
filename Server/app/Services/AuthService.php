@@ -148,7 +148,7 @@ class AuthService
         // Check if user has admin privileges
         if ($user->role_id === 1)
         {
-            return 'unauthorized_role';
+            return false;
         }
 
         // Delete existing tokens

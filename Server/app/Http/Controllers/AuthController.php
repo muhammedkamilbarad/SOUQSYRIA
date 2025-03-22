@@ -69,7 +69,7 @@ class AuthController extends Controller
     {
         $result = $this->service->loginAdminUser($request->login_input, $request->password);
 
-        $failResponse = $this->handleFailLoginResponse($result, __FUNCTION__);
+        $failResponse = $this->handleFailLoginResponse($result);
         if ($failResponse) {
             return $failResponse;
         }
@@ -81,7 +81,7 @@ class AuthController extends Controller
     {
         $result = $this->service->loginUser($request->login_input, $request->password);
 
-        $failResponse = $this->handleFailLoginResponse($result, __FUNCTION__);
+        $failResponse = $this->handleFailLoginResponse($result);
         if ($failResponse) {
             return $failResponse;
         }
@@ -102,14 +102,12 @@ class AuthController extends Controller
     }
 
     // Handle failed login response with appropriate error message and status code
-    private function handleFailLoginResponse($result, string $methodName): ?JsonResponse
+    private function handleFailLoginResponse($result): ?JsonResponse
     {
         if ($result === false) {
             return response()->json(['error' => '.معلومات تسجيل الدخول غير صحيحة'], 401);
         } elseif ($result === null) {
             return response()->json(['error' => 'هذا الحساب غير مؤكد يرجى تأكيده'], 403);
-        } elseif ($methodName === 'dashboardLogin' && $result === 'unauthorized_role') {
-            return response()->json(['error' => 'ليس لديك صلاحية الوصول إلى لوحة التحكم'], 403);
         }
         return null; // No failure condition met
     }
