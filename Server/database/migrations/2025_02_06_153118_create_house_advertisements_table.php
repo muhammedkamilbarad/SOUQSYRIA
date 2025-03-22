@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Enums\HouseType;
 
 return new class extends Migration
 {
@@ -13,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('house_advertisements', function (Blueprint $table) {
             $table->foreignId('advertisement_id')->primary()->constrained('advertisements')->onDelete('cascade');
+            $table->Enum('house_type', array_column(HouseType::cases(), 'name'));
             $table->integer('number_of_rooms')->unsigned();
             $table->integer('number_of_bathrooms')->unsigned();
             $table->integer('building_age')->unsigned();

@@ -10,6 +10,7 @@ class CarAdvertisement extends Model
     public $incrementing = false;
 
     protected $fillable = [
+        'car_type',
         'seats',
         'doors',
         'seats_color'

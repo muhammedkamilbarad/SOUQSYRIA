@@ -4,6 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use App\Enums\Colors;
+use App\Enums\CarType;
 
 return new class extends Migration
 {
@@ -14,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('car_advertisements', function (Blueprint $table) {
             $table->foreignId('advertisement_id')->primary()->constrained('advertisements')->onDelete('cascade');
+            $table->Enum('car_type', array_column(CarType::cases(), 'name'));
             $table->integer('seats')->unsigned();
             $table->integer('doors')->unsigned();
             $table->Enum('seats_color', array_column(Colors::cases(), 'name'));

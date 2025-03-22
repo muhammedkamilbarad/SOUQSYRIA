@@ -16,6 +16,7 @@ class HouseAdvertisementResource extends JsonResource
     {
         return [
             'id' => $this->advertisement_id,
+            'house_type' => $this->house_type,
             'number_of_rooms' => $this->number_of_rooms,
             'number_of_bathrooms' => $this->number_of_bathrooms,
             'building_age' => $this->building_age,

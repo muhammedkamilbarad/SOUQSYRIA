@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
+use App\Filters\AdvertisementFilter;
 use App\Models\User;
 use App\Repositories\BaseRepository;
 use App\Models\Advertisement;
@@ -51,37 +52,15 @@ class AdvertisementRepository extends BaseRepository
         return $this->model->with($this->getCommonRelations())->find($id);
     }
 
+    public function getBySlugWithRelations(string $slug)
+    {
+        return $this->model->with($this->getCommonRelations())->where('slug', $slug)->first();
+    }
+
     public function getAllWithRelations(array $filters = [], int $perPage = 5)
     {
         $query = $this->model->with($this->getCommonRelations());
-        return $this->applyFilters($query, $filters)->paginate($perPage);
-    }
-
-    private function applyFilters($query, array $filters)
-    {
-        if(isset($filters['ads_status']))
-        {
-            $query->where('ads_status', $filters['ads_status']);
-        }
-        if(isset($filters['active_status']))
-        {
-            $query->where('active_status', $filters['active_status']);
-        }
-        if(isset($filters['user_query']))
-        {
-            $query->whereHas('user', function($q) use ($filters){
-                        $q->where('phone', $filters['user_query'])->orwhere('email', $filters['user_query']);
-                    });
-        }
-        if(isset($filters['category_id']))
-        {
-            $query->where('category_id', $filters['category_id']);
-        }
-        if(isset($filters['city']))
-        {
-            $query->where('city', $filters['city']);
-        }
-        return $query;
+        return AdvertisementFilter::apply($query, $filters)->paginate($perPage);
     }
 
     public function createWithRelated(array $advertisementData, array $specificData)
