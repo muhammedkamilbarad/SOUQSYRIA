@@ -72,12 +72,13 @@ class UserSeeder extends Seeder
             
             try
             {
+                $is_verified = $faker->boolean(70);
                 User::create([
                     'name' => $faker->name,
                     'email' => $email,
                     'phone' => $phone,
-                    'is_verified' => $faker->boolean(80),
-                    'email_verified_at' => $faker->boolean(70) ? now() : null,
+                    'is_verified' => $is_verified,
+                    'email_verified_at' => $is_verified ? now() : null,
                     'password' => Hash::make('password123'),
                     'role_id' => $normalUserRole->id,
                 ]);

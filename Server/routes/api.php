@@ -190,6 +190,10 @@ Route::post('/login', [AuthController::class, 'loginWithEmailOrPhone'])
     ->middleware('throttle.login:5,10') // 5 attempts, 10 minute decay
     ->name('auth.login');
 
+Route::post('/dashboard/login', [AuthController::class, 'dashboardLogin'])
+    ->middleware('throttle.login:5,10')
+    ->name('auth.dashboard.login');
+
 Route::post('/refresh', [AuthController::class, 'refreshToken'])
     ->middleware('throttle.login:10,1') // 10 attempts, 1 minute decay
     ->name('auth.refresh');
