@@ -57,6 +57,11 @@ class ThrottleLogins
             return Str::lower($request->input('email') . '|' . $request->ip());
         }
 
+        if ($request->route()->named('auth.dashboard.login')) {
+            // For dashboard login, use email + IP with a prefix to distinguish it
+            return 'dashboard:' . Str::lower($request->input('email') . '|' . $request->ip());
+        }
+
         if ($request->route()->named('auth.refresh')) {
             // For token refresh, use refresh token + IP
             $token = $request->cookie('refresh_token') ?? 'no-token';

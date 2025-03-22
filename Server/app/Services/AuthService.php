@@ -132,6 +132,45 @@ class AuthService
         ];
     }
 
+    public function loginAdminUser(string $login_input, string $password)
+    {
+        Log::info('Login section start');
+        $user = $this->repository->findTheUserByEmailOrByPhone($login_input);
+
+        if (!$user || !Hash::check($password, $user->password)) {
+            return false;
+        }
+
+        if (!$user->is_verified) {
+            return null;
+        }
+
+        // Check if user has admin privileges
+        if ($user->role_id === 1)
+        {
+            return 'unauthorized_role';
+        }
+
+        // Delete existing tokens
+        $this->repository->deleteAllUserTokens($user);
+
+        // Generate new access token
+        $accessToken = $user->createToken('access_token', [], now()->addMinutes($this->accessTokenExpiresInMinutes))->plainTextToken;
+        Log::info('Access token for ' . $user['email'] . ': ' . $accessToken);
+
+        // Generate new refresh token
+        $refreshToken = $this->repository->createRefreshToken(
+            $user->id, 
+            $this->refreshTokenExpiresInMinutes
+        );
+        Log::info('Refresh token for ' . $user['email'] . ': ' . $refreshToken);
+
+        return [
+            'access_token' => $accessToken,
+            'refresh_token' => $refreshToken
+        ];
+    }
+
     public function refreshToken(string $refreshToken)
     {
         Log::info('Refresh token section start');

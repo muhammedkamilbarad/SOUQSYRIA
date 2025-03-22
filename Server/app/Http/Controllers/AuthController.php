@@ -65,23 +65,53 @@ class AuthController extends Controller
         return response()->json(['message' => '.تم ارسال رمز تحقق جديد'], 200);
     }
 
+    public function dashboardLogin(LoginRequest $request): JsonResponse
+    {
+        $result = $this->service->loginAdminUser($request->login_input, $request->password);
+
+        $failResponse = $this->handleFailLoginResponse($result, __FUNCTION__);
+        if ($failResponse) {
+            return $failResponse;
+        }
+
+        return $this->handleSuccessLoginResponse($result);
+    }
+
     public function loginWithEmailOrPhone(LoginRequest $request): JsonResponse
     {
         $result = $this->service->loginUser($request->login_input, $request->password);
 
-        if ($result === false) {
-            return response()->json(['error' => '.معلومات تسجيل الدخول غير صحيحة'], 401);
-        } elseif ($result === null) {
-            return response()->json(['error' => 'هذا الحساب غير مؤكد يرجى تأكيده'], 403);
+        $failResponse = $this->handleFailLoginResponse($result, __FUNCTION__);
+        if ($failResponse) {
+            return $failResponse;
         }
 
+        return $this->handleSuccessLoginResponse($result);
+    }
+
+    // Handle successful login response with tokens and cookies
+    private function handleSuccessLoginResponse(array $result, string $message = 'Login successful'): JsonResponse
+    {
         return response()->json([
-            'message' => 'Login successful',
+            'message' => $message,
             'access_token' => $result['access_token'],
             'refresh_token' => $result['refresh_token'],
         ], 200)
         ->cookie('access_token', $result['access_token'], $this->accessTokenExpiresInMinutes, '/', null, true, true, false, 'none')
         ->cookie('refresh_token', $result['refresh_token'], $this->refreshTokenExpiresInMinutes, '/', null, true, true, false, 'none');
+    }
+
+    // Handle failed login response with appropriate error message and status code
+    private function handleFailLoginResponse($result, string $methodName): ?JsonResponse
+    {
+        if ($result === false) {
+            return response()->json(['error' => '.معلومات تسجيل الدخول غير صحيحة'], 401);
+        } elseif ($result === null) {
+            return response()->json(['error' => 'هذا الحساب غير مؤكد يرجى تأكيده'], 403);
+        } elseif ($methodName === 'dashboardLogin' && $result === 'unauthorized_role') {
+            return response()->json(['error' => 'ليس لديك صلاحية الوصول إلى لوحة التحكم'], 403);
+        }
+        return null; // No failure condition met
     }
 
     public function refreshToken(RefreshTokenRequest $request): JsonResponse
