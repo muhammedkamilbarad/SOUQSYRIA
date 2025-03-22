@@ -91,6 +91,7 @@ class AdvertisementService
         switch ($category) {
             case CategoryType::CAR:
                 $specificData['car'] = [
+                    'car_type' => $data['car_type'],
                     'seats' => $data['seats'],
                     'doors' => $data['doors'],
                     'seats_color' => $data['seats_color']
@@ -111,6 +112,7 @@ class AdvertisementService
                 break;
             case CategoryType::HOUSE:
                 $specificData['house'] = [
+                    'house_type' => $data['house_type'],
                     'number_of_rooms' => $data['number_of_rooms'],
                     'number_of_bathrooms' => $data['number_of_bathrooms'],
                     'building_age' => $data['building_age'],

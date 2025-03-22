@@ -10,6 +10,7 @@ class HouseAdvertisement extends Model
     public $incrementing = false;
 
     protected $fillable = [
+        'house_type',
         'number_of_rooms',
         'number_of_bathrooms',
         'building_age',

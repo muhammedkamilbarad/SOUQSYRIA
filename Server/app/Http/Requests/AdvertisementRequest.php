@@ -11,6 +11,8 @@ use App\Enums\MarineType;
 use App\Enums\MotorcycleType;
 use App\Enums\CoolingType;
 use App\Enums\TransmissionType;
+use App\Enums\CarType;
+use App\Enums\HouseType;
 
 class AdvertisementRequest extends FormRequest
 {
@@ -80,6 +82,7 @@ class AdvertisementRequest extends FormRequest
     private function getHouseRules():array
     {
         return [
+            'house_type' => 'required|in:' . implode(',', array_column(HouseType::cases(), 'name')),
             'number_of_rooms' => 'required|integer|min:1',
             'number_of_bathrooms' => 'required|integer|min:1',
             'building_age' => 'required|integer|min:0',
@@ -91,6 +94,7 @@ class AdvertisementRequest extends FormRequest
     private function getCarRules():array
     {
         return [
+            'car_type' => 'required|in:' . implode(',', array_column(CarType::cases(), 'name')),
             'seats' => 'required|integer|min:2|max:9',
             'doors' => 'required|integer|min:2|max:5',
             'seats_color' => 'required|in:' . implode(',', array_column(Colors::cases(), 'name'))
@@ -190,6 +194,8 @@ class AdvertisementRequest extends FormRequest
             'condition.required' => '.الحالة مطلوبة',
             'condition.in' => '.يجب أن تكون الحالة إما جديدة أو مستعملة',
             // House Rules
+            'house_type.required' => '.نوع البيت مطلوب',
+            'house_type.in' => '.نوع البيت المحدد غير صالح',
             'number_of_rooms.required' => '.عدد الغرف مطلوب',
             'number_of_rooms.integer' => '.يجب أن يكون عدد الغرف رقمًا صحيحًا',
             'number_of_rooms.min' => '.يجب أن يكون عدد الغرف 1 على الأقل',
@@ -206,6 +212,8 @@ class AdvertisementRequest extends FormRequest
             'floor.integer' => '.يجب أن يكون رقم الطابق رقمًا صحيحًا',
             'floor.min' => '.يجب أن يكون رقم الطابق قيمة موجبة',
             // Car Rules
+            'car_type.required' => '.نوع السيارة مطلوب',
+            'car_type.in' => '.نوع السيارة المحدد غير صالح',
             'seats.required' => '.عدد المقاعد مطلوب',
             'seats.integer' => '.يجب أن يكون عدد المقاعد رقمًا صحيحًا',
             'seats.min' => '.يجب أن يكون عدد المقاعد 2 على الأقل',

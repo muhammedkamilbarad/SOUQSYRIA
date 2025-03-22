@@ -81,6 +81,7 @@ class AdvertisementUpdateRequest extends FormRequest
     private function getHouseRules():array
     {
         return [
+            'house_type' => 'prohibited',
             'number_of_rooms' => 'prohibited',
             'number_of_bathrooms' => 'prohibited',
             'building_age' => 'prohibited',
@@ -92,6 +93,7 @@ class AdvertisementUpdateRequest extends FormRequest
     private function getCarRules():array
     {
         return [
+            'car_type' => 'prohibited',
             'seats' => 'prohibited',
             'doors' => 'prohibited',
             'seats_color' => 'prohibited'

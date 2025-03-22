@@ -16,6 +16,7 @@ class CarAdvertisementResource extends JsonResource
     {
         return [
             'id' => $this->advertisement_id,
+            'car_type' => $this->car_type,
             'seats' => $this->seats,
             'doors' => $this->doors,
             'seats_color' => $this->seats_color,
