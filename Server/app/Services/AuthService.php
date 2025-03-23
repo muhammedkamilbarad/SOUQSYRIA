@@ -11,16 +11,19 @@ use Illuminate\Support\Facades\Hash;  // Add this if you're hashing passwords
 use Illuminate\Support\Facades\Log;  // Add this
 use Illuminate\Support\Str;
 use App\Models\User;
+use App\Services\SubscribingService;
 
 class AuthService
 {
     protected $repository;
     protected $accessTokenExpiresInMinutes;
     protected $refreshTokenExpiresInMinutes;
+    protected $subscribingService;
 
-    public function __construct(AuthRepository $repository)
+    public function __construct(AuthRepository $repository, SubscribingService $subscribingService)
     {
         $this->repository = $repository;
+        $this->subscribingService = $subscribingService;
     }
     
     // This is just a setter function for setting access and refresh tokens
@@ -77,6 +80,13 @@ class AuthService
             $this->refreshTokenExpiresInMinutes
         );
         
+        // create free subscription for new user
+        $data = [
+            "user_id" => $user->id,
+            "package_id" => 1, // free package for new users
+        ];
+        $this->subscribingService->createSubscribing($data);
+
         return [
             'access_token' => $accessToken,
             'refresh_token' => $refreshToken
