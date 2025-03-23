@@ -13,6 +13,13 @@ class PackageSeeder extends Seeder
     {
         $packages = [
             [
+                "name" => "Free",
+                "properties" => "Free pakcage",
+                "price" => 0,
+                "max_of_ads" => 5,
+                "period" => 90,
+            ],
+            [
                 "name" => "Premium",
                 "properties" => "this is a premium package",
                 "price" => 99.99,
