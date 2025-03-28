@@ -17,4 +17,17 @@ class VerifyAccountRequest extends FormRequest
             'otp' => 'required|string|size:6',
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'email.required' => '.عنوان البريد الإلكتروني مطلوب',
+            'email.email' => '.يرجى إدخال عنوان بريد إلكتروني صالح',
+            'email.exists' => '.البريد الإلكتروني المدخل غير مسجل',
+
+            'otp.required' => '.رمز التحقق مطلوب',
+            'otp.string' => '.يجب أن يكون رمز التحقق نصًا صالحًا',
+            'otp.size' => '.يجب أن يتكون رمز التحقق من 6 أحرف بالضبط',
+        ];
+    }
 }

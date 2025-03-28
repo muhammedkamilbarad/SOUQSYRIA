@@ -87,4 +87,9 @@ class SubscribingService
     {
         $this->subscribingRepository->delete($subscribing);
     }
+
+    public function getCurrentActiveSubscription(int $userId): ?Model
+    {
+        return $this->subscribingRepository->getCurrentActiveSubscription($userId);
+    }
 }

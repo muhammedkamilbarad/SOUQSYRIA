@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class PopularQuestion extends Model
 {
     use HasFactory;
-    protected $fillable = ["question","answer"];
+    protected $fillable = ["question","answer", 'category', 'priority', 'status'];
 
     //
 }

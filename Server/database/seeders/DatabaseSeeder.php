@@ -28,6 +28,15 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             VehicleBrandSeeder::class,
             VehicleModelSeeder::class,
+            PackageSeeder::class,
+            PermissionSeeder::class,
+            RoleSeeder::class,
+            UserSeeder::class,
+            SubscriptionRequestSeeder::class,
+            MarineTypeSeeder::class,
+            FeatureGroupSeeder::class,
+            FeatureSeeder::class,
+            AdvertisementSeeder::class,
         ]);
     }
 }

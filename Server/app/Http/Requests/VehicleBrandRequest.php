@@ -6,24 +6,24 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class VehicleBrandRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    // public function authorize(): bool
-    // {
-    //     return false;
-    // }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
+    // Get the validation rules that apply to the request.
     public function rules(): array
     {
         return [
             'name' => ['required', 'string', 'max:100'],
             'category_id' => ['required', 'exists:categories,id'],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.required' => '.اسم العلامة التجارية مطلوب',
+            'name.string' => '.يجب أن يكون اسم العلامة التجارية نصًا صالحًا',
+            'name.max' => '.يجب ألا يتجاوز اسم العلامة التجارية 100 حرف',
+
+            'category_id.required' => '.معرف الفئة مطلوب',
+            'category_id.exists' => '.الفئة المحددة غير صالحة',
         ];
     }
 }

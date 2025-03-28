@@ -14,4 +14,76 @@ class PackageRepository extends BaseRepository
     {
         parent::__construct($model);
     }
+
+    public function getPackagesWithSubscribersCount()
+    {
+        return $this->model->withCount([
+            'subscribings as active_subscribers_count' => function ($query) {
+                $query->where('expiry_date', '>', now())
+                    ->where('remaining_ads', '>', 0);
+            },
+            'subscribings as total_subscribers_count'
+        ])->get();
+    }
+
+    public function create(array $data): Model
+    {
+        // Create the package
+        $package = $this->model->create($data);
+        
+        // Reload the model with the subscriber counts
+        return $this->model->where('id', $package->id)
+            ->withCount([
+                'subscribings as active_subscribers_count' => function ($query) {
+                    $query->where('expiry_date', '>', now())
+                        ->where('remaining_ads', '>', 0);
+                },
+                'subscribings as total_subscribers_count'
+            ])
+            ->first();
+    }
+
+    public function update(Model $model, array $data): Model
+    {
+        // Perform the update
+        $model->update($data);
+        
+        // Reload the model with the subscriber counts
+        return $this->model->where('id', $model->id)
+            ->withCount([
+                'subscribings as active_subscribers_count' => function ($query) {
+                    $query->where('expiry_date', '>', now())
+                        ->where('remaining_ads', '>', 0);
+                },
+                'subscribings as total_subscribers_count'
+            ])
+            ->first();
+    }
+
+    public function changeStatus(int $packageId): ?Model
+    {
+        try {
+            // First get the package to check its current status
+            $package = $this->model->findOrFail($packageId);
+            
+            // Toggle the status
+            $newStatus = !$package->is_active;
+            $package->update(['is_active' => $newStatus]);
+            
+            // Return the updated package with subscriber counts
+            return $this->model->where('id', $packageId)
+                ->withCount([
+                    'subscribings as active_subscribers_count' => function ($query) {
+                        $query->where('expiry_date', '>', now())
+                            ->where('remaining_ads', '>', 0);
+                    },
+                    'subscribings as total_subscribers_count'
+                ])
+                ->first();
+                
+        } catch (ModelNotFoundException $e) {
+            return null;
+        }
+    }
+
 }

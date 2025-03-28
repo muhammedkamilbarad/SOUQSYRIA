@@ -47,13 +47,16 @@ class PackageController extends Controller
         return response()->json($package, 200);
     }
 
-    public function destroy(int $id)
+    public function changeStatus(int $id)
     {
-        $package = $this->packageService->getPackageById($id);
+        $package = $this->packageService->changeStatus($id);
         if (!$package) {
             return response()->json(['message' => 'Package not found'], 404);
         }
-        $this->packageService->deletePackage($package);
-        return response()->json(['message' => 'Package deleted successfully'], 200);
+
+        return response()->json([
+            'message' => 'Package deactivated successfully',
+            'data' => $package
+        ], 200);
     }
 }

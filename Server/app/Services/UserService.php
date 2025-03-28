@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 
 class UserService
@@ -18,9 +19,13 @@ class UserService
         $this->userRepository = $userRepository;
     }
 
-    public function getAllUsers(): Collection
+    public function getUserWithRoleById(int $id): ?Model
     {
-        return $this->userRepository->getAll();
+        try {
+            return $this->userRepository->getUserWithRole($id);
+        } catch (ModelNotFoundException $e) {
+            return null;
+        }
     }
 
     public function getUserById(int $id): ?Model
@@ -37,17 +42,23 @@ class UserService
 
     public function createUser(array $data): Model
     {
-        if (isset($data['password']))
-        {
+        if (isset($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         }
-        return $this->userRepository->create($data);
+        
+        // set email_verified_at date if the email is verified
+        if (isset($data['is_verified']) && $data['is_verified'] === true) {
+            $data['email_verified_at'] = Carbon::now()->format('Y-m-d H:i:s');
+        }
+
+        $user = $this->userRepository->create($data);
+        
+        return $user;
     }
 
     public function updateUser(Model $user, array $data): Model
     {
-        if (isset($data['password']))
-        {
+        if (isset($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         }
         return $this->userRepository->update($user, $data);
@@ -55,6 +66,25 @@ class UserService
 
     public function deleteUser(Model $user)
     {
+        $user->forceDelete();
+    }
+
+    public function SoftDeleteUser(Model $user)
+    {
         $this->userRepository->delete($user);
+    }
+
+    public function restoreUser(Model $user, int $id): ?Model
+    {
+        $user = $this->userRepository->findTrashed($id);
+        if ($user) {
+            $user->restore();
+        }
+        return $user;
+    }
+
+    public function getAllUsers(array $filters = [], array $searchTerms = [], int $page = 1, int $perPage = 15): array
+    {
+        return $this->userRepository->getUsersWithFiltersAndSearch($filters, $searchTerms, $page, $perPage);
     }
 }

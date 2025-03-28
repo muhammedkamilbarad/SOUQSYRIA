@@ -13,6 +13,18 @@ class RoleRepository extends BaseRepository
         parent::__construct($model);
     }
 
+    public function getRoleWithPermissionsAndUserCount(int $id)
+    {
+        return $this->model->with(['permissions'])
+        ->withCount('users')
+        ->findOrFail($id);
+    }
+
+    public function getAllRolesWithPermissionsAndUserCount()
+    {
+        return $this->model->with(['permissions'])->withCount('users')->get();
+    }
+
     public function create(array $data): Model
     {
         // Validate that `permissions` is present and not empty
@@ -21,6 +33,8 @@ class RoleRepository extends BaseRepository
         // Create the role
         $role = parent::create([
             'name' => $data['name'],
+            'is_editable' => $data['is_editable'],
+            'is_deleteable' => $data['is_deleteable'],
         ]);
 
         /*
@@ -42,6 +56,8 @@ class RoleRepository extends BaseRepository
         // Updating the role
         parent::update($model, [
             'name' => $data['name'] ?? $model->name,
+            'is_editable' => $data['is_editable'] ?? $model->is_editable,
+            'is_deleteable' => $data['is_deleteable'] ?? $model->is_deleteable,
         ]);
 
         // Synchronizing permissions if provided
