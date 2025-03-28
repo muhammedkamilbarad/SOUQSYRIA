@@ -26,6 +26,7 @@ return new class extends Migration
             $table->Enum('ads_status', ['pending', 'accepted', 'rejected'])->default('pending');
             $table->Enum('active_status', ['active', 'inactive'])->default('inactive');
             $table->Enum('type', ['rent', 'sale']);
+            $table->Enum('image_upload_status', ['pending', 'processing', 'completed', 'failed'])->default('pending');
             $table->timestamps();
 
             $table->index('ads_status');

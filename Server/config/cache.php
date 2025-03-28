@@ -74,10 +74,15 @@ return [
             ],
         ],
 
+        // 'redis' => [
+        //     'driver' => 'redis',
+        //     'connection' => 'cache',
+        //     'lock_connection' => 'default',
+        // ],
         'redis' => [
             'driver' => 'redis',
-            'connection' => 'cache',
-            'lock_connection' => 'default',
+            'connection' => 'default', // This must match a connection in config/database.php
+            // 'lock_connection' => 'default', // Optional: for cache locks
         ],
 
         'dynamodb' => [
