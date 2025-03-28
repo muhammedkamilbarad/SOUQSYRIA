@@ -17,6 +17,7 @@ class Advertisement extends Model
         'user_id',
         'ads_status',
         'active_status',
+        'image_upload_status',
         'type',
     ];
 

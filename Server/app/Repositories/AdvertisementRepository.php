@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Enums\CategoryType;
 use App\Repositories\Advertisements\AdvertisementRepositoryFactory;
 use Exception;
+use App\Services\AdvertisementImageService;
 
 
 class AdvertisementRepository extends BaseRepository
@@ -20,7 +21,7 @@ class AdvertisementRepository extends BaseRepository
         parent::__construct($model);
     }
 
-    private function getCommonRelations(): array
+    public function getCommonRelations(): array
     {
         return [
             'saleDetail',
@@ -97,16 +98,10 @@ class AdvertisementRepository extends BaseRepository
         }
     }
 
-    protected function createImages(Advertisement $advertisement, array $images): void
+    protected function createImages(Advertisement $advertisement, array $images)
     {
-        $imagesData = [];
-        foreach($images as $image){
-            $imagesData[] = [
-                'url' => $image->store('images', 'public'),
-                'advs_id' => $advertisement->id,
-            ];
-        }
-        $advertisement->images()->createMany($imagesData);
+        $imageService = app(AdvertisementImageService::class);
+        $batch = $imageService->uploadImageBatch($advertisement, $images);
     }
 
 
