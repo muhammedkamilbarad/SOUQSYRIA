@@ -20,7 +20,7 @@ class AdvertisementRepository extends BaseRepository
         parent::__construct($model);
     }
 
-    private function getCommonRelations(): array
+    public function getCommonRelations(): array
     {
         return [
             'saleDetail',
