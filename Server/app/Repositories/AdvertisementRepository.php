@@ -45,7 +45,7 @@ class AdvertisementRepository extends BaseRepository
 
     public function getByUserId(int $userId)
     {
-        return $this->model->with($this->getCommonRelations())->where('user_id', $userId)->get();
+        return $this->model->with(['user','category'])->where('user_id', $userId)->get();
     }
 
     public function getByIdWithRelations(int $id)
@@ -53,14 +53,9 @@ class AdvertisementRepository extends BaseRepository
         return $this->model->with($this->getCommonRelations())->find($id);
     }
 
-    public function getBySlugWithRelations(string $slug)
-    {
-        return $this->model->with($this->getCommonRelations())->where('slug', $slug)->first();
-    }
-
     public function getAllWithRelations(array $filters = [], int $perPage = 5)
     {
-        $query = $this->model->with($this->getCommonRelations());
+        $query = $this->model->with(['user','category']);
         return AdvertisementFilter::apply($query, $filters)->paginate($perPage);
     }
 

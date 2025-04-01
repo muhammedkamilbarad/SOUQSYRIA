@@ -17,6 +17,7 @@ class AdvertisementDetailResource extends JsonResource
         $data =  [
             'id' => $this->id,
             'title' => $this->title,
+            'slug' => $this->slug,
             'description' => $this->description,
             'price' => $this->price,
             'currency' => $this->currency,

@@ -61,7 +61,7 @@ class AdvertisementController extends Controller
         }
     }
 
-    public function show(int $id)
+    public function show(int $id, string $slug = null)
     {
         try {
             $advertisement = $this->service->getAdvertisementById($id);
