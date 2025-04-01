@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Advertisement extends Model
 {
     protected $fillable = [
         'title',
+        'slug',
         'description',
         'city',
         'price',
@@ -20,6 +22,40 @@ class Advertisement extends Model
         'image_upload_status',
         'type',
     ];
+    
+
+    public static function boot()
+    {
+        parent::boot();
+        static::creating(function ($advertisement) {
+            $advertisement->slug = self::generateSlug($advertisement);
+        });
+        static::updating(function ($advertisement) {
+            if ($advertisement->isDirty('title')) {
+                $advertisement->slug = self::generateSlug($advertisement);
+            }
+        });
+    }
+
+    public static function generateSlug($advertisement)
+    {
+        $title = self::processTitle($advertisement->title);
+        return  $title;
+    }
+
+    public static function processTitle($title)
+    {
+        $words = explode(' ', $title);
+        $processedWords = [];
+        foreach ($words as $word) {
+            if (preg_match('/\p{Arabic}/u', $word)) {
+                $processedWords[] = $word;
+            } else {
+                $processedWords[] = Str::slug($word);
+            }
+        }
+        return implode('-', array_filter($processedWords));
+    }
 
     public function saleDetail()
     {

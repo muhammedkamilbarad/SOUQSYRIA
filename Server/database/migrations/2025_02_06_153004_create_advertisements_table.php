@@ -5,6 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use App\Enums\SyriaCities;
 use App\Enums\CategoryType;
+use Illuminate\Support\Str;
 
 return new class extends Migration
 {
@@ -16,6 +17,7 @@ return new class extends Migration
         Schema::create('advertisements', function (Blueprint $table) {
             $table->id();
             $table->string('title', 255);
+            $table->string('slug');
             $table->text('description');
             $table->decimal('price', 12, 2);
             $table->Enum('currency',['SYP ','TRY','USD'])->default('USD');
@@ -44,4 +46,5 @@ return new class extends Migration
     {
         Schema::dropIfExists('advertisements');
     }
+    
 };
