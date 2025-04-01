@@ -22,6 +22,7 @@ class Advertisement extends Model
         'image_upload_status',
         'type',
     ];
+    
 
     public static function boot()
     {

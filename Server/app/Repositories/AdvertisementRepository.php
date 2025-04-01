@@ -42,6 +42,7 @@ class AdvertisementRepository extends BaseRepository
             },
         ];
     }
+    
 
     public function getByUserId(int $userId)
     {

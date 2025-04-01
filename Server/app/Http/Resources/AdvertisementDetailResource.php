@@ -55,3 +55,4 @@ class AdvertisementDetailResource extends JsonResource
         return $data;
     }
 }
+

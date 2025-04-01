@@ -61,6 +61,7 @@ class AdvertisementController extends Controller
         }
     }
 
+    
     public function show(int $id, string $slug = null)
     {
         try {
