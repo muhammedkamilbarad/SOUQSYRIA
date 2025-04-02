@@ -179,9 +179,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/profile', [UserController::class, 'getProfile']);
     Route::get('/auth-me', [UserController::class, 'getAuthMe']);
     Route::get('/user-permissions', [UserController::class, 'getUserPermissions']);
-
-    // Landing Page
-    Route::get('/home-page', [HomePageController::class, 'index']);
 });
 
 
@@ -207,3 +204,8 @@ Route::post('/resend-otp', [AuthController::class, 'resendOtp'])
     ->name('auth.resend-otp');
 
 Route::post('/verify-account', [AuthController::class, 'verifyAccount']);
+
+// Landing Page
+Route::get('/home-page', [HomePageController::class, 'index']);
+
+Route::get('advertisement/{id}/{slug}', [AdvertisementController::class, 'show']);
