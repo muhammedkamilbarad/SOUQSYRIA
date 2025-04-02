@@ -13,6 +13,7 @@ use App\Models\MarineAdvertisement;
 use App\Models\Image; 
 use App\Models\Feature;
 use App\Models\SaleDetail;
+use App\Models\RentDetail;
 
 // Enums
 use App\Enums\CategoryType;
@@ -35,11 +36,11 @@ class AdvertisementSeeder extends Seeder
          | 1) Configure how many ads for each category
          |----------------------------------------------------------------------
          */
-        $landCount       = 1000;
-        $houseCount      = 2500;
-        $carCount        = 2500;
-        $marineCount     = 1000;
-        $motorcycleCount = 2000;
+        $landCount       = 100;
+        $houseCount      = 250;
+        $carCount        = 250;
+        $marineCount     = 100;
+        $motorcycleCount = 200;
 
         /*
          |----------------------------------------------------------------------
@@ -132,6 +133,11 @@ class AdvertisementSeeder extends Seeder
             if ($adType === 'sale') {
                 $this->createSaleDetail($ad);
             }
+            
+            // If the ad is for rent, create RentDetail
+            if ($adType === 'rent') {
+                $this->createRentDetail($ad);
+            }
 
             // Attach the list of land images to this advertisement
             $this->createCategoryImages($ad, $imagesForLand);
@@ -177,6 +183,11 @@ class AdvertisementSeeder extends Seeder
             // If the ad is for sale, create SaleDetail
             if ($adType === 'sale') {
                 $this->createSaleDetail($ad);
+            }
+
+            // If the ad is for rent, create RentDetail
+            if ($adType === 'rent') {
+                $this->createRentDetail($ad);
             }
 
             // Attach the list of house images to this advertisement
@@ -242,6 +253,11 @@ class AdvertisementSeeder extends Seeder
                 $this->createSaleDetail($ad);
             }
 
+            // If the ad is for rent, create RentDetail
+            if ($adType === 'rent') {
+                $this->createRentDetail($ad);
+            }
+
             // Attach car images
             $this->createCategoryImages($ad, $imagesForCar);
 
@@ -286,6 +302,11 @@ class AdvertisementSeeder extends Seeder
             // If the ad is for sale, create SaleDetail
             if ($adType === 'sale') {
                 $this->createSaleDetail($ad);
+            }
+
+            // If the ad is for rent, create RentDetail
+            if ($adType === 'rent') {
+                $this->createRentDetail($ad);
             }
 
             // Attach marine images
@@ -349,6 +370,11 @@ class AdvertisementSeeder extends Seeder
                 $this->createSaleDetail($ad);
             }
 
+            // If the ad is for rent, create RentDetail
+            if ($adType === 'rent') {
+                $this->createRentDetail($ad);
+            }
+
             // Attach motorcycle images
             $this->createCategoryImages($ad, $imagesForMotorcycle);
 
@@ -400,6 +426,16 @@ class AdvertisementSeeder extends Seeder
         SaleDetail::create([
             'advertisement_id' => $ad->id,
             'is_swap'          => $randomIsSwap,
+        ]);
+    }
+
+    // Randomly select from allowed values
+    protected function createRentDetail(Advertisement $ad)
+    {
+        $periods = ['daily', 'weekly', 'monthly', 'yearly'];
+        RentDetail::create([
+            'advertisement_id' => $ad->id,
+            'rental_period'    => $periods[array_rand($periods)],
         ]);
     }
 }
