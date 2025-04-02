@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 use App\Enums\CategoryType;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
-
+use App\Jobs\SendRejectionMessageJob;
 
 class AdvertisementService
 {
@@ -162,6 +162,19 @@ class AdvertisementService
             'ads_status' => $data['status'],
             'active_status' => ($data['status'] === 'accepted') ? 'active' : 'inactive'
         ];
+
+        // Send rejection email if the status is rejected
+        if ($data['status'] === 'rejected' && isset($data['message']))
+        {
+            // Ensure $data['message'] is a string; fallback to a default if it’s not
+            $rejectionMessage = is_string($data['message']) ? $data['message'] : 'No specific reason provided.';
+            Log::info('Rejection message is: ' . $rejectionMessage . '....' . $advertisement->user->email);
+            SendRejectionMessageJob::dispatch(
+                $advertisement->user->email,
+                $advertisement->user->name,
+                $rejectionMessage
+            );
+        }
         return $this->repository->update($advertisement, $updateData);
     }
 
