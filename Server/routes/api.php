@@ -175,6 +175,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     // Auth
+    Route::put('/change-password', [AuthController::class, 'changePassword']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [UserController::class, 'getProfile']);
     Route::get('/auth-me', [UserController::class, 'getAuthMe']);

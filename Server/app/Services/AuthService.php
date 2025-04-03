@@ -227,4 +227,18 @@ class AuthService
         // Delete refresh tokens
         $this->repository->deleteAllRefreshTokens($user->id);
     }
+
+    public function changePassword(User $user, string $currentPassword, string $newPassword): bool
+    {
+        // Verify current password
+        if (!Hash::check($currentPassword, $user->password))
+        {
+            return false;
+        }
+
+        // Update password
+        $this->repository->updatePassword($user->id, $newPassword);
+
+        return true;
+    }
 }

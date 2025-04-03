@@ -83,4 +83,11 @@ class AuthRepository extends BaseRepository
                         ->orWhere('phone', $login_input)
                         ->first();
     }
+
+    public function updatePassword(int $userId, string $newPassword): void
+    {
+        $user = $this->model->findOrFail($userId);
+        $user->password = Hash::make($newPassword);
+        $user->save();
+    }
 }
