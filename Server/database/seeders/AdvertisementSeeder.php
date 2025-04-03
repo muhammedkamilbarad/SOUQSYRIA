@@ -291,6 +291,20 @@ class AdvertisementSeeder extends Seeder
                 'active_status'=> $active_status,
                 'type'         => $adType,
             ]);
+            VehicleAdvertisement::create([
+                'advertisement_id'  => $ad->id,
+                'color'             => $colors[array_rand($colors)],
+                'mileage'           => rand(5000, 200000),
+                'year'              => rand(2000, 2023),
+                'brand_id'          => $brandIds[$i],
+                'model_id'          => $modelIds[$i],
+                'transmission_type' => $transmissions[array_rand($transmissions)],
+                'fuel_type'         => $fuelTypes[array_rand($fuelTypes)],
+                'horsepower'        => rand(80, 300),
+                'cylinders'         => rand(3, 8),
+                'engine_capacity'   => rand(10, 30) / 10,
+                'condition'         => ['NEW','USED'][array_rand(['NEW','USED'])],
+            ]);
 
             MarineAdvertisement::create([
                 'advertisement_id' => $ad->id,
