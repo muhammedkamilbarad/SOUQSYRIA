@@ -11,6 +11,9 @@ use App\Http\Requests\ResendOTPRequest;
 use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RefreshTokenRequest;
+use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Requests\ForgotPasswordRequest;
+use App\Http\Requests\ResetPasswordRequest;
 
 class AuthController extends Controller
 {
@@ -152,5 +155,54 @@ class AuthController extends Controller
         }
         
         return response()->json(['error' => 'Unauthorized'], 401);
+    }
+
+    public function changePassword(ChangePasswordRequest $request): JsonResponse
+    {
+        $result = $this->service->changePassword(
+            $request->user(),
+            $request->current_password,
+            $request->new_password
+        );
+
+        if (!$result)
+        {
+            return response()->json([
+                'error' => 'كلمة المرور الحالية غير صحيحة.'
+            ], 400);
+        }
+
+        return response()->json([
+            'message' => 'تم تغيير كلمة المرور بنجاح.'
+        ], 200);
+    }
+
+    public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
+    {
+        $result = $this->service->sendPasswordResetLink($request->email);
+
+        return response()->json([
+            'message' => 'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.'
+        ], 200);
+    }
+
+    public function resetPassword(ResetPasswordRequest $request): JsonResponse
+    {
+        $result = $this->service->resetPassword(
+            $request->email,
+            $request->token,
+            $request->password
+        );
+
+        if (!$result)
+        {
+            return response()->json([
+                'error' => 'رمز غير صالح أو رمز منتهي الصلاحية.'
+            ], 400);
+        }
+
+        return response()->json([
+            'message' => 'تم إعادة تعيين كلمة المرور بنجاح.'
+        ], 200);
     }
 }

@@ -7,6 +7,7 @@ use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Hash;
 use App\Models\RefreshToken;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AuthRepository extends BaseRepository
 {
@@ -82,5 +83,54 @@ class AuthRepository extends BaseRepository
         return $this->model->where('email', $login_input)
                         ->orWhere('phone', $login_input)
                         ->first();
+    }
+
+    public function updatePassword(int $userId, string $newPassword): void
+    {
+        $user = $this->model->findOrFail($userId);
+        $user->password = Hash::make($newPassword);
+        $user->save();
+    }
+
+    public function storeResetToken(string $email, string $token): void
+    {
+        // Using Laravel's DB facade to work with the password_resets table
+        DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $email],
+            [
+                'token' => Hash::make($token),
+                'created_at' => now()
+            ]
+        );
+    }
+
+    public function validateResetToken(string $email, string $token): bool
+    {
+        $resetRecord = DB::table('password_reset_tokens')
+            ->where('email', $email)
+            ->first();
+
+        if (!$resetRecord) {
+            return false;
+        }
+
+        // Check if token is valid
+        if (!Hash::check($token, $resetRecord->token)) {
+            return false;
+        }
+
+        // Check if token is expired (e.g., 60 minutes)
+        if (Carbon::parse($resetRecord->created_at)->addMinutes(60)->isPast()) {
+            // Token expired
+            $this->deleteResetToken($email);
+            return false;
+        }
+
+        return true;
+    }
+
+    public function deleteResetToken(string $email): void
+    {
+        DB::table('password_reset_tokens')->where('email', $email)->delete();
     }
 }
