@@ -15,6 +15,8 @@ return new class extends Migration
             $table->foreignId('advertisement_id')->primary()->constrained('advertisements')->onDelete('cascade');
             $table->decimal('square_meters', 10, 2);
             $table->timestamps();
+
+            $table->index('square_meters');
         });
     }
 

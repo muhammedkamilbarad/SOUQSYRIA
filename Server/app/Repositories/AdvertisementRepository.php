@@ -12,6 +12,7 @@ use App\Enums\CategoryType;
 use App\Repositories\Advertisements\AdvertisementRepositoryFactory;
 use Exception;
 use App\Services\AdvertisementImageService;
+use App\Filters\HomePageAdvertisementFilter;
 
 
 class AdvertisementRepository extends BaseRepository
@@ -42,7 +43,7 @@ class AdvertisementRepository extends BaseRepository
             },
         ];
     }
-    
+
 
     public function getByUserId(int $userId)
     {
@@ -58,6 +59,14 @@ class AdvertisementRepository extends BaseRepository
     {
         $query = $this->model->with(['user','category']);
         return AdvertisementFilter::apply($query, $filters)->paginate($perPage);
+    }
+
+    public function getAllForHomePage(array $filters = [], int $perPage = 5)
+    {
+        $query = $this->model->with($this->getCommonRelations());
+        $query->where('active_status', 'active');
+        $query->where('ads_status', 'accepted');
+        return HomePageAdvertisementFilter::apply($query, $filters)->paginate($perPage);
     }
 
     public function createWithRelated(array $advertisementData, array $specificData)

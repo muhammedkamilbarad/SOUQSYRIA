@@ -20,6 +20,8 @@ return new class extends Migration
             $table->integer('doors')->unsigned();
             $table->Enum('seats_color', array_column(Colors::cases(), 'name'));
             $table->timestamps();
+
+            $table->index('car_type');
         });
     }
 

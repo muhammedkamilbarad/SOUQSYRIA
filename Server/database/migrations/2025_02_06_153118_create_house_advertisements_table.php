@@ -21,6 +21,10 @@ return new class extends Migration
             $table->decimal('square_meters', 10, 2);
             $table->integer('floor')->unsigned();
             $table->timestamps();
+
+            $table->index('house_type');
+            $table->index('number_of_rooms');
+            $table->index('square_meters');
         });
     }
 

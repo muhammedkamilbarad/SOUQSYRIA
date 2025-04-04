@@ -35,6 +35,10 @@ class AdvertisementService
     {
         return $this->repository->getAllWithRelations($filters, $perPage);
     }
+    public function getAllAdvertisementsForHomePage(array $filters = [], int $perPage = 5)
+    {
+        return $this->repository->getAllForHomePage($filters, $perPage);
+    }
 
     public function create(array $data, User $user)
     {

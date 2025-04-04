@@ -17,6 +17,8 @@ return new class extends Migration
             $table->decimal('length', 8, 2)->nullable();
             $table->integer('max_capacity')->unsigned()->nullable();
             $table->timestamps();
+
+            $table->index('marine_type');
         });
     }
 
