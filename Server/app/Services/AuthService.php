@@ -241,4 +241,43 @@ class AuthService
 
         return true;
     }
+
+    public function sendPasswordResetLink(string $email): void
+    {
+        $token = $this->generateResetToken($email);
+
+        // Send email with reset link
+        // here sending reset link with email
+        $user = $this->repository->findByEmail($email);
+        // notifying
+        Log::info('Password reset link for ' . $email . ': ' . url('/api/reset-password?token=' . $token));
+    }
+
+    public function generateResetToken(string $email): string
+    {
+        // Create a token and store it in the password_resets table
+        $token = Str::random(60);
+
+        $this->repository->storeResetToken($email, $token);
+
+        return $token;
+    }
+
+    public function resetPassword(string $email, string $token, string $newPassword): bool
+    {
+        // Validate token
+        if (!$this->repository->validateResetToken($email, $token))
+        {
+            return false;
+        }
+        
+        // Update password
+        $user = $this->repository->findByEmail($email);
+        $this->repository->updatePassword($user->id, $newPassword);
+
+        // Delete the used token
+        $this->repository->deleteResetToken($email);
+
+        return true;
+    }
 }
