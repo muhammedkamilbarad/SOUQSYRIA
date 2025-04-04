@@ -21,6 +21,7 @@ class AuthController extends Controller
     // Token expiration times
     protected $accessTokenExpiresInMinutes = 1000; // 1000 minutes default
     protected $refreshTokenExpiresInMinutes = 3000; // 3000 minutes default
+    protected $otpExpirationInMinutes = 3; // 3 minutes
 
     public function __construct(AuthService $service)
     {
@@ -30,6 +31,8 @@ class AuthController extends Controller
             $this->accessTokenExpiresInMinutes,
             $this->refreshTokenExpiresInMinutes
         );
+
+        $this->service->setOtpExpirationTime($this->otpExpirationInMinutes);
     }
 
     public function register(RegisterRequest $request): JsonResponse

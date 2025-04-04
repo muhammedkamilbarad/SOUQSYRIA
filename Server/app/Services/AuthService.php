@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Log;  // Add this
 use Illuminate\Support\Str;
 use App\Models\User;
 use App\Services\SubscribingService;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OtpMail;
+use App\Jobs\SendOtpEmailJob;
 
 class AuthService
 {
@@ -19,6 +22,7 @@ class AuthService
     protected $accessTokenExpiresInMinutes;
     protected $refreshTokenExpiresInMinutes;
     protected $subscribingService;
+    protected $otpExpirationsTime;
 
     public function __construct(AuthRepository $repository, SubscribingService $subscribingService)
     {
@@ -33,6 +37,12 @@ class AuthService
         $this->refreshTokenExpiresInMinutes = $refreshTokenMinutes;
     }
 
+    // This is just a setter function for OTP Expiration time
+    public function setOtpExpirationTime(int $otpExpirationsTime=3): void
+    {
+        $this->otpExpirationsTime = $otpExpirationsTime;
+    }
+
     public function registerUser(array $data)
     {
         Log::info('Register section start');
@@ -40,11 +50,18 @@ class AuthService
         
         // Generate OTP for email verification
         $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-        Cache::put('otp_' . $data['email'], $otp, now()->addMinutes(3));
+        Cache::put('otp_' . $data['email'], $otp, now()->addMinutes($this->otpExpirationsTime));
 
         //@@ TO-DO Send OTP to email
         Log::info('OTP for ' . $data['email'] . ': ' . $otp);
 
+        // Send OTP email asynchronously
+        SendOtpEmailJob::dispatch(
+            $data['email'],
+            $otp,
+            $data['name'],
+            $this->otpExpirationsTime
+        );
         return [
             'user' => $user
         ];
@@ -101,10 +118,19 @@ class AuthService
         }
         
         $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-        Cache::put('otp_' . $email, $otp, now()->addMinutes(3));
+        Cache::put('otp_' . $email, $otp, now()->addMinutes($this->otpExpirationsTime));
 
         //@@ TO-DO Send OTP to email
         Log::info('Regenerated OTP for ' . $email . ': ' . $otp);
+
+
+        // Send OTP email asynchronously
+        SendOtpEmailJob::dispatch(
+            $user['email'],
+            $otp,
+            $user['name'],
+            $this->otpExpirationsTime
+        )->onQueue('otp'); 
         
         return $otp;
     }
