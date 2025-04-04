@@ -63,17 +63,11 @@ class HomePageService
             ->toArray();
     }
 
-
     private function getPopularQuestionsPerCategory(): array
     {
-        return PopularQuestion::where('priority', 'High')
-            ->where('status', true)
-            ->select('category', 'question', 'answer')
-            ->groupBy('category', 'question', 'answer')
+        return PopularQuestion::where('status', true)
+            ->select('question', 'answer', 'priority')
             ->get()
-            ->groupBy('category')
-            ->map(function ($items) {
-                return $items->first();
-            })->toArray();
+            ->toArray();
     }
 }
