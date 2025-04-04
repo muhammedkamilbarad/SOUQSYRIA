@@ -204,9 +204,14 @@ Route::post('/resend-otp', [AuthController::class, 'resendOtp'])
     ->middleware('throttle.login:3,15') // 3 attempts, 15 minute decay
     ->name('auth.resend-otp');
 
-Route::post('/verify-account', [AuthController::class, 'verifyAccount']);
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
+    ->middleware('throttle.login:3,10') // 3 attempts, 10 minute decay
+    ->name('auth.forgot-password');
+
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+
 
 // Landing Page
 Route::get('/home-page', [HomePageController::class, 'index']);
-
 Route::get('advertisement/{id}/{slug}', [AdvertisementController::class, 'show']);
+
