@@ -15,6 +15,7 @@ use App\Services\SubscribingService;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OtpMail;
 use App\Jobs\SendOtpEmailJob;
+use App\Jobs\SendPasswordResetEmailJob;
 
 class AuthService
 {
@@ -275,8 +276,20 @@ class AuthService
         // Send email with reset link
         // here sending reset link with email
         $user = $this->repository->findByEmail($email);
-        // notifying
-        Log::info('Password reset link for ' . $email . ': ' . url('/api/reset-password?token=' . $token));
+
+        // Define the reset URL with the token
+        $resetUrl = url('/api/reset-password?token=' . $token);
+        
+        // Logging the reset link
+        Log::info('Password reset link for ' . $email . ': ' . $resetUrl);
+
+        // Dispatching the job to send the password reset email
+        SendPasswordResetEmailJob::dispatch(
+            $user->email,
+            $user->name,
+            $resetUrl,
+            config('auth.passwords.users.expire') // typically 60 minutes
+        );
     }
 
     public function generateResetToken(string $email): string

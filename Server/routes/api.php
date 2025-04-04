@@ -209,6 +209,7 @@ Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
     ->name('auth.forgot-password');
 
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+Route::post('/verify-account', [AuthController::class, 'verifyAccount']);
 
 
 // Landing Page
