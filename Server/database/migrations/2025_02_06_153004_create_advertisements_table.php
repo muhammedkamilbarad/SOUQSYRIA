@@ -36,6 +36,7 @@ return new class extends Migration
             $table->index(['type']);
             $table->index(['city','category_id']);
             $table->index(['user_id']);
+            $table->index(['price']);
         });
     }
 
@@ -46,5 +47,5 @@ return new class extends Migration
     {
         Schema::dropIfExists('advertisements');
     }
-    
+
 };

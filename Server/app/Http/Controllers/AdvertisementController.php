@@ -10,6 +10,9 @@ use App\Http\Resources\AdvertisementDetailResource;
 use App\Http\Resources\AdvertisementCollection;
 use App\Http\Requests\AdvertisementProcessRequest;
 use App\Http\Requests\AdvertisementUpdateRequest;
+use App\Http\Resources\AdvertisementResource;
+
+
 
 class AdvertisementController extends Controller
 {
@@ -61,8 +64,8 @@ class AdvertisementController extends Controller
         }
     }
 
-    
-    public function show(int $id, string $slug = null)
+
+    public function show(int $id)
     {
         try {
             $advertisement = $this->service->getAdvertisementById($id);
@@ -128,6 +131,50 @@ class AdvertisementController extends Controller
         try {
             $result = $this->service->updateAdvertisement($id, $request->validated(), $request->user());
             return response()->json($result, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function getAdvertisementsForHomePage(Request $request)
+    {
+        try {
+            $filters = $request->only([
+                'category',
+                'type',
+                'city',
+                'minPrice',
+                'maxPrice',
+                'search',
+                'sort_by',
+                'sort_direction',
+                'brand',
+                'model',
+                'color',
+                'fuel_type',
+                'transmission_type',
+                'number_of_rooms',
+                'house_type',
+                'motorcycle_type',
+                'cooling_type',
+                'marine_type',
+                'car_type',
+                'per_page',
+                'condition',
+                'year',
+                'min_square_meters',
+                'max_square_meters',
+            ]);
+            $perPage = $request->get('per_page', 30);
+            $advertisements = $this->service->getAllAdvertisementsForHomePage($filters, $perPage);
+            //\Log::info($advertisements->toSql());
+            return response()->json([
+                'success' => true,
+                'data'    => new AdvertisementCollection($advertisements),
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

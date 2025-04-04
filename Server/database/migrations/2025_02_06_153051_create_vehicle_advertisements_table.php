@@ -29,7 +29,7 @@ return new class extends Migration
             $table->Enum('condition', ['NEW', 'USED'])->default('USED');
             $table->timestamps();
 
-            $table->index('condition');
+            $table->index('color');
             $table->index(['brand_id', 'model_id']);
         });
     }
