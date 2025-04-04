@@ -30,6 +30,8 @@ class ThrottleLogins
         } elseif ($request->route()->named('auth.resend-otp') && $response->getStatusCode() === 200) {
             // Increment counter even for successful OTP resend
             RateLimiter::hit($key, 60 * $decayMinutes);
+        } elseif ($request->route()->named('auth.forgot-password') && $response->getStatusCode() === 200) {
+            RateLimiter::hit($key, 60 * $decayMinutes); 
         } elseif ($response->getStatusCode() !== 200) {
             // Increment for failed login/refresh/resend-otp attempts
             if (!$request->route()->named('auth.register')) {
@@ -72,6 +74,11 @@ class ThrottleLogins
             // For OTP resend, use email/phone + IP
             $identifier = $request->input('email') ?? $request->input('phone') ?? 'unknown';
             return 'resend_otp:' . Str::lower($identifier) . '|' . $request->ip();
+        }
+
+        if ($request->route()->named('auth.forgot-password')) {
+            $identifier = $request->input('email') ?? $request->ip();
+            return 'forgot_password:' . Str::lower($identifier) . '|' . $request->ip();
         }
 
         // Fallback to IP only
