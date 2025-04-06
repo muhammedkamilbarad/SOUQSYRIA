@@ -68,10 +68,10 @@ class AuthService
         ];
     }
 
-    public function verifyEmail(string $email, int $otp)
+    public function verifyEmail(string $email, string $otp)
     {
         $storedOtp = Cache::get('otp_' . $email);
-        if (!$storedOtp || $storedOtp !== (string)$otp) {
+        if (!$storedOtp || $storedOtp !== $otp) {
             return false;
         }
         
