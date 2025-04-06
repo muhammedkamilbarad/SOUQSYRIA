@@ -152,7 +152,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/', [AdvertisementController::class, 'store'])->middleware('permission:create_ad');
         Route::put('/{id}', [AdvertisementController::class, 'update'])->middleware('permission:update_ad');
         Route::delete('/{id}', [AdvertisementController::class, 'destroy'])->middleware('permission:delete_ad');
-        Route::post('/process', [AdvertisementController::class, 'process'])->middleware('permission:process_ad');
+        Route::post('/{id}/process', [AdvertisementController::class, 'process'])->middleware('permission:process_ad');
     });
 
     // Feature Routes
@@ -214,5 +214,6 @@ Route::post('/verify-account', [AuthController::class, 'verifyAccount']);
 
 // Landing Page
 Route::get('/home-page', [HomePageController::class, 'index']);
-Route::get('advertisement/{id}/{slug}', [AdvertisementController::class, 'show']);
-
+// Route::get('advertisement/{id}/{slug}', [AdvertisementController::class, 'show']);
+Route::get('advertisement/{id}', [AdvertisementController::class, 'advertisementDetails']);
+Route::get('all-advertisements', [AdvertisementController::class, 'getAdvertisementsForHomePage']);
