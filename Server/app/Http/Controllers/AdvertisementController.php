@@ -11,6 +11,8 @@ use App\Http\Resources\AdvertisementCollection;
 use App\Http\Requests\AdvertisementProcessRequest;
 use App\Http\Requests\AdvertisementUpdateRequest;
 use App\Http\Resources\AdvertisementResource;
+use App\Http\Resources\SimilarAdvertisementCollection;
+
 
 
 
@@ -182,4 +184,47 @@ class AdvertisementController extends Controller
             ], 400);
         }
     }
+
+    public function advertisementDetails(Request $request, int $id)
+    {
+        try {
+            $limit = $request->get('limit', 5);
+
+            // Validate limit
+            if (!is_numeric($limit) || $limit < 1 || $limit > 50) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid limit parameter. Must be between 1 and 50.'
+                ], 400);
+            }
+
+            // Fetch main advertisement
+            $advertisement = $this->service->getAdvertisementById($id);
+            if (!$advertisement) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Advertisement not found'
+                ], 404);
+            }
+
+            // Fetch similar advertisements
+            $similarAds = $this->service->getSimilarAdvertisements($id, (int)$limit);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'advertisement' => new AdvertisementDetailResource($advertisement),
+                    'similar_advertisements' => new SimilarAdvertisementCollection($similarAds),
+                ]
+            ], 200);
+        } catch (\Exception $e) {
+            \Log::error('Error showing advertisement details: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching the advertisement'
+            ], 500);
+        }
+    }
+
 }

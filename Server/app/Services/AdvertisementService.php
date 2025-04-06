@@ -10,6 +10,13 @@ use App\Enums\CategoryType;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 use App\Jobs\SendRejectionMessageJob;
+use App\Services\RecommendationStrategies\CarRecommendationStrategy;
+use App\Services\RecommendationStrategies\HouseRecommendationStrategy;
+use App\Services\RecommendationStrategies\LandRecommendationStrategy;
+use App\Services\RecommendationStrategies\MarineRecommendationStrategy;
+use App\Services\RecommendationStrategies\MotorcycleRecommendationStrategy;
+use App\Services\RecommendationStrategies\RecommendationStrategyInterface;
+use Illuminate\Database\Eloquent\Collection;
 
 class AdvertisementService
 {
@@ -252,6 +259,47 @@ class AdvertisementService
             $specificData['rent_details'] = $data['rent_details'];
         }
         return $specificData;
+    }
+
+    // Get similar advertisements based on the given advertisement ID
+    public function getSimilarAdvertisements(int $advertisementId, int $limit = 5): Collection
+    {
+        Log::info("Starting getSimilarAdvertisements with ID: $advertisementId and limit: $limit");
+        
+        // Load advertisement with relationships
+        $advertisement = $this->repository->getByIdWithRelations($advertisementId);
+        $categoryId = $advertisement->category_id;
+        
+        // Get base query for similar advertisements
+        $query = $this->repository->getSimilarAdvertisementsBaseQuery($advertisementId, $categoryId);
+        
+        // Get the appropriate strategy for this category
+        $strategy = $this->getRecommendationStrategy($categoryId);
+        
+        // Add necessary relations to the query based on the strategy
+        $query = $strategy->addRelationsToQuery($query);
+        
+        // Use the strategy to get similar advertisements
+        return $strategy->getSimilarAdvertisements($advertisement, $query, $limit);
+    }
+    
+    // Factory method to get the appropriate recommendation strategy
+    private function getRecommendationStrategy(int $categoryId): RecommendationStrategyInterface
+    {
+        switch ($categoryId) {
+            case CategoryType::LAND->value:
+                return new LandRecommendationStrategy($this->repository);
+            case CategoryType::HOUSE->value:
+                return new HouseRecommendationStrategy($this->repository);
+            case CategoryType::CAR->value:
+                return new CarRecommendationStrategy($this->repository);
+            case CategoryType::MARINE->value:
+                return new MarineRecommendationStrategy($this->repository);
+            case CategoryType::MOTORCYCLE->value:
+                return new MotorcycleRecommendationStrategy($this->repository);
+            default:
+                throw new \InvalidArgumentException("No strategy found for category ID: $categoryId");
+        }
     }
 }
 

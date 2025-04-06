@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Builder;
 use App\Filters\AdvertisementFilter;
 use App\Models\User;
 use App\Repositories\BaseRepository;
@@ -167,5 +168,27 @@ class AdvertisementRepository extends BaseRepository
         }
         $advertisement->images()->delete();
         $this->createImages($advertisement, $images);
+    }
+
+    // Get base query for similar advertisements
+    public function getSimilarAdvertisementsBaseQuery(int $advertisementId, int $categoryId): Builder
+    {
+        return $this->model->where('category_id', $categoryId)
+            ->where('id', '!=', $advertisementId)
+            ->where('active_status', true);
+    }
+
+    // Get candidates from the same city
+    public function getCandidatesFromSameCity(Builder $query, string $city): Collection
+    {
+        $sameCityQuery = clone $query;
+        return $sameCityQuery->where('city', $city)->get();
+    }
+
+    // Get candidates from different cities
+    public function getCandidatesFromOtherCities(Builder $query, string $city): Collection
+    {
+        $otherCityQuery = clone $query;
+        return $otherCityQuery->where('city', '!=', $city)->get();
     }
 }
