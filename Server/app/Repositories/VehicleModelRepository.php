@@ -14,4 +14,9 @@ class VehicleModelRepository extends BaseRepository
     {
         parent::__construct($model);
     }
+
+    public function getAll(): Collection
+    {
+        return $this->model->with('vehicleBrand')->get();
+    }
 }
