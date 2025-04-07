@@ -14,4 +14,17 @@ class VehicleBrandRepository extends BaseRepository
     {
         parent::__construct($model);
     }
+
+    public function getBrandsByCategory(?int $category_id): Collection
+    {
+        if ($category_id)
+        {
+            $brands =  $this->model->where('category_id', $category_id)->get();
+        }
+        else
+        {
+            $brands =  $this->model->all();
+        }
+        return $brands;
+    }
 }
