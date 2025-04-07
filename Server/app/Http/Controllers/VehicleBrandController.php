@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\VehicleModel;
 use App\Services\VehicleBrandService;
 use App\Http\Requests\VehicleBrandRequest;
+use App\Http\Requests\GetBrandByCategoryRequest;
 
 class VehicleBrandController extends Controller
 {
@@ -58,5 +59,26 @@ class VehicleBrandController extends Controller
         }
         $this->vehicleBrandService->deleteVehicleBrand($vehicleBrand);
         return response()->json(['message' => 'Vehicle brand deleted successfully'], 200);
+    }
+
+    public function getBrandsByCategory(GetBrandByCategoryRequest $request)
+    {
+        try
+        {
+            \Log::info("In Controller");
+            $brands = $this->vehicleBrandService->getBrandsByCategory($request->validated());
+            \Log::info('Brands => '. $brands);
+            return response()->json([
+                'success' => true,
+                'data' => $brands
+            ], 200);
+        } catch (\Exception $e)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching vehicle brands.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

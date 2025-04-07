@@ -48,4 +48,9 @@ class VehicleModelService
     {
         $this->vehicleModelRepository->delete($vehicleModel);
     }
+
+    public function getVehicleModelsByBrandId(int $brandId): Collection
+    {
+        return $this->vehicleModelRepository->getByBrandId($brandId);
+    }
 }

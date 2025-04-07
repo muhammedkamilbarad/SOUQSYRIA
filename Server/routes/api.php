@@ -219,3 +219,6 @@ Route::get('advertisement/{id}', [AdvertisementController::class, 'advertisement
 Route::get('all-advertisements', [AdvertisementController::class, 'getAdvertisementsForHomePage']);
 
 Route::get('check-auth', [AuthController::class, 'checkAuth']);
+
+Route::get('brand/{id}/models', [VehicleModelController::class, 'getVehicleModelsByBrandId']);
+Route::get('brands', [VehicleBrandController::class, 'getBrandsByCategory']);

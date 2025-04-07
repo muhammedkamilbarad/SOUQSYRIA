@@ -59,4 +59,21 @@ class VehicleModelController extends Controller
         $this->vehicleModelService->deleteVehicleModel($vehicleModel);
         return response()->json(['message' => 'Vehicle model deleted successfully'], 200);
     }
+
+    public function getVehicleModelsByBrandId(int $brandId)
+    {
+        
+        try {
+            $vehicleModles = $this->vehicleModelService->getVehicleModelsByBrandId($brandId);
+            return response()->json([
+                'success' => true,
+                'data'    => $vehicleModles,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
 }
