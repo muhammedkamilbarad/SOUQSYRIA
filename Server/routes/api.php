@@ -217,3 +217,5 @@ Route::get('/home-page', [HomePageController::class, 'index']);
 // Route::get('advertisement/{id}/{slug}', [AdvertisementController::class, 'show']);
 Route::get('advertisement/{id}', [AdvertisementController::class, 'advertisementDetails']);
 Route::get('all-advertisements', [AdvertisementController::class, 'getAdvertisementsForHomePage']);
+
+Route::get('check-auth', [AuthController::class, 'checkAuth']);

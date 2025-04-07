@@ -319,4 +319,58 @@ class AuthService
 
         return true;
     }
+
+    // Check if the user is authenticated
+    public function checkAuth($request): bool
+    { 
+        // First check if there's an authenticated user on the request
+        $user = $request->user();
+        if ($user) {
+            return true;
+        }
+        
+        // If no user found via request, try to get the token from cookie
+        $accessToken = $request->cookie('access_token');
+        if (!$accessToken) {
+            return false;
+        }
+        
+        try {
+            // Parse the token to get its ID and hash
+            $tokenParts = explode('|', $accessToken, 2);
+            
+            // If token format is invalid
+            if (count($tokenParts) !== 2) {
+                return false;
+            }
+            
+            $tokenId = $tokenParts[0];
+            
+            // Find the token in the database
+            $tokenModel = \Laravel\Sanctum\PersonalAccessToken::find($tokenId);
+            
+            if (!$tokenModel) {
+                return false;
+            }
+            
+            // Check if token has expired
+            if ($tokenModel->expires_at && now()->gt($tokenModel->expires_at)) {
+                return false;
+            }
+            
+            // Get the associated user
+            $user = $tokenModel->tokenable;
+            if (!$user) {
+                return false;
+            }
+            
+            if (!$user->is_verified) {
+                return false;
+            }
+            
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
 }

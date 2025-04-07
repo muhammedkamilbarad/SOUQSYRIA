@@ -208,4 +208,11 @@ class AuthController extends Controller
             'message' => 'تم إعادة تعيين كلمة المرور بنجاح.'
         ], 200);
     }
+
+    public function checkAuth(Request $request): JsonResponse
+    {
+        $isAuthenticated = $this->service->checkAuth($request);
+
+        return response()->json(['authenticated' => $isAuthenticated], 200);
+    }
 }
