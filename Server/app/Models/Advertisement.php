@@ -13,7 +13,6 @@ class Advertisement extends Model
         'description',
         'city',
         'price',
-        'currency',
         'location',
         'category_id',
         'user_id',

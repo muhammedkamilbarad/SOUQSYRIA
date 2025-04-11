@@ -32,9 +32,12 @@ class HomePageAdvertisementFilter
         $query->when(isset($filters['category']), fn($q) => $q->where('category_id', $filters['category']))
             ->when(isset($filters['type']), fn($q) => $q->where('type', $filters['type']))
             ->when(isset($filters['city']), fn($q) => $q->where('city', $filters['city']))
-            ->when(isset($filters['search']), fn($q) => $q->where('title', 'like', '%' . $filters['search'] . '%')
-            ->orWhere('description', 'like', '%' . $filters['search'] . '%')
-            );
+            ->when(isset($filters['search']), function ($q) use ($filters) {
+                $q->where(function ($query) use ($filters) {
+                    $query->where('title', 'like', '%' . $filters['search'] . '%')
+                        ->orWhere('description', 'like', '%' . $filters['search'] . '%');
+                });
+            });
     }
 
     private static function applyPriceFilters(Builder $query, array $filters): void
