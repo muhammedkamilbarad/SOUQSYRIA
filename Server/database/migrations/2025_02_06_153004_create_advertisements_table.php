@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('slug');
             $table->text('description');
             $table->decimal('price', 12, 2);
-            $table->Enum('currency',['SYP ','TRY','USD'])->default('USD');
             $table->Enum('city', array_column(SyriaCities::cases(), 'name'));
             $table->string('location', 255);
             $table->foreignId('category_id')->constrained('categories')->onDelete('restrict');
