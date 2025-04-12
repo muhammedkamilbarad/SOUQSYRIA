@@ -42,7 +42,7 @@ class AdvertisementRequest extends FormRequest
             'type' => 'required|in:rent,sale',
             'sale_details.is_swap' => 'boolean|required_if:type,sale|prohibited_if:type,rent',
             'rent_details.rental_period' => 'required_if:type,rent|prohibited_if:type,sale|in:daily,weekly,monthly,yearly',
-            'images' => 'required|array|max:5',
+            'images' => 'required|array|max:10',
             'images.*' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'features' => 'array',
             'features.*' => 'exists:features,id'
