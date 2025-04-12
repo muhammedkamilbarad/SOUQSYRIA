@@ -13,13 +13,16 @@ use App\Repositories\Advertisements\AdvertisementRepositoryFactory;
 use Exception;
 use App\Services\AdvertisementImageService;
 use App\Filters\HomePageAdvertisementFilter;
+use App\Services\ImageUploadService;
 
 
 class AdvertisementRepository extends BaseRepository
 {
-    public function __construct(Advertisement $model)
+    protected $imageUploadService;
+    public function __construct(Advertisement $model, ImageUploadService $imageUploadService)
     {
         parent::__construct($model);
+        $this->imageUploadService = $imageUploadService;
     }
 
     public function getCommonRelations(): array
@@ -105,9 +108,16 @@ class AdvertisementRepository extends BaseRepository
 
     protected function createImages(Advertisement $advertisement, array $images)
     {
-        $imageService = app(AdvertisementImageService::class);
-        $batch = $imageService->uploadImageBatch($advertisement, $images);
+        $uploadedImages = $this->imageUploadService->uploadAdvertisementImages($advertisement->id, $images);
+        $advertisement->images()->createMany($uploadedImages);
     }
+
+
+    // protected function createImages(Advertisement $advertisement, array $images)
+    // {
+    //     $imageService = app(AdvertisementImageService::class);
+    //     $batch = $imageService->uploadImageBatch($advertisement, $images);
+    // }
 
 
     public function delete(Model $advertisement)
