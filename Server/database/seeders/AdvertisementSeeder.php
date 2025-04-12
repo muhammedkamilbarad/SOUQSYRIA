@@ -115,7 +115,6 @@ class AdvertisementSeeder extends Seeder
                 'description'  => 'Description for land advertisement.',
                 'city'         => $cities[array_rand($cities)],
                 'price'        => rand(20000, 200000),
-                'currency'     => 'USD',
                 'location'     => 'Random location for land',
                 'category_id'  => CategoryType::LAND->value, // 1
                 'user_id'      => $userIds[array_rand($userIds)],
@@ -216,7 +215,6 @@ class AdvertisementSeeder extends Seeder
                 'description'  => 'Description for car advertisement.',
                 'city'         => $cities[array_rand($cities)],
                 'price'        => rand(5000, 30000),
-                'currency'     => 'USD',
                 'location'     => 'Random location for car',
                 'category_id'  => CategoryType::CAR->value, // 3
                 'user_id'      => $userIds[array_rand($userIds)],
@@ -283,7 +281,6 @@ class AdvertisementSeeder extends Seeder
                 'description'  => 'Description for marine advertisement.',
                 'city'         => $cities[array_rand($cities)],
                 'price'        => rand(10000, 80000),
-                'currency'     => 'USD',
                 'location'     => 'Random location for marine',
                 'category_id'  => CategoryType::MARINE->value, // 4
                 'user_id'      => $userIds[array_rand($userIds)],
@@ -296,8 +293,8 @@ class AdvertisementSeeder extends Seeder
                 'color'             => $colors[array_rand($colors)],
                 'mileage'           => rand(5000, 200000),
                 'year'              => rand(2000, 2023),
-                'brand_id'          => $brandIds[$i],
-                'model_id'          => $modelIds[$i],
+                'brand_id'          => $brandIds[array_rand($brandIds)],
+                'model_id'          => $modelIds[array_rand($modelIds)],
                 'transmission_type' => $transmissions[array_rand($transmissions)],
                 'fuel_type'         => $fuelTypes[array_rand($fuelTypes)],
                 'horsepower'        => rand(80, 300),
@@ -349,7 +346,6 @@ class AdvertisementSeeder extends Seeder
                 'description'  => 'Description for motorcycle advertisement.',
                 'city'         => $cities[array_rand($cities)],
                 'price'        => rand(1000, 10000),
-                'currency'     => 'USD',
                 'location'     => 'Random location for motorcycle',
                 'category_id'  => CategoryType::MOTORCYCLE->value, // 5
                 'user_id'      => $userIds[array_rand($userIds)],

@@ -36,8 +36,8 @@ class ArabicAdvertisementSeeder extends Seeder
     public function run(): void
     {
         // Helper arrays for random picks
-        // $adsStatuses     = ['pending', 'accepted', 'rejected'];
-        $adsStatuses     = ['pending', 'rejected'];
+        $adsStatuses     = ['accepted'];
+        // $adsStatuses     = ['pending', 'rejected'];
         $activeStatuses  = ['active', 'inactive'];
         $types           = ['rent', 'sale'];
         $cities          = array_map(fn($city) => $city->name, SyriaCities::cases());
@@ -69,7 +69,6 @@ class ArabicAdvertisementSeeder extends Seeder
                 'description'  => $this->landDescriptions(),
                 'city'         => $cities[array_rand($cities)],
                 'price'        => rand(20000, 200000),
-                'currency'     => 'USD',
                 'location'     => $this->locations(),
                 'category_id'  => CategoryType::LAND->value, // 1
                 'user_id'      => rand(5, 50),
@@ -116,7 +115,6 @@ class ArabicAdvertisementSeeder extends Seeder
                 'description'  => $this->houseDescriptions(),
                 'city'         => $cities[array_rand($cities)],
                 'price'        => rand(30000, 150000),
-                'currency'     => 'USD',
                 'location'     => $this->locations(),
                 'category_id'  => CategoryType::HOUSE->value, // 2
                 'user_id'      => rand(5, 50),
@@ -168,7 +166,6 @@ class ArabicAdvertisementSeeder extends Seeder
                 'description'  => $this->carDescriptions(),
                 'city'         => $cities[array_rand($cities)],
                 'price'        => rand(5000, 30000),
-                'currency'     => 'USD',
                 'location'     => $this->locations(),
                 'category_id'  => CategoryType::CAR->value, // 3
                 'user_id'      => rand(5, 50),
@@ -233,7 +230,6 @@ class ArabicAdvertisementSeeder extends Seeder
                 'description'  => $this->marineDescriptions(),
                 'city'         => $cities[array_rand($cities)],
                 'price'        => rand(10000, 80000),
-                'currency'     => 'USD',
                 'location'     => $this->locations(),
                 'category_id'  => CategoryType::MARINE->value, // 4
                 'user_id'      => rand(5, 50),
@@ -297,7 +293,6 @@ class ArabicAdvertisementSeeder extends Seeder
                 'description'  => $this->motorcycleDescriptions(),
                 'city'         => $cities[array_rand($cities)],
                 'price'        => rand(1000, 10000),
-                'currency'     => 'USD',
                 'location'     => $this->locations(),
                 'category_id'  => CategoryType::MOTORCYCLE->value, // 5
                 'user_id'      => rand(5, 50),

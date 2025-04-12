@@ -33,13 +33,13 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             UserSeeder::class,
             SubscriptionRequestSeeder::class,
-            MarineTypeSeeder::class,
-            // FeatureGroupSeeder::class,
-            // FeatureSeeder::class,
-            // AdvertisementSeeder::class,
-            ArabicFeatureGroupSeeder::class,
-            ArabicFeaturesSeeder::class,
-            ArabicAdvertisementSeeder::class,
+            // MarineTypeSeeder::class,
+            FeatureGroupSeeder::class,
+            FeatureSeeder::class,
+            AdvertisementSeeder::class,
+            // ArabicFeatureGroupSeeder::class,
+            // ArabicFeaturesSeeder::class,
+            // ArabicAdvertisementSeeder::class,
         ]);
     }
 }
