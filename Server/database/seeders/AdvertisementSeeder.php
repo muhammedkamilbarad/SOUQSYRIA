@@ -160,7 +160,6 @@ class AdvertisementSeeder extends Seeder
                 'description'  => 'Description for house advertisement.',
                 'city'         => $cities[array_rand($cities)],
                 'price'        => rand(30000, 150000),
-                'currency'     => 'USD',
                 'location'     => 'Random location for house',
                 'category_id'  => CategoryType::HOUSE->value, // 2
                 'user_id'      => $userIds[array_rand($userIds)],
