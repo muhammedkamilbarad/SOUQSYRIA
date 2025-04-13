@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\OtpMail;
 use App\Jobs\SendOtpEmailJob;
 use App\Jobs\SendPasswordResetEmailJob;
+use Illuminate\Support\Facades\Auth;
 
 class AuthService
 {
@@ -85,6 +86,9 @@ class AuthService
 
         // Delete existing tokens
         $this->repository->deleteAllUserTokens($user);
+
+        // Log the user in to open session
+        Auth::login($user);
 
         // Generate new tokens
         $accessToken = $user->createToken(
