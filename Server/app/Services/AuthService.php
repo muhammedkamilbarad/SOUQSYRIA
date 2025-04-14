@@ -21,22 +21,27 @@ use Illuminate\Support\Facades\Auth;
 class AuthService
 {
     protected $repository;
-    protected $accessTokenExpiresInMinutes;
-    protected $refreshTokenExpiresInMinutes;
     protected $subscribingService;
     protected $otpExpirationsTime;
+
+    protected $accessTokenExpiresInMinutes;
+    protected $refreshTokenExpiresInMinutes;
 
     public function __construct(AuthRepository $repository, SubscribingService $subscribingService)
     {
         $this->repository = $repository;
         $this->subscribingService = $subscribingService;
+        $this->otpExpirationsTime = 3; // Default value
+        $this->accessTokenExpiresInMinutes = 60; // Default value
+        $this->refreshTokenExpiresInMinutes = 1440; // Default value (24 hours)
     }
     
     // This is just a setter function for setting access and refresh tokens
     public function setTokenExpirationTimes(int $accessTokenMinutes, int $refreshTokenMinutes): void
     {
-        $this->accessTokenExpiresInMinutes = $accessTokenMinutes;
-        $this->refreshTokenExpiresInMinutes = $refreshTokenMinutes;
+        $this->repository->setTokenExpirationTimes(
+            $accessTokenMinutes, 
+            $refreshTokenMinutes);
     }
 
     // This is just a setter function for OTP Expiration time
@@ -85,22 +90,13 @@ class AuthService
         Cache::forget('otp_' . $email);
 
         // Delete existing tokens
-        $this->repository->deleteAllUserTokens($user);
+        $this->repository->deleteTokens($user->id);
 
         // Log the user in to open session
         Auth::login($user);
 
-        // Generate new tokens
-        $accessToken = $user->createToken(
-            'access_token', 
-            [], 
-            now()->addMinutes($this->accessTokenExpiresInMinutes)
-        )->plainTextToken;
-        
-        $refreshToken = $this->repository->createRefreshToken(
-            $user->id, 
-            $this->refreshTokenExpiresInMinutes
-        );
+        // Generate new refresh and access tokens
+        $tokens = $this->repository->createTokens($user->id);
         
         // create free subscription for new user
         $data = [
@@ -110,8 +106,8 @@ class AuthService
         $this->subscribingService->createSubscribing($data);
 
         return [
-            'access_token' => $accessToken,
-            'refresh_token' => $refreshToken
+            'access_token' => $tokens['access_token'],
+            'refresh_token' => $tokens['refresh_token']
         ];
     }
 
@@ -154,22 +150,14 @@ class AuthService
         }
 
         // Delete existing tokens
-        $this->repository->deleteAllUserTokens($user);
+        $this->repository->deleteTokens($user->id);
 
         // Generate new access token
-        $accessToken = $user->createToken('access_token', [], now()->addMinutes($this->accessTokenExpiresInMinutes))->plainTextToken;
-        Log::info('Access token for ' . $user['email'] . ': ' . $accessToken);
-
-        // Generate new refresh token
-        $refreshToken = $this->repository->createRefreshToken(
-            $user->id, 
-            $this->refreshTokenExpiresInMinutes
-        );
-        Log::info('Refresh token for ' . $user['email'] . ': ' . $refreshToken);
+        $tokens = $this->repository->createTokens($user->id);
 
         return [
-            'access_token' => $accessToken,
-            'refresh_token' => $refreshToken
+            'access_token' => $tokens['access_token'],
+            'refresh_token' => $tokens['refresh_token']
         ];
     }
 
@@ -193,22 +181,14 @@ class AuthService
         }
 
         // Delete existing tokens
-        $this->repository->deleteAllUserTokens($user);
+        $this->repository->deleteTokens($user->id);
 
-        // Generate new access token
-        $accessToken = $user->createToken('access_token', [], now()->addMinutes($this->accessTokenExpiresInMinutes))->plainTextToken;
-        Log::info('Access token for ' . $user['email'] . ': ' . $accessToken);
-
-        // Generate new refresh token
-        $refreshToken = $this->repository->createRefreshToken(
-            $user->id, 
-            $this->refreshTokenExpiresInMinutes
-        );
-        Log::info('Refresh token for ' . $user['email'] . ': ' . $refreshToken);
+        // Generate new tokens
+        $tokens = $this->repository->createTokens($user->id);
 
         return [
-            'access_token' => $accessToken,
-            'refresh_token' => $refreshToken
+            'access_token' => $tokens['access_token'],
+            'refresh_token' => $tokens['refresh_token']
         ];
     }
 
@@ -229,34 +209,24 @@ class AuthService
         }
 
         // Delete existing tokens
-        $this->repository->deleteAllUserTokens($user);
+        $this->repository->deleteTokens($user->id);
 
         // Generate a new access token
-        $accessToken = $user->createToken('access_token', [], now()->addMinutes($this->accessTokenExpiresInMinutes))->plainTextToken;
-        Log::info('Access token for ' . $user['email'] . ': ' . $accessToken);
-        
-        // Generate a new refresh token
-        $newRefreshToken = $this->repository->createRefreshToken(
-            $user->id, 
-            $this->refreshTokenExpiresInMinutes
-        );
-        Log::info('Refresh token for ' . $user['email'] . ': ' . $newRefreshToken);
+        $tokens = $this->repository->createTokens($user->id);
 
         $permissions = $user->permissions;
 
         return [
-            'token' => $accessToken,
-            'refresh_token' => $newRefreshToken,
+            'access_token' => $tokens['access_token'],
+            'refresh_token' => $tokens['refresh_token'],
             'permissions' => $permissions
         ];
     }
 
     public function logoutUser(User $user)
     {
-        // Delete access tokens
-        $user->tokens()->delete();
-        // Delete refresh tokens
-        $this->repository->deleteAllRefreshTokens($user->id);
+        // Delete tokens of this user
+        $this->repository->deleteTokens($user->id);
     }
 
     public function changePassword(User $user, string $currentPassword, string $newPassword): bool
@@ -327,54 +297,17 @@ class AuthService
     // Check if the user is authenticated
     public function checkAuth($request): bool
     { 
+        Log::info('Check Auth');
         // First check if there's an authenticated user on the request
         $user = $request->user();
+
+        
         if ($user) {
-            return true;
+            Log::info('User ==> ' . $user->email);
+            return $this->repository->checkTokensValidations($user->id);
         }
-        
+
         // If no user found via request, try to get the token from cookie
-        $accessToken = $request->cookie('access_token');
-        if (!$accessToken) {
-            return false;
-        }
-        
-        try {
-            // Parse the token to get its ID and hash
-            $tokenParts = explode('|', $accessToken, 2);
-            
-            // If token format is invalid
-            if (count($tokenParts) !== 2) {
-                return false;
-            }
-            
-            $tokenId = $tokenParts[0];
-            
-            // Find the token in the database
-            $tokenModel = \Laravel\Sanctum\PersonalAccessToken::find($tokenId);
-            
-            if (!$tokenModel) {
-                return false;
-            }
-            
-            // Check if token has expired
-            if ($tokenModel->expires_at && now()->gt($tokenModel->expires_at)) {
-                return false;
-            }
-            
-            // Get the associated user
-            $user = $tokenModel->tokenable;
-            if (!$user) {
-                return false;
-            }
-            
-            if (!$user->is_verified) {
-                return false;
-            }
-            
-            return true;
-        } catch (\Exception $e) {
-            return false;
-        }
+        return $this->repository->checkTokensWithCookie($request);
     }
 }

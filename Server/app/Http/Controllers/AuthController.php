@@ -19,8 +19,8 @@ class AuthController extends Controller
 {
     protected $service;
     // Token expiration times
-    protected $accessTokenExpiresInMinutes = 1000; // 1000 minutes default
-    protected $refreshTokenExpiresInMinutes = 3000; // 3000 minutes default
+    protected $accessTokenExpiresInMinutes = 1000; // 1000 minutes default (about 16 hours)
+    protected $refreshTokenExpiresInMinutes = 3000; // 3000 minutes default (about 50 hours)
     protected $otpExpirationInMinutes = 3; // 3 minutes
 
     public function __construct(AuthService $service)
@@ -138,11 +138,11 @@ class AuthController extends Controller
         
         return response()->json([
             'message' => 'Token refreshed successfully',
-            'access_token' => $result['token'],
+            'access_token' => $result['access_token'],
             'refresh_token' => $result['refresh_token'],
             'permissions' => $result['permissions']
         ], 200)
-        ->cookie('access_token', $result['token'], $this->accessTokenExpiresInMinutes, '/', null, true, true, false, 'none')
+        ->cookie('access_token', $result['access_token'], $this->accessTokenExpiresInMinutes, '/', null, true, true, false, 'none')
         ->cookie('refresh_token', $result['refresh_token'], $this->refreshTokenExpiresInMinutes, '/', null, true, true, false, 'none');
     }
 
@@ -182,11 +182,17 @@ class AuthController extends Controller
 
     public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
     {
-        $result = $this->service->sendPasswordResetLink($request->email);
+        try
+        {
+            $this->service->sendPasswordResetLink($request->email);
 
-        return response()->json([
-            'message' => 'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.'
-        ], 200);
+            return response()->json([
+                'message' => 'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
+        
     }
 
     public function resetPassword(ResetPasswordRequest $request): JsonResponse
