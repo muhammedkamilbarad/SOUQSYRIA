@@ -251,8 +251,9 @@ class AuthService
         // here sending reset link with email
         $user = $this->repository->findByEmail($email);
 
-        // Define the reset URL with the token
-        $resetUrl = url('/api/reset-password?token=' . $token);
+        // Define the reset URL with the token - pointing to frontend application
+        $resetUrl = 'https://localhost:5173/auth/reset-password?token=' . $token;
+        // $resetUrl = url('/api/reset-password?token=' . $token);
         
         // Logging the reset link
         Log::info('Password reset link for ' . $email . ': ' . $resetUrl);
@@ -276,20 +277,23 @@ class AuthService
         return $token;
     }
 
-    public function resetPassword(string $email, string $token, string $newPassword): bool
+    public function resetPasswordWithToken(string $token, string $newPassword): bool
     {
-        // Validate token
-        if (!$this->repository->validateResetToken($email, $token))
-        {
+        // Validate token and get user email
+        $resetRecord = $this->repository->validateResetToken($token);
+
+        if (!$resetRecord) {
             return false;
         }
         
+        $email = $resetRecord->email;
+    
         // Update password
         $user = $this->repository->findByEmail($email);
         $this->repository->updatePassword($user->id, $newPassword);
 
         // Delete the used token
-        $this->repository->deleteResetToken($email);
+        $this->repository->deleteResetTokenByEmail($email);
 
         return true;
     }
