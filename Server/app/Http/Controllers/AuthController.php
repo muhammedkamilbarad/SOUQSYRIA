@@ -197,14 +197,12 @@ class AuthController extends Controller
 
     public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
-        $result = $this->service->resetPassword(
-            $request->email,
+        $result = $this->service->resetPasswordWithToken(
             $request->token,
             $request->password
         );
 
-        if (!$result)
-        {
+        if (!$result) {
             return response()->json([
                 'error' => 'رمز غير صالح أو رمز منتهي الصلاحية.'
             ], 400);

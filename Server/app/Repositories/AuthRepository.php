@@ -175,39 +175,36 @@ class AuthRepository extends BaseRepository
         DB::table('password_reset_tokens')->updateOrInsert(
             ['email' => $email],
             [
-                'token' => Hash::make($token),
+                'token' => $token . '|' . hash('sha256', $token), // Store both parts
                 'created_at' => now()
             ]
         );
     }
 
-    public function validateResetToken(string $email, string $token): bool
+    public function validateResetToken(string $token): ?object
     {
         $resetRecord = DB::table('password_reset_tokens')
-            ->where('email', $email)
+            ->where('token', 'LIKE', '%' . hash('sha256', $token) . '%')
             ->first();
 
         if (!$resetRecord) {
-            return false;
-        }
-
-        // Check if token is valid
-        if (!Hash::check($token, $resetRecord->token)) {
-            return false;
+            return null;
         }
 
         // Check if token is expired (e.g., 60 minutes)
         if (Carbon::parse($resetRecord->created_at)->addMinutes(60)->isPast()) {
             // Token expired
-            $this->deleteResetToken($email);
-            return false;
+            $this->deleteResetTokenByEmail($resetRecord->email);
+            return null;
         }
 
-        return true;
+        return $resetRecord;
     }
 
-    public function deleteResetToken(string $email): void
+    public function deleteResetTokenByEmail(string $email): void
     {
         DB::table('password_reset_tokens')->where('email', $email)->delete();
     }
+
+    
 }

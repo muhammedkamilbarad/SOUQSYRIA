@@ -14,7 +14,6 @@ class ResetPasswordRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|string|email|exists:users,email',
             'token' => 'required|string',
             'password' => [
                 'required',
@@ -34,10 +33,6 @@ class ResetPasswordRequest extends FormRequest
     public function messages()
     {
         return [
-            'email.required' => 'حقل البريد الإلكتروني مطلوب.',
-            'email.email' => 'يرجى إدخال بريد إلكتروني صالح.',
-            'email.exists' => 'لا يوجد حساب بهذا البريد الإلكتروني.',
-
             'token.required' => 'حقل الرمز مطلوب.',
 
             'password.required' => 'حقل كلمة المرور مطلوب.',
