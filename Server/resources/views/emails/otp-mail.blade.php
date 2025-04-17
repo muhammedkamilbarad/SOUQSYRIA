@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Verification Code</title>
+    <title>رمز التحقق من البريد الإلكتروني</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;600&display=swap');
         
         * {
             margin: 0;
@@ -14,12 +14,14 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Noto Sans Arabic', sans-serif;
             line-height: 1.6;
-            color: #2d3748;
-            background: #f9fafb; /* Lighter background */
+            color: #1E1E1E;
+            background: #F9F9F9;
             min-height: 100vh;
             padding: 20px;
+            direction: rtl;
+            text-align: right;
         }
 
         .container {
@@ -28,7 +30,7 @@
         }
 
         .card {
-            background: #ffffff; /* White background */
+            background: #ffffff;
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             padding: 40px;
@@ -40,14 +42,24 @@
             content: '';
             position: absolute;
             top: 0;
-            left: 0;
+            right: 0;
             width: 100%;
             height: 5px;
-            background: #e2e8f0; /* Lighter gradient for a cleaner look */
+            background: #FEE800;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            max-width: 150px;
+            height: auto;
         }
 
         h2 {
-            color: #333; /* Darker text color for better contrast */
+            color: #1E1E1E;
             font-weight: 600;
             margin-bottom: 20px;
             font-size: 28px;
@@ -55,84 +67,97 @@
         }
 
         .greeting {
-            color: #4a5568;
+            color: #1E1E1E;
             font-size: 16px;
             margin-bottom: 20px;
-        }
-
-        .otp-box {
-            background: #ffffff; /* White background for OTP box */
-            color: #4a5568; /* Darker text for better visibility */
-            padding: 20px;
-            text-align: center;
-            font-size: 32px;
-            font-weight: 600;
-            letter-spacing: 8px;
-            margin: 30px 0;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1); /* Lighter box shadow */
+            text-align: right;
         }
 
         .info {
-            color: #4a5568;
-            text-align: center;
+            color: #1E1E1E;
             font-size: 16px;
             margin: 15px 0;
+            text-align: right;
+        }
+
+        .otp-box {
+            background: #FFF9C4;
+            color: #1E1E1E;
+            font-size: 24px;
+            font-weight: 600;
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px;
+            margin: 20px 0;
+            letter-spacing: 5px;
         }
 
         .warning {
-            color: #e53e3e;
+            color: #1E1E1E;
             font-size: 14px;
-            text-align: center;
-            background: #fef2f2; /* Light pink for warning */
+            background: #FFF9C4;
             padding: 10px;
             border-radius: 8px;
             margin: 20px 0;
+            text-align: right;
         }
 
         .signature {
-            color: #718096;
-            text-align: center;
+            color: #1E1E1E;
             font-size: 15px;
             margin-top: 30px;
+            text-align: center;
         }
 
         .footer {
-            text-align: center;
             font-size: 12px;
-            color: #718096;
+            color: #1E1E1E;
             margin-top: 25px;
             padding-top: 15px;
-            border-top: 1px solid #e2e8f0; /* Lighter border for footer */
+            border-top: 1px solid #FEE800;
+            text-align: center;
         }
 
         .footer a {
-            color: #4a5568; /* Darker color for footer links */
+            color: #1E1E1E;
             text-decoration: none;
             transition: color 0.3s ease;
         }
 
         .footer a:hover {
-            color: #667eea; /* Light blue hover color for links */
+            color: #FEE800;
+        }
+
+        a {
+            unicode-bidi: embed;
+        }
+
+        p, div {
+            direction: rtl;
+            text-align: right;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="card">
-            <h2>Your Verification Code</h2>
-            <p class="greeting">Hello {{ $userName }},</p>
-            <p class="info">Please use this One-Time Password (OTP) to complete your verification:</p>
+            <div class="logo">
+                <img src="https://i.ibb.co/k6yXNyLs/logo.png" alt="شعار سوريا سوق">
+            </div>
+            <h2>رمز التحقق من البريد الإلكتروني</h2>
+            <p class="greeting">عزيزي {{ $userName }}،</p>
+            <p class="info">شكرًا لاختيارك سوريا سوق! لإكمال عملية التحقق من بريدك الإلكتروني، يرجى استخدام رمز المرور لمرة واحدة (OTP) التالي:</p>
             <div class="otp-box">
                 {{ $otp }}
             </div>
-            <p class="info">This code expires in {{ $timeAmount }} minutes</p>
-            <p class="warning">Didn't request this code? Please ignore this email or contact our support team immediately.</p>
-            <p class="signature">Warm regards,<br>The Movie App Team</p>
+            <p class="info">هذا الرمز صالح لمدة {{ $timeAmount }} دقيقة. يرجى إدخاله على الفور للتحقق من حسابك.</p>
+            <p class="warning">إذا لم تطلب هذا الرمز، يرجى تجاهل هذا البريد الإلكتروني أو التواصل مع فريق الدعم الخاص بنا على الفور.</p>
+            <p class="signature">مع أطيب التحيات<br>فريق سوريا سوق</p>
         </div>
         <div class="footer">
-            <p>© {{ date('Y') }} Movie App. All rights reserved.</p>
-            <p><a href="#">Privacy Policy</a> | <a href="#">Contact Us</a></p>
+            <p>هذه رسالة آلية، يرجى عدم الرد مباشرة على هذا البريد الإلكتروني.</p>
+            <p>© {{ date('Y') }} سوريا سوق. جميع الحقوق محفوظة.</p>
+            <p><a href="#">سياسة الخصوصية</a> | <a href="#">اتصل بنا</a></p>
         </div>
     </div>
 </body>

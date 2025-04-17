@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Mail\Mailables\Address;
 
 class OtpMail extends Mailable
 {
@@ -32,7 +33,8 @@ class OtpMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your OTP Code',
+            from: new Address('no-reply@syriasouq.com', 'خدمة العملاء في سوريا سوق'),
+            subject: 'رمز التحقق من البريد الإلكتروني',
         );
     }
 

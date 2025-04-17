@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Mail\Mailables\Address;
 
 class PasswordResetEmail extends Mailable
 {
@@ -27,7 +28,8 @@ class PasswordResetEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Reset Your Password',
+            from: new Address('no-reply@syriasouq.com', 'خدمة العملاء في سوريا سوق'),
+            subject: 'إعادة تعيين كلمة المرور',
         );
     }
 

@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Mail\Mailables\Address;
 
 class RejectionMessage extends Mailable
 {
@@ -27,7 +28,8 @@ class RejectionMessage extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Rejection Message',
+            from: new Address('no-reply@syriasouq.com', 'خدمة العملاء في سوريا سوق'),
+            subject: 'تحديث حالة الإعلان',
         );
     }
 
