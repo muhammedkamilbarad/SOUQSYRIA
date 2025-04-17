@@ -195,6 +195,22 @@ class AuthController extends Controller
         
     }
 
+    public function forgotPasswordMobile(ForgotPasswordRequest $request): JsonResponse
+    {
+        try
+        {
+            $resetToken = $this->service->returnPasswordResetLink($request->email);
+
+            return response()->json([
+                'message' => "Password reset link successfully created",
+                "resetToken" => $resetToken
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
+        
+    }
+
     public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
         $result = $this->service->resetPasswordWithToken(

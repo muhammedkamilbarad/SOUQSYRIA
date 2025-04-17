@@ -267,6 +267,24 @@ class AuthService
         );
     }
 
+    public function returnPasswordResetLink(string $email): string
+    {
+        $token = $this->generateResetToken($email);
+
+        // Send email with reset link
+        // here sending reset link with email
+        $user = $this->repository->findByEmail($email);
+
+        // Define the reset URL with the token - pointing to frontend application
+        // $resetUrl = 'https://localhost:5173/auth/reset-password?token=' . $token;
+        $resetUrl = url('/api/reset-password?token=' . $token);
+        
+        // Logging the reset link
+        Log::info('Password reset link for ' . $email . ': ' . $resetUrl);
+
+        return $resetUrl;
+    }
+
     public function generateResetToken(string $email): string
     {
         // Create a token and store it in the password_resets table
