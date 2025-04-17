@@ -208,6 +208,10 @@ Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
     ->middleware('throttle.login:3,10') // 3 attempts, 10 minute decay
     ->name('auth.forgot-password');
 
+Route::post('/forgot-password-mobile', [AuthController::class, 'forgotPasswordMobile'])
+    ->middleware('throttle.login:3,10') // 3 attempts, 10 minute decay
+    ->name('auth.forgot-password-mobile');
+
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 Route::post('/verify-account', [AuthController::class, 'verifyAccount']);
 

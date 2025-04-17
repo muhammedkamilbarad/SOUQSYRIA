@@ -25,12 +25,13 @@ class ThrottleLogins
         $response = $next($request);
 
         // Only increment the limiter on successful registration (not on validation failures)
+        
         if ($request->route()->named('auth.register') && $response->getStatusCode() === 200) {
             RateLimiter::hit($key, 60 * $decayMinutes);
         } elseif ($request->route()->named('auth.resend-otp') && $response->getStatusCode() === 200) {
             // Increment counter even for successful OTP resend
             RateLimiter::hit($key, 60 * $decayMinutes);
-        } elseif ($request->route()->named('auth.forgot-password') && $response->getStatusCode() === 200) {
+        } elseif (($request->route()->named('auth.forgot-password') || $request->route()->named('auth.forgot-password-mobile')) && $response->getStatusCode() === 200) {
             RateLimiter::hit($key, 60 * $decayMinutes); 
         } elseif ($response->getStatusCode() !== 200) {
             // Increment for failed login/refresh/resend-otp attempts
@@ -76,7 +77,7 @@ class ThrottleLogins
             return 'resend_otp:' . Str::lower($identifier) . '|' . $request->ip();
         }
 
-        if ($request->route()->named('auth.forgot-password')) {
+        if ($request->route()->named('auth.forgot-password') || $request->route()->named('auth.forgot-password-mobile')) {
             $identifier = $request->input('email') ?? $request->ip();
             return 'forgot_password:' . Str::lower($identifier) . '|' . $request->ip();
         }
