@@ -224,3 +224,4 @@ Route::get('check-auth', [AuthController::class, 'checkAuth']);
 
 Route::get('brand/{id}/models', [VehicleModelController::class, 'getVehicleModelsByBrandId']);
 Route::get('brands', [VehicleBrandController::class, 'getBrandsByCategory']);
+Route::get('feature-groups/{id}/category', [FeatureGroupController::class, 'categoryFeatuers']);
