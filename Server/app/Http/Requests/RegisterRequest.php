@@ -14,10 +14,17 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:100',
-            'email' => 'required|string|email|max:255|unique:users,email,',
-            'phone' => 'nullable|string|max:20|regex:/^\+?[0-9 ]{7,20}$/|unique:users,phone,',
-            'password' => 'required|string|min:8|max:255',
-            'confirm_password' => 'required|same:password'
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'phone' => 'nullable|string|max:20|regex:/^\+?[0-9 ]{7,20}$/|unique:users,phone',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'max:16',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).+$/',
+                'same:confirm_password'
+            ],
+            'confirm_password' => 'required'
         ];
     }
 
@@ -39,13 +46,14 @@ class RegisterRequest extends FormRequest
             'phone.regex' => '.يجب أن يكون رقم الهاتف بتنسيق صالح، مع أو بدون رمز البلد',
             'phone.unique' => '.رقم الهاتف هذا مستخدم بالفعل',
 
-            'password.required' => '.كلمة المرور مطلوبة',
+            'password.required' => '.حقل كلمة المرور مطلوب',
             'password.string' => '.يجب أن تكون كلمة المرور نصًا صالحًا',
-            'password.min' => '.يجب أن تكون كلمة المرور مكونة من 8 أحرف على الأقل',
-            'password.max' => '.يجب ألا تتجاوز كلمة المرور 255 حرفًا',
+            'password.min' => '.يجب أن تكون كلمة المرور على الأقل 8 أحرف',
+            'password.max' => '.يجب ألا تتجاوز كلمة المرور 16 حرفًا',
+            'password.same' => '.تأكيد كلمة المرور غير متطابق',
+            'password.regex' => '.يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل، وحرف صغير واحد على الأقل، ورقم واحد على الأقل، ورمز خاص واحد على الأقل',
 
-            'confirm_password.required' => '.تأكيد كلمة المرور مطلوب',
-            'confirm_password.same' => '.تأكيد كلمة المرور لا يتطابق مع كلمة المرور',
+            'confirm_password.required' => 'حقل تأكيد كلمة المرور مطلوب.',
         ];
     }
 }
