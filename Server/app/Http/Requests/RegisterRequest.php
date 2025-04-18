@@ -15,7 +15,7 @@ class RegisterRequest extends FormRequest
         return [
             'name' => 'required|string|max:100',
             'email' => 'required|string|email|max:255|unique:users,email',
-            'phone' => 'nullable|string|max:20|regex:/^\+?[0-9 ]{7,20}$/|unique:users,phone',
+            'phone' => 'required|string|max:20|regex:/^\+?[0-9 ]{7,20}$/|unique:users,phone',
             'password' => [
                 'required',
                 'string',
@@ -41,6 +41,7 @@ class RegisterRequest extends FormRequest
             'email.max' => '.يجب ألا يتجاوز عنوان البريد الإلكتروني 255 حرفًا',
             'email.unique' => '.عنوان البريد الإلكتروني هذا مستخدم بالفعل',
 
+            'phone.required' => 'رقم الهاتف مطلوب.',
             'phone.string' => '.يجب أن يكون رقم الهاتف نصًا صالحًا',
             'phone.max' => '.يجب ألا يتجاوز رقم الهاتف 20 رقماً',
             'phone.regex' => '.يجب أن يكون رقم الهاتف بتنسيق صالح، مع أو بدون رمز البلد',
