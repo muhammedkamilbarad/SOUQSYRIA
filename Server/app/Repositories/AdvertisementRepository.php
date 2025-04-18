@@ -113,23 +113,12 @@ class AdvertisementRepository extends BaseRepository
         $advertisement->images()->createMany($uploadedImages);
     }
 
-
-    // protected function createImages(Advertisement $advertisement, array $images)
-    // {
-    //     $imageService = app(AdvertisementImageService::class);
-    //     $batch = $imageService->uploadImageBatch($advertisement, $images);
-    // }
-
-
     public function delete(Model $advertisement)
     {
         \DB::beginTransaction();
         try{
-            foreach($advertisement->images as $image)
-            {
-                \Storage::disk('public')->delete($image->url);
-            }
             $result = $advertisement->delete();
+            $this->imageUploadService->deleteAdvertisementImages($advertisement->id);
             \DB::commit();
             return $result;
         } catch(\Exception $e){
@@ -146,7 +135,7 @@ class AdvertisementRepository extends BaseRepository
             $advertisement->update($advertisementData);
             $category = CategoryType::tryFrom((int) $advertisement->category_id);
             $repository = AdvertisementRepositoryFactory::create($category);
-            if (isset($specificData['images']) && !empty($specificData['images'])) {
+            if (isset($specificData['images'])) {
                 $this->updateImages($advertisement, $specificData['images']);
                 $relations[] = 'images';
             }
@@ -173,11 +162,14 @@ class AdvertisementRepository extends BaseRepository
 
     protected function updateImages(Advertisement $advertisement, array $images)
     {
-        foreach ($advertisement->images as $image) {
-            \Storage::disk('public')->delete($image->url);
+        if(!empty($images['delete'])){
+            $imagesToDelete = $advertisement->images()->whereIn('id', $images['delete'])->get();
+            $this->imageUploadService->deleteSomeAdvertisementImages($advertisement->id, $imagesToDelete->toArray());
+            $advertisement->images()->whereIn('id', $images['delete'])->delete();
         }
-        $advertisement->images()->delete();
-        $this->createImages($advertisement, $images);
+        if(!empty($images['new'])){
+            $this->createImages($advertisement, $images['new']);
+        }
     }
 
     // Get base query for similar advertisements
