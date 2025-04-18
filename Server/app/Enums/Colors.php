@@ -15,4 +15,21 @@ enum Colors: int
     case ORANGE = 9;
     case BROWN = 10;
     case PURPLE = 11;
+    case PINK = 12;
+    case CYAN = 13;
+    case MAGENTA = 14;
+    case TURQUOISE = 15;
+    case LIME = 16;
+    case VIOLET = 17;
+    case INDIGO = 18;
+    case BEIGE = 19;
+    case TEAL = 20;
+    case IVORY = 21;
+    case TAN = 22;
+    case MAROON = 23;
+    case PEACH = 24;
+    case MUSTARD = 25;
+    case LAVENDER = 26;
+    case GOLD = 27;
+    case BRONZE = 28;
 }

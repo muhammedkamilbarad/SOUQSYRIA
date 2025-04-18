@@ -62,14 +62,18 @@ class ImageUploadService
             if (strpos($path, $bucketPrefix) === 0) {
                 $path = substr($path, strlen($bucketPrefix));
             }
-            $deleted = Storage::disk('s3')->delete($path);
+            if (substr($path, -1) === '/' || !pathinfo($path, PATHINFO_EXTENSION)) {
+                $deleted = Storage::disk('s3')->deleteDirectory($path);
+            } else {
+                $deleted = Storage::disk('s3')->delete($path);
+            }
             if (!$deleted) {
-                Log::warning("Failed to delete image: {$path}");
+                Log::warning("Failed to delete: {$path}");
                 return false;
             }
             return true;
         } catch (\Exception $e) {
-            Log::error("Image deletion error: {$e->getMessage()}");
+            Log::error("Deletion error: {$e->getMessage()}");
             throw $e;
         }
     }
