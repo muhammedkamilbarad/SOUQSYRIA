@@ -29,7 +29,7 @@ class AdvertisementUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = $this->route('advertisement');
+        $id = $this->route('id');
         $advertisement = Advertisement::findOrFail($id);
         $rules = [
             'title' => 'sometimes|string|max:255',
@@ -41,8 +41,12 @@ class AdvertisementUpdateRequest extends FormRequest
             'category_id' => 'prohibited',
             'sale_details.is_swap' => $advertisement->type === 'rent' ? 'prohibited' : 'sometimes|boolean',
             'rent_details.rental_period' => $advertisement->type === 'sale' ? 'prohibited' : 'sometimes|in:daily,weekly,monthly,yearly',
-            'images' => 'sometimes|array|max:5',
-            'images.*' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
+            // 'images' => 'sometimes|array|max:5',
+            // 'images.*' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
+            'new_images' => 'sometimes|array|max:10',
+            'new_images.*' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
+            'deleted_images_ids' => 'sometimes|array|max:10',
+            'deleted_images_ids.*' => 'sometimes|exists:images,id',
             'features' => 'array',
             'features.*' => 'exists:features,id'
         ];

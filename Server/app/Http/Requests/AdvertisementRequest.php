@@ -152,7 +152,7 @@ class AdvertisementRequest extends FormRequest
             'rent_details.rental_period.in' => '.يجب أن تكون فترة الإيجار إما يوميًا أو أسبوعيًا أو شهريًا أو سنويًا',
             'images.required' => '.الصور مطلوبة',
             'images.array' => '.يجب أن تكون الصور في شكل مصفوفة',
-            'images.max' => '.لا يمكن تحميل أكثر من 5 صور',
+            'images.max' => '.لا يمكن تحميل أكثر من 10 صور',
             'images.*.required' => '.كل صورة مطلوبة',
             'images.*.image' => '.يجب أن تكون كل صورة من نوع صورة صالحة',
             'images.*.mimes' => '. jpeg أو png أو jpg يجب أن تكون الصورة بامتداد',

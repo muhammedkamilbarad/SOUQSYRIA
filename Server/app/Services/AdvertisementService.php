@@ -225,8 +225,11 @@ class AdvertisementService
     protected function prepareSpecificUpdateData(array $data, int $categoryId)
     {
         $specificData = [];
-        if (isset($data['images'])) {
-            $specificData['images'] = $data['images'];
+        if (isset($data['new_images']) || isset($data['deleted_images_ids'])) {
+            $specificData['images'] = [
+                'new' => $data['new_images'] ?? [],
+                'delete' => $data['deleted_images_ids'] ?? []
+            ];
         }
         if (isset($data['features'])) {
             $specificData['features'] = $data['features'];

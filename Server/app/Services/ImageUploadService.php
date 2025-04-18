@@ -17,7 +17,6 @@ class ImageUploadService
     private function uploadImages(string $path, array $images)
     {
         $uploadedUrls = [];
-        $uploadedPaths = [];
         try {
             foreach ($images as $image) {
                 $extension = $image->getClientOriginalExtension();
@@ -25,16 +24,15 @@ class ImageUploadService
                 $full_path = $path . '/' . $filename;
                 $stored = Storage::disk('s3')->put($full_path, file_get_contents($image), 'public');
                 if (!$stored) {
-                    throw new \Exception("Image upload failed for {$filename}");
+                    throw new \Exception("فشل تحميل الصور");
                 }
                 $uploadedUrls[] = ['url' => Storage::disk('s3')->url($full_path)];
-                $uploadedPaths[] = $full_path;
             }
             return $uploadedUrls;
         } catch (\Exception $e) {
             $files = Storage::disk('s3')->files($path);
             Storage::disk('s3')->delete($files);
-            throw $e;
+            throw new \Exception("فشل تحميل الصور");
         }
     }
 
@@ -46,13 +44,59 @@ class ImageUploadService
             $path = "{$path_name}/{$fileName}";
             $stored = Storage::disk('s3')->put($path, file_get_contents($image), 'public');
             if (!$stored) {
-                throw new \Exception("Image upload failed");
+                throw new \Exception("فشل تحميل الصورة");
             }
             return Storage::disk('s3')->url($path);
         } catch (\Exception $e) {
             Storage::disk('s3')->delete($path);
-            Log::error("Image upload error: {$e->getMessage()}");
+            throw new \Exception("فشل تحميل الصورة");
+        }
+    }
+
+    public function deleteImage(string $imageUrl): bool
+    {
+        try {
+            $url = parse_url($imageUrl);
+            $path = ltrim($url['path'], '/');
+            $bucketPrefix = env('AWS_BUCKET') . '/';
+            if (strpos($path, $bucketPrefix) === 0) {
+                $path = substr($path, strlen($bucketPrefix));
+            }
+            $deleted = Storage::disk('s3')->delete($path);
+            if (!$deleted) {
+                Log::warning("Failed to delete image: {$path}");
+                return false;
+            }
+            return true;
+        } catch (\Exception $e) {
+            Log::error("Image deletion error: {$e->getMessage()}");
             throw $e;
         }
     }
+
+
+    public function deleteAdvertisementImages(int $advertisementId)
+    {
+        try {
+            $path = "advertisemens/{$advertisementId}";
+            $files = Storage::disk('s3')->files($path);
+            Storage::disk('s3')->delete($files);
+        } catch (\Exception $e) {
+            throw new \Exception("فشل حذف الصور");
+        }
+    }
+
+
+    public function deleteSomeAdvertisementImages(int $advertisementId, array $images)
+    {
+        foreach ($images as $image) {
+            try {
+                $path = ltrim(parse_url($image['urfl'], PHP_URL_PATH), '/');
+                Storage::disk('s3')->delete($path);
+            } catch (\Exception $e) {
+                throw new \Exception("فشل تحديث الصور");
+            }
+        }
+    }
+
 }
