@@ -156,7 +156,7 @@ class UserController extends Controller
             return response()->json(['message' => 'User not found'], 404);
         }
 
-        $user = $this->userService->updateUser($user, $request->all());
+        $user = $this->userService->updateProfile($user, $request->validated());
         return response()->json([
             'message' => 'Profile updated successfully',
             'data' => $user,

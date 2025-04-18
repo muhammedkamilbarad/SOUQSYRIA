@@ -26,10 +26,10 @@ class ProfileRequest extends FormRequest
             // Name field is optional (not required)
             'name' => 'nullable|string|max:100',
             
-            // Image is optional, it must be a string and max length 255 characters.
-            'image' => 'nullable|string|max:255',
+            // Image is optional, must be an image file (e.g., jpeg, png), max size 2MB
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             
-            // Phone is optional, it must be a string, max length 20 characters, and match the regex pattern.
+            // Phone is optional, must be a string, max length 20 characters, and match the regex pattern
             'phone' => 'nullable|string|max:20|regex:/^\+?[0-9 ]{7,20}$/|unique:users,phone,',
         ];
     }
@@ -37,16 +37,17 @@ class ProfileRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.string' => '.يجب أن يكون الاسم نصًا صالحًا',
-            'name.max' => '.يجب ألا يتجاوز الاسم 100 حرف',
+            'name.string' => 'يجب أن يكون الاسم نصًا صالحًا.',
+            'name.max' => 'يجب ألا يتجاوز الاسم 100 حرف.',
 
-            'image.string' => '.يجب أن يكون رابط الصورة نصًا صالحًا',
-            'image.max' => '.يجب ألا يتجاوز حجم الصورة 255 حرفًا',
+            'image.image' => 'يجب أن تكون الصورة ملف صورة صالح (مثل jpeg، png، jpg، gif).',
+            'image.mimes' => 'يجب أن تكون الصورة من نوع jpeg، png، jpg، أو gif.',
+            'image.max' => 'يجب ألا يتجاوز حجم الصورة 2 ميغابايت.',
 
-            'phone.string' => '.يجب أن يكون رقم الهاتف نصًا صالحًا',
-            'phone.max' => '.يجب ألا يتجاوز رقم الهاتف 20 رقماً',
-            'phone.regex' => '.يجب أن يكون رقم الهاتف بتنسيق صالح، مع أو بدون رمز البلد',
-            'phone.unique' => '.رقم الهاتف هذا مستخدم بالفعل',
+            'phone.string' => 'يجب أن يكون رقم الهاتف نصًا صالحًا.',
+            'phone.max' => 'يجب ألا يتجاوز رقم الهاتف 20 رقماً.',
+            'phone.regex' => 'يجب أن يكون رقم الهاتف بتنسيق صالح، مع أو بدون رمز البلد.',
+            'phone.unique' => 'رقم الهاتف هذا مستخدم بالفعل.',
         ];
     }
 }
