@@ -22,7 +22,6 @@ class ComplaintController extends Controller
         $userId = auth()->id(); // getting the user who is authenticated
 
         $data = [
-            'title' => $request->title,
             'content' => $request->content,
             'advs_id' => $request->advs_id,
             'user_id' => $userId,
@@ -35,26 +34,6 @@ class ComplaintController extends Controller
             'message' => 'Complaint has been sent',
             'data' => $complaint,
         ], 201);
-    }
-
-    public function complaintAboutSystem(ComplaintRequest $request)
-    {
-        $userId = auth()->id(); // getting the user who is authenticated
-
-        $data = [
-            'title' => $request->title,
-            'content' => $request->content,
-            'user_id' => $userId,
-        ];
-
-        $complaint = $this->complaintService->addComplaint($data);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Complaint has been sent',
-            'data' => $complaint,
-        ], 201);
-        
     }
 
     public function getAllComplaintsForUser()
