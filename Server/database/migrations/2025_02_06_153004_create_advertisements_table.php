@@ -21,13 +21,13 @@ return new class extends Migration
             $table->text('description');
             $table->decimal('price', 12, 2);
             $table->Enum('city', array_column(SyriaCities::cases(), 'name'));
-            $table->string('location', 255);
+            $table->string('location', 255)->nullable();
             $table->foreignId('category_id')->constrained('categories')->onDelete('restrict');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->Enum('ads_status', ['pending', 'accepted', 'rejected'])->default('pending');
             $table->Enum('active_status', ['active', 'inactive'])->default('inactive');
             $table->Enum('type', ['rent', 'sale']);
-            $table->Enum('image_upload_status', ['pending', 'processing', 'completed', 'failed'])->default('pending');
+            $table->string('video_url')->nullable();
             $table->timestamps();
 
             $table->index('ads_status');
