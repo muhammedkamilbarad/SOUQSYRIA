@@ -13,16 +13,22 @@ class ResendOTPRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email|exists:users,email',
+            'email' => [
+                'required',
+                'string',
+                'regex:/[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/',
+                'exists:users,email'
+            ]
         ];
     }
 
     public function messages()
     {
         return [
-            'email.required' => '.عنوان البريد الإلكتروني مطلوب',
-            'email.email' => '.يجب أن يكون عنوان البريد الإلكتروني بتنسيق بريد إلكتروني صالح',
-            'email.exists' => '.عنوان البريد الإلكتروني غير مسجل في نظامنا',
+            'email.required' => 'يرجى إدخال عنوان بريدك الإلكتروني.',
+            'email.string' => 'يجب أن يكون عنوان البريد الإلكتروني نص صحيح.',
+            'email.regex' => 'يرجى إدخال عنوان بريد إلكتروني بتنسيق صحيح.',
+            'email.exists' => 'لم نتمكن من العثور على حسابك باستخدام هذا البريد الإلكتروني. يرجى التحقق والمحاولة مرة أخرى.'
         ];
     }
 }
