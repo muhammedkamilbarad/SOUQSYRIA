@@ -24,9 +24,13 @@ class ThrottleLogins
 
         $response = $next($request);
 
+        // Check route name for system complaints first
+        if ($request->route()->named('system-complaints.store')) {
+            // Always increment counter for all system complaints submissions regardless of status
+            RateLimiter::hit($key, 60 * $decayMinutes);
+        }
         // Only increment the limiter on successful registration (not on validation failures)
-        
-        if ($request->route()->named('auth.register') && $response->getStatusCode() === 200) {
+        elseif ($request->route()->named('auth.register') && $response->getStatusCode() === 200) {
             RateLimiter::hit($key, 60 * $decayMinutes);
         } elseif ($request->route()->named('auth.resend-otp') && $response->getStatusCode() === 200) {
             // Increment counter even for successful OTP resend
@@ -50,6 +54,11 @@ class ThrottleLogins
 
     protected function resolveRequestSignature(Request $request): string
     {
+        if ($request->route()->named('system-complaints.store')) {
+            // For system complaints, use user's IP address
+            return 'system_complaints:' . $request->ip();
+        }
+
         if ($request->route()->named('auth.register')) {
             // For registration, throttle based on IP only
             return 'register_ip:' . $request->ip();

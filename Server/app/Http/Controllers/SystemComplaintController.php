@@ -47,7 +47,7 @@ class SystemComplaintController extends Controller
                 'success' => true,
                 'message' => 'System complaint created successfully',
                 'data' => $systemComplaint
-            ], 201);
+            ], 200);
         } catch (QueryException $e) {
             Log::error('Database error when creating system complaint: ' . $e->getMessage());
             return response()->json([
