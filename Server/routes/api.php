@@ -22,6 +22,7 @@ use App\Http\Controllers\FeatureGroupController;
 use App\Http\Controllers\FeatureController;
 use App\Http\Middleware\ThrottleLogins;
 use App\Http\Controllers\HomePageController;
+use App\Http\Controllers\SystemComplaintController;
 
 // Protected routes
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -173,6 +174,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('category/{id}', [FeatureGroupController::class, 'categoryFeatuers'])->middleware('permission:view_category_features');
     });
 
+    // System Complaints
+    Route::prefix('system-complaints')->group(function () {
+        Route::get('/', [SystemComplaintController::class, 'index'])->middleware('permission:view_system_complaints');
+        Route::get('{id}', [SystemComplaintController::class, 'show'])->middleware('permission:view_system_complaints');
+        Route::delete('{id}', [SystemComplaintController::class, 'destroy'])->middleware('permission:delete_system_complaints');
+    });
+
     // Auth
     Route::post('/change-password', [AuthController::class, 'changePassword']);
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -228,3 +236,6 @@ Route::get('check-auth', [AuthController::class, 'checkAuth']);
 Route::get('brand/{id}/models', [VehicleModelController::class, 'getVehicleModelsByBrandId']);
 Route::get('brands', [VehicleBrandController::class, 'getBrandsByCategory']);
 Route::get('feature-groups/{id}/category', [FeatureGroupController::class, 'categoryFeatuers']);
+
+
+Route::post('system-complaints', [SystemComplaintController::class, 'store']);
