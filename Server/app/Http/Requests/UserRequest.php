@@ -17,7 +17,13 @@ class UserRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:100',
-            'email' => 'required|string|email|max:255|unique:users,email,',
+            'email' => [
+                'required',
+                'string',
+                'regex:/[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/',
+                'max:255',
+                'unique:users,email,'
+            ],
             'phone' => 'nullable|string|max:20|regex:/^\+?[0-9 ]{7,20}$/|unique:users,phone,',
             'is_verified' => 'boolean',
             'email_verified_at' => 'nullable|date',
@@ -32,7 +38,13 @@ class UserRequest extends FormRequest
 
         return [
             'name' => 'required|string|max:100',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+            'email' => [
+                'required',
+                'string',
+                'regex:/[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/',
+                'max:255',
+                'unique:users,email,' . $id
+            ],
             'phone' => 'nullable|string|max:20|regex:/^\+?[0-9 ]{7,20}$/|unique:users,phone,' . $id,
             'is_verified' => 'boolean',
             'password' => 'nullable|string|min:8|max:255',

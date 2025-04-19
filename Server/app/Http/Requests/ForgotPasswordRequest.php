@@ -14,7 +14,12 @@ class ForgotPasswordRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|string|email|exists:users,email'
+            'email' => [
+                'required',
+                'string',
+                'regex:/[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/',
+                'exists:users,email'
+            ]
         ];
     }
 
@@ -23,7 +28,7 @@ class ForgotPasswordRequest extends FormRequest
         return [
             'email.required' => 'يرجى إدخال عنوان بريدك الإلكتروني.',
             'email.string' => 'يجب أن يكون عنوان البريد الإلكتروني نص صحيح.',
-            'email.email' => 'يرجى إدخال عنوان بريد إلكتروني صالح.',
+            'email.regex' => 'يرجى إدخال عنوان بريد إلكتروني بتنسيق صحيح.',
             'email.exists' => 'لم نتمكن من العثور على حسابك باستخدام هذا البريد الإلكتروني. يرجى التحقق والمحاولة مرة أخرى.'
         ];
     }
