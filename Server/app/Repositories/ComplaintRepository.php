@@ -30,7 +30,6 @@ class ComplaintRepository extends BaseRepository
         
         // Create new complaint with provided data
         return $this->model->create([
-            'title' => $data['title'],
             'content' => $data['content'],
             'user_id' => $data['user_id'],
             'advs_id' => $data['advs_id'] ?? null,

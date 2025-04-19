@@ -106,11 +106,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Complaints Routes
     Route::group(['prefix' => 'complaints'], function () {
-        Route::get('/', [ComplaintsController::class, 'index'])->middleware('permission:view_complaint');
+        Route::get('/', [ComplaintController::class, 'index'])->middleware('permission:view_complaint');
         Route::get('/user/{userId?}', [ComplaintController::class, 'getAllComplaintsForUser'])->middleware('permission:view_complaint');
         Route::get('/advertisement/{advertisementId}', [ComplaintController::class, 'getComplaintsForAdvertisement'])->middleware('permission:view_complaint');
-        Route::post('/advertisement', [ComplaintsController::class, 'complaintAboutAdvertisement']);
-        Route::post('/system', [ComplaintController::class, 'complaintAboutSystem']);
+        Route::post('/advertisement', [ComplaintController::class, 'complaintAboutAdvertisement']);
         Route::delete('/{id}', [ComplaintController::class, 'destroy'])->middleware('permission:delete_complaint');
     });
 
