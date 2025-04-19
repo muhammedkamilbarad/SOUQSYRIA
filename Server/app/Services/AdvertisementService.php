@@ -72,7 +72,8 @@ class AdvertisementService
             'description' => $data['description'],
             'price' => $data['price'],
             'city' => $data['city'],
-            'location' => $data['location'],
+            'location' => $data['location'] ?? null,
+            'video_url' => $data['video_url'] ?? null,
             'category_id' => $data['category_id'],
             'user_id' => $user->id,
             'type' => $data['type'],
@@ -231,7 +232,7 @@ class AdvertisementService
     protected function prepareAdvertisementUpdateData(array $data)
     {
         $updateData = [];
-        $allowed_fileds = ['title', 'description', 'price', 'city', 'location'];
+        $allowed_fileds = ['title', 'description', 'price', 'city', 'location', 'video_url'];
         foreach($allowed_fileds as $filed)
         {
             if(isset($data[$filed]))
