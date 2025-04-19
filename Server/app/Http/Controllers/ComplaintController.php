@@ -27,6 +27,14 @@ class ComplaintController extends Controller
             'user_id' => $userId,
         ];
 
+        if ($this->complaintService->checkComplaintExistence($userId, $data['advs_id']))
+        {
+            return response()->json([
+                'success' => true,
+                'message' => 'لقد قمت بالابلاغ على هذا الإعلان من قبل.',
+            ], 200);
+        }
+
         $complaint = $this->complaintService->addComplaint($data);
 
         return response()->json([

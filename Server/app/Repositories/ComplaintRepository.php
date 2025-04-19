@@ -46,4 +46,9 @@ class ComplaintRepository extends BaseRepository
         return $this->model->where('advs_id', $advertisementId)->get();
     }
 
+    public function checkComplaintExistence(int $userId, int $advsId)
+    {
+        return $this->model->where('user_id', $userId)->where('advs_id', $advsId)->exists();
+    }
+
 }
