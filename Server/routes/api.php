@@ -114,6 +114,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/{id}', [ComplaintController::class, 'destroy'])->middleware('permission:delete_complaint');
     });
 
+    // System Complaints
+    Route::prefix('system-complaints')->group(function () {
+        Route::get('/', [SystemComplaintController::class, 'index'])->middleware('permission:view_complaint');
+        Route::get('{id}', [SystemComplaintController::class, 'show'])->middleware('permission:view_complaint');
+        Route::delete('{id}', [SystemComplaintController::class, 'destroy'])->middleware('permission:delete_complaint');
+    });
+
     // Subscription Requests Routes
     Route::group(['prefix' => 'subscription-requests'], function () {
         Route::post('/', [SubscriptionRequestController::class, 'store']);
@@ -174,13 +181,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('category/{id}', [FeatureGroupController::class, 'categoryFeatuers'])->middleware('permission:view_category_features');
     });
 
-    // System Complaints
-    Route::prefix('system-complaints')->group(function () {
-        Route::get('/', [SystemComplaintController::class, 'index'])->middleware('permission:view_system_complaints');
-        Route::get('{id}', [SystemComplaintController::class, 'show'])->middleware('permission:view_system_complaints');
-        Route::delete('{id}', [SystemComplaintController::class, 'destroy'])->middleware('permission:delete_system_complaints');
-    });
-
     // Auth
     Route::post('/change-password', [AuthController::class, 'changePassword']);
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -221,6 +221,10 @@ Route::post('/forgot-password-mobile', [AuthController::class, 'forgotPasswordMo
     ->middleware('throttle.login:3,10') // 3 attempts, 10 minute decay
     ->name('auth.forgot-password-mobile');
 
+Route::post('/system-complaints', [SystemComplaintController::class, 'store'])
+    ->middleware('throttle.login:5,10')  // 5 attempts, 10 minutes decay
+    ->name('system-complaints.store');
+
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 Route::post('/verify-account', [AuthController::class, 'verifyAccount']);
 
@@ -236,6 +240,3 @@ Route::get('check-auth', [AuthController::class, 'checkAuth']);
 Route::get('brand/{id}/models', [VehicleModelController::class, 'getVehicleModelsByBrandId']);
 Route::get('brands', [VehicleBrandController::class, 'getBrandsByCategory']);
 Route::get('feature-groups/{id}/category', [FeatureGroupController::class, 'categoryFeatuers']);
-
-
-Route::post('system-complaints', [SystemComplaintController::class, 'store']);

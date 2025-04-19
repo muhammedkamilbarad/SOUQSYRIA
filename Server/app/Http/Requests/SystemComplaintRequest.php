@@ -19,7 +19,6 @@ class SystemComplaintRequest extends FormRequest
                 'required',
                 'string',
                 'regex:/[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/',
-                'exists:users,email'
             ],
             'phone' => 'nullable|regex:/^([0-9\s\-\+\(\)]*)$/|max:20',
             'message' => 'required|string|max:2000',
@@ -36,7 +35,6 @@ class SystemComplaintRequest extends FormRequest
             'email.required' => 'يرجى إدخال عنوان بريدك الإلكتروني.',
             'email.string' => 'يجب أن يكون عنوان البريد الإلكتروني نص صحيح.',
             'email.regex' => 'يرجى إدخال عنوان بريد إلكتروني بتنسيق صحيح.',
-            'email.exists' => 'لم نتمكن من العثور على حسابك باستخدام هذا البريد الإلكتروني. يرجى التحقق والمحاولة مرة أخرى.',
 
             'phone.string' => 'يجب أن يكون رقم الهاتف نصاً صحيحاً.',
             'phone.max'    => 'يجب ألا يتجاوز رقم الهاتف 20 حرفاً.',
