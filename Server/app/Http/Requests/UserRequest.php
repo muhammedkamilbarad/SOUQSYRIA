@@ -20,7 +20,7 @@ class UserRequest extends FormRequest
             'email' => [
                 'required',
                 'string',
-                'regex:/[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/',
+                'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
                 'max:255',
                 'unique:users,email,'
             ],
@@ -41,7 +41,7 @@ class UserRequest extends FormRequest
             'email' => [
                 'required',
                 'string',
-                'regex:/[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/',
+                'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
                 'max:255',
                 'unique:users,email,' . $id
             ],
@@ -62,7 +62,7 @@ class UserRequest extends FormRequest
 
             'email.required' => '.البريد الإلكتروني مطلوب',
             'email.string' => '.يجب أن يكون البريد الإلكتروني نصًا صالحًا',
-            'email.email' => '.يجب أن يكون البريد الإلكتروني عنوانًا صالحًا',
+            'email.regex' => 'يرجى إدخال عنوان بريد إلكتروني بتنسيق صحيح.',
             'email.max' => '.يجب ألا يتجاوز البريد الإلكتروني 255 حرفًا',
             'email.unique' => '.هذا البريد الإلكتروني مستخدم بالفعل',
 

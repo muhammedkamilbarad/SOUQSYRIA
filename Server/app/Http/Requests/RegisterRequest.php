@@ -14,7 +14,13 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:100',
-            'email' => 'required|string|email|max:255|unique:users,email',
+            'email' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:users',
+                'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+            ],
             'phone' => 'required|string|max:20|regex:/^\+?[0-9 ]{7,20}$/|unique:users,phone',
             'password' => [
                 'required',
@@ -37,7 +43,7 @@ class RegisterRequest extends FormRequest
 
             'email.required' => '.عنوان البريد الإلكتروني مطلوب',
             'email.string' => '.يجب أن يكون البريد الإلكتروني نصًا صالحًا',
-            'email.email' => '.يجب أن يكون عنوان البريد الإلكتروني بتنسيق بريد إلكتروني صالح',
+            'email.regex' => 'يرجى إدخال عنوان بريد إلكتروني بتنسيق صحيح.',
             'email.max' => '.يجب ألا يتجاوز عنوان البريد الإلكتروني 255 حرفًا',
             'email.unique' => '.عنوان البريد الإلكتروني هذا مستخدم بالفعل',
 
