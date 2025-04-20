@@ -27,22 +27,22 @@ use App\Http\Controllers\SystemComplaintController;
 // Protected routes
 Route::middleware(['auth:sanctum'])->group(function () {
     // Color Routes
-    Route::group(['prefix' => 'colors'], function () {
-        Route::get('/', [ColorController::class, 'index'])->middleware('permission:view_color');
-        Route::get('/{id}', [ColorController::class, 'show'])->middleware('permission:view_color');
-        Route::post('/', [ColorController::class, 'store'])->middleware('permission:create_color');
-        Route::put('/{id}', [ColorController::class, 'update'])->middleware('permission:update_color');
-        Route::delete('/{id}', [ColorController::class, 'destroy'])->middleware('permission:delete_color');
-    });
+    // Route::group(['prefix' => 'colors'], function () {
+    //     Route::get('/', [ColorController::class, 'index'])->middleware('permission:view_color');
+    //     Route::get('/{id}', [ColorController::class, 'show'])->middleware('permission:view_color');
+    //     Route::post('/', [ColorController::class, 'store'])->middleware('permission:create_color');
+    //     Route::put('/{id}', [ColorController::class, 'update'])->middleware('permission:update_color');
+    //     Route::delete('/{id}', [ColorController::class, 'destroy'])->middleware('permission:delete_color');
+    // });
 
     // Marine Type Routes
-    Route::group(['prefix' => 'marineTypes'], function () {
-        Route::get('/', [MarineTypeController::class, 'index'])->middleware('permission:view_marineTypes');
-        Route::get('/{id}', [MarineTypeController::class, 'show'])->middleware('permission:view_marineTypes');
-        Route::post('/', [MarineTypeController::class, 'store'])->middleware('permission:create_marineTypes');
-        Route::put('/{id}', [MarineTypeController::class, 'update'])->middleware('permission:update_marineTypes');
-        Route::delete('/{id}', [MarineTypeController::class, 'destroy'])->middleware('permission:delete_marineTypes');
-    });
+    // Route::group(['prefix' => 'marineTypes'], function () {
+    //     Route::get('/', [MarineTypeController::class, 'index'])->middleware('permission:view_marineTypes');
+    //     Route::get('/{id}', [MarineTypeController::class, 'show'])->middleware('permission:view_marineTypes');
+    //     Route::post('/', [MarineTypeController::class, 'store'])->middleware('permission:create_marineTypes');
+    //     Route::put('/{id}', [MarineTypeController::class, 'update'])->middleware('permission:update_marineTypes');
+    //     Route::delete('/{id}', [MarineTypeController::class, 'destroy'])->middleware('permission:delete_marineTypes');
+    // });
 
     // Vehicle Model Routes
     Route::group(['prefix' => 'vehiclemodels'], function () {
@@ -96,7 +96,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/{id}', [PopularQuestionController::class, 'destroy'])->middleware('permission:delete_faq');
     });
 
-    // Package Routes
+    // Package Routes - view should be repeated for home page
     Route::group(['prefix' => 'packages'], function () {
         Route::get('/', [PackageController::class, 'index'])->middleware('permission:view_package');
         Route::get('/{id}', [PackageController::class, 'show'])->middleware('permission:view_package');
@@ -146,19 +146,19 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     // Category Routes
-    Route::group(['prefix' => 'categories'], function () {
-        Route::get('/', [CategoryController::class, 'index']);
-        Route::get('/{id}', [CategoryController::class, 'show']);
-    });
+    // Route::group(['prefix' => 'categories'], function () {
+    //     Route::get('/', [CategoryController::class, 'index']);
+    //     Route::get('/{id}', [CategoryController::class, 'show']);
+    // });
 
     // Advertisement Routes
     Route::group(['prefix' => 'advertisements'], function () {
         Route::get('/', [AdvertisementController::class, 'index'])->middleware('permission:view_ad');
+        Route::get('/user/my-ad', [AdvertisementController::class, 'getUserAdvertisements']);
         Route::get('/{id}', [AdvertisementController::class, 'show'])->middleware('permission:view_ad');
-        Route::get('/by-user/{id}', [AdvertisementController::class, 'getUserAdvertisements'])->middleware('permission:view_ad');
-        Route::post('/', [AdvertisementController::class, 'store'])->middleware('permission:create_ad');
-        Route::put('/{id}', [AdvertisementController::class, 'update'])->middleware('permission:update_ad');
-        Route::delete('/{id}', [AdvertisementController::class, 'destroy'])->middleware('permission:delete_ad');
+        Route::post('/', [AdvertisementController::class, 'store']);
+        Route::put('/{id}', [AdvertisementController::class, 'update']);
+        Route::delete('/{id}', [AdvertisementController::class, 'destroy']);
         Route::post('/{id}/process', [AdvertisementController::class, 'process'])->middleware('permission:process_ad');
     });
 
@@ -240,3 +240,4 @@ Route::get('check-auth', [AuthController::class, 'checkAuth']);
 Route::get('brand/{id}/models', [VehicleModelController::class, 'getVehicleModelsByBrandId']);
 Route::get('brands', [VehicleBrandController::class, 'getBrandsByCategory']);
 Route::get('feature-groups/{id}/category', [FeatureGroupController::class, 'categoryFeatuers']);
+Route::get('package-list', [PackageController::class, 'index']);
