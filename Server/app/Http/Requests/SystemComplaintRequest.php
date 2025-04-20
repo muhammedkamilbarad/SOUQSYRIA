@@ -18,7 +18,8 @@ class SystemComplaintRequest extends FormRequest
             'email' => [
                 'required',
                 'string',
-                'regex:/[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/',
+                'max:255',
+                'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
             ],
             'phone' => 'nullable|regex:/^([0-9\s\-\+\(\)]*)$/|max:20',
             'message' => 'required|string|max:2000',
@@ -35,6 +36,7 @@ class SystemComplaintRequest extends FormRequest
             'email.required' => 'يرجى إدخال عنوان بريدك الإلكتروني.',
             'email.string' => 'يجب أن يكون عنوان البريد الإلكتروني نص صحيح.',
             'email.regex' => 'يرجى إدخال عنوان بريد إلكتروني بتنسيق صحيح.',
+            'email.max' => '.يجب ألا يتجاوز البريد الإلكتروني 255 حرفًا',
 
             'phone.string' => 'يجب أن يكون رقم الهاتف نصاً صحيحاً.',
             'phone.max'    => 'يجب ألا يتجاوز رقم الهاتف 20 حرفاً.',

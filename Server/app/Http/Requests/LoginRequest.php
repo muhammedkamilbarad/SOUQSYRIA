@@ -18,7 +18,7 @@ class LoginRequest extends FormRequest
             'login_input' => [
                 'required',
                 'string',
-                'regex:/[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/',
+                'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
                 'exists:users,email'
             ],
             'password' => 'required|string|min:8'
