@@ -111,9 +111,9 @@ class AuthController extends Controller
     private function handleFailLoginResponse($result): ?JsonResponse
     {
         if ($result === false) {
-            return response()->json(['error' => '.معلومات تسجيل الدخول غير صحيحة'], 401);
+            return response()->json(['error' => '.معلومات تسجيل الدخول غير صحيحة'], 400);
         } elseif ($result === null) {
-            return response()->json(['error' => 'هذا الحساب غير مؤكد يرجى تأكيده'], 403);
+            return response()->json(['error' => '.هذا الحساب غير مؤكد يرجى تأكيده'], 403);
         }
         return null; // No failure condition met
     }
@@ -124,14 +124,14 @@ class AuthController extends Controller
         $refreshToken = $request->cookie('refresh_token');
     
         if (!$refreshToken) {
-            return response()->json(['status' => 0, 'message' => 'Refresh token is missing'], 401);
+            return response()->json(['status' => 0, 'message' => '.رمز التحديث غير موجود'], 419);
         }
         
         $result = $this->service->refreshToken($refreshToken);
         
         if ($result === false) {
             // Clear the invalid cookies
-            return response()->json(['status' => 0, 'message' => 'Invalid or expired refresh token'], 401)
+            return response()->json(['status' => 0, 'message' => '.رمز التحديث غير صالح أو منتهي الصلاحية'], 419)
                 ->cookie('access_token', '', -1)
                 ->cookie('refresh_token', '', -1);
         }
@@ -171,12 +171,12 @@ class AuthController extends Controller
         if (!$result)
         {
             return response()->json([
-                'error' => 'كلمة المرور الحالية غير صحيحة.'
+                'error' => '.كلمة المرور الحالية غير صحيحة'
             ], 400);
         }
 
         return response()->json([
-            'message' => 'تم تغيير كلمة المرور بنجاح.'
+            'message' => '.تم تغيير كلمة المرور بنجاح'
         ], 200);
     }
 
@@ -187,7 +187,7 @@ class AuthController extends Controller
             $this->service->sendPasswordResetLink($request->email);
 
             return response()->json([
-                'message' => 'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.'
+                'message' => '.تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني'
             ], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
@@ -220,12 +220,12 @@ class AuthController extends Controller
 
         if (!$result) {
             return response()->json([
-                'error' => 'رمز غير صالح أو رمز منتهي الصلاحية.'
+                'error' => '.رمز غير صالح أو رمز منتهي الصلاحية'
             ], 400);
         }
 
         return response()->json([
-            'message' => 'تم إعادة تعيين كلمة المرور بنجاح.'
+            'message' => '.تم إعادة تعيين كلمة المرور بنجاح'
         ], 200);
     }
 

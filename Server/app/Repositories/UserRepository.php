@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\User;
 use App\Repositories\AuthRepository;
+use Illuminate\Support\Str;
 
 
 class UserRepository extends BaseRepository
@@ -23,6 +24,11 @@ class UserRepository extends BaseRepository
 
     public function create(array $data): Model
     {
+        // Lowercase the email before saving
+        if (isset($data['email'])) {
+            $data['email'] = Str::lower($data['email']);
+        }
+
         $user = $this->model->create($data);
 
         // Refresh the user instance to get the latest data (including verified_at)

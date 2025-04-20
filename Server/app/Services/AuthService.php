@@ -53,6 +53,12 @@ class AuthService
     public function registerUser(array $data)
     {
         Log::info('Register section start');
+
+        // Lowercase the email before saving
+        if (isset($data['email'])) {
+            $data['email'] = Str::lower($data['email']);
+        }
+
         $user = $this->repository->create($data);
         
         // Generate OTP for email verification

@@ -41,7 +41,7 @@ class UserRequest extends FormRequest
             'email' => [
                 'required',
                 'string',
-                'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+                'regex:/^[a-zA-Z0-9.]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
                 'max:255',
                 'unique:users,email,' . $id
             ],
