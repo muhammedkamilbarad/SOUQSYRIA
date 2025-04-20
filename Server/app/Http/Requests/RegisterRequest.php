@@ -19,7 +19,7 @@ class RegisterRequest extends FormRequest
                 'string',
                 'max:255',
                 'unique:users',
-                'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+                'regex:/^[a-zA-Z0-9.]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
             ],
             'phone' => 'required|string|max:20|regex:/^\+?[0-9 ]{7,20}$/|unique:users,phone',
             'password' => [

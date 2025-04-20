@@ -16,7 +16,7 @@ class VerifyAccountRequest extends FormRequest
             'email' => [
                 'required',
                 'string',
-                'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+                'regex:/^[a-zA-Z0-9.]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
                 'exists:users,email'
             ],
             'otp' => 'required|string|size:6',

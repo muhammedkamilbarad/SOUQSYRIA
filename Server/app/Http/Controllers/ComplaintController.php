@@ -31,7 +31,7 @@ class ComplaintController extends Controller
         {
             return response()->json([
                 'success' => true,
-                'message' => 'لقد قمت بالابلاغ على هذا الإعلان من قبل.',
+                'message' => '.لقد قمت بالابلاغ على هذا الإعلان من قبل',
             ], 200);
         }
 
@@ -39,7 +39,7 @@ class ComplaintController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Complaint has been sent',
+            'message' => 'Complaint has been sent.',
             'data' => $complaint,
         ], 201);
     }
@@ -51,7 +51,7 @@ class ComplaintController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'All complaints for user',
+            'message' => 'All complaints for user.',
             'data' => $complaints,
         ], 200);
     }
@@ -62,7 +62,7 @@ class ComplaintController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Complaints for advertisement',
+            'message' => 'Complaints for advertisement.',
             'data' => $complaints,
         ], 200);
     }
@@ -72,10 +72,10 @@ class ComplaintController extends Controller
     {
         $complaint = $this->complaintService->getComplaintById($id);
         if(!$complaint) {
-            return response()->json(['message' => 'Complaint not found'], 404);
+            return response()->json(['message' => '.هذا الإبلاغ غير موجود'], 404);
         }
         $this->complaintService->deleteComplaint($complaint);
-        return response()->json(['message' => 'Complaint deleted successfully'], 200);
+        return response()->json(['message' => '.تم حذف الإعلان بنجاح'], 200);
     }
 
     public function index()
