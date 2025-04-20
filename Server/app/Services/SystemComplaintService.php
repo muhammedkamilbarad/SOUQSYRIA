@@ -6,6 +6,7 @@ use App\Repositories\SystemComplaintRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Str;
 
 class SystemComplaintService
 {
@@ -32,6 +33,10 @@ class SystemComplaintService
 
     public function createSystemComplaint(array $data): Model
     {
+        // Lowercase the email before saving
+        if (isset($data['email'])) {
+            $data['email'] = Str::lower($data['email']);
+        }
         return $this->systemComplaintRepository->create($data);
     }
 
