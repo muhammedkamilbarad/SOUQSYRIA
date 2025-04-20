@@ -33,16 +33,16 @@ class ResetPasswordRequest extends FormRequest
     public function messages()
     {
         return [
-            'token.required' => 'حقل الرمز مطلوب.',
+            'token.required' => '.حقل الرمز مطلوب',
 
-            'password.required' => 'حقل كلمة المرور مطلوب.',
-            'password.string' => 'يجب أن تكون كلمة المرور نصًا صالحًا.',
-            'password.min' => 'يجب أن تكون كلمة المرور على الأقل 8 أحرف.',
-            'password.max' => 'يجب ألا تتجاوز كلمة المرور 16 حرفًا.',
-            'password.confirmed' => 'تأكيد كلمة المرور غير متطابق.',
-            'password.regex' => 'يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل، وحرف صغير واحد على الأقل، ورقم واحد على الأقل، ورمز خاص واحد على الأقل (@$!%*?&).',
+            'password.required' => '.حقل كلمة المرور مطلوب',
+            'password.string' => '.يجب أن تكون كلمة المرور نصًا صالحًا',
+            'password.min' => '.يجب أن تكون كلمة المرور على الأقل 8 أحرف',
+            'password.max' => '.يجب ألا تتجاوز كلمة المرور 16 حرفًا',
+            'password.confirmed' => '.تأكيد كلمة المرور غير متطابق',
+            'password.regex' => '.يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل، وحرف صغير واحد على الأقل، ورقم واحد على الأقل، ورمز خاص واحد على الأقل',
 
-            'password_confirmation.required' => 'حقل تأكيد كلمة المرور مطلوب.',
+            'password_confirmation.required' => '.حقل تأكيد كلمة المرور مطلوب',
         ];
     }
 }
