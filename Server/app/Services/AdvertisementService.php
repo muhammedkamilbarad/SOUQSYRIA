@@ -80,16 +80,20 @@ class AdvertisementService
         if (in_array($category, [CategoryType::CAR, CategoryType::MOTORCYCLE, CategoryType::MARINE])) {
             $specificData['vehicle'] = [
                 'color' => $data['color'],
-                'mileage' => $data['mileage'],
                 'year' => $data['year'],
-                'engine_capacity' => $data['fuel_type'] === 'ELECTRIC' ? null : $data['engine_capacity'],
                 'brand_id' => $data['brand_id'],
                 'model_id' => $data['model_id'],
                 'fuel_type' => $data['fuel_type'],
-                'horsepower' => $data['horsepower'],
-                'cylinders' => $data['fuel_type'] === 'ELECTRIC' ? null : $data['cylinders'],
-                'transmission_type' => $data['transmission_type'],
+                'horsepower' => $data['horsepower'] ?? null,
                 'condition' => $data['condition']
+            ];
+        }
+        if (in_array($category, [CategoryType::CAR, CategoryType::MOTORCYCLE])) {
+            $specificData['landVehicle'] = [
+                'mileage' => $data['mileage'],
+                'transmission_type' => $data['transmission_type'],
+                'cylinders' =>  $data['cylinders'] ?? null,
+                'engine_capacity' =>  $data['engine_capacity'] ?? null,
             ];
         }
         switch ($category) {
@@ -110,8 +114,11 @@ class AdvertisementService
             case CategoryType::MARINE:
                 $specificData['marine'] = [
                     'marine_type' => $data['marine_type'],
-                    'length' => $data['length'] ?? null,
-                    'max_capacity' => $data['max_capacity'] ?? null,
+                    'length' => $data['length'],
+                    'width' => $data['width'],
+                    'engine_brand' => $data['engine_brand'],
+                    'body_material' => $data['body_material'],
+                    'max_capacity' => $data['max_capacity'],
                 ];
                 break;
             case CategoryType::HOUSE:

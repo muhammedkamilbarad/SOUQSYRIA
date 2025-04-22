@@ -4,6 +4,9 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use App\Enums\MarineType;
+use App\Enums\MarineBodyMaterials;
+use App\Enums\MarineEngineBrands;
+
 return new class extends Migration
 {
     /**
@@ -14,8 +17,11 @@ return new class extends Migration
         Schema::create('marine_advertisements', function (Blueprint $table) {
             $table->foreignId('advertisement_id')->primary()->constrained('advertisements')->onDelete('cascade');
             $table->Enum('marine_type', array_column(MarineType::cases(), 'name'));
-            $table->decimal('length', 8, 2)->nullable();
-            $table->integer('max_capacity')->unsigned()->nullable();
+            $table->decimal('length', 8, 2);
+            $table->decimal('width', 8, 2);
+            $table->Enum('engine_brand', array_column(MarineEngineBrands::cases(), 'name'))->default('OTHER');
+            $table->Enum('body_material', array_column(MarineBodyMaterials::cases(), 'name'));
+            $table->integer('max_capacity')->unsigned();
             $table->timestamps();
 
             $table->index('marine_type');
