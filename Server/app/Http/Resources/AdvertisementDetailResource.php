@@ -38,6 +38,7 @@ class AdvertisementDetailResource extends JsonResource
             'rentDetail' => rentDetailResource::class,
             'saleDetail' => saleDetailResource::class,
             'vehicleAdvertisement' => VehicleAdvertisementResource::class,
+            'landVehicleAttributes' => LandVehicleAttributesResource::class,
             'carAdvertisement' => CarAdvertisementResource::class,
             'motorcycleAdvertisement' => MotorcycleAdvertisementResource::class,
             'marineAdvertisement' => MarineAdvertisementResource::class,

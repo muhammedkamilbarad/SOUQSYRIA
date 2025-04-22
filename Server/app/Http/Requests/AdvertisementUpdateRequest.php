@@ -32,9 +32,9 @@ class AdvertisementUpdateRequest extends FormRequest
         $id = $this->route('id');
         $advertisement = Advertisement::findOrFail($id);
         $rules = [
-            'title' => 'sometimes|string|max:255',
+            'title' => 'sometimes|string|max:100',
             'description' => 'sometimes|string',
-            'price' => 'sometimes|numeric|min:0',
+            'price' => 'sometimes|numeric|min:0|max:100000000',
             'city' => 'sometimes|in:' . implode(',', array_column(SyriaCities::cases(), 'name')),
             'location' => 'sometimes|string|max:255',
             'video_url' => 'sometimes|url',
@@ -57,9 +57,9 @@ class AdvertisementUpdateRequest extends FormRequest
         {
             CategoryType::LAND => $this->getLandRules(),
             CategoryType::HOUSE => $this->getHouseRules(),
-            CategoryType::CAR => array_merge($this->getVehicleRules(), $this->getCarRules()),
+            CategoryType::CAR => array_merge($this->getVehicleRules(), $this->getLandVehicleRules(), $this->getCarRules()),
             CategoryType::MARINE => array_merge($this->getVehicleRules(), $this->getMarineRules()),
-            CategoryType::MOTORCYCLE => array_merge($this->getVehicleRules(), $this->getMotorcycleRules()),
+            CategoryType::MOTORCYCLE => array_merge($this->getVehicleRules(),  $this->getLandVehicleRules(), $this->getMotorcycleRules()),
             default => []
         };
         return array_merge($rules, $specificRules);
@@ -69,16 +69,22 @@ class AdvertisementUpdateRequest extends FormRequest
     {
         return [
             'color' => 'prohibited',
-            'mileage' => 'prohibited',
             'year' => 'prohibited',
             'fuel_type' => 'prohibited',
-            'cylinders' => 'prohibited',
-            'engine_capacity' => 'prohibited',
             'horsepower' => 'prohibited',
-            'transmission_type' => 'prohibited',
             'condition' => 'prohibited',
             'brand_id' => 'prohibited',
             'model_id' => 'prohibited',
+        ];
+    }
+    // Land Vehicle Rules
+    private function getLandVehicleRules(): array
+    {
+        return [
+            'mileage' => 'prohibited',
+            'cylinders' => 'prohibited',
+            'engine_capacity' => 'prohibited',
+            'transmission_type' => 'prohibited',
         ];
     }
     // House Rules
@@ -109,6 +115,9 @@ class AdvertisementUpdateRequest extends FormRequest
         return [
             'marine_type' => 'prohibited',
             'length' => 'prohibited',
+            'width' => 'prohibited',
+            'engine_brand' => 'prohibited',
+            'body_material' => 'prohibited',
             'max_capacity' => 'prohibited'
         ];
     }
@@ -132,10 +141,11 @@ class AdvertisementUpdateRequest extends FormRequest
 {
     return [
         'title.string' => '.يجب أن يكون العنوان نصًا',
-        'title.max' => '.لا يمكن أن يزيد العنوان عن 255 حرفًا',
+        'title.max' => '.لا يمكن أن يزيد العنوان عن 100 حرفًا',
         'description.string' => '.يجب أن يكون الوصف نصًا',
         'price.numeric' => '.يجب أن يكون السعر رقمًا',
         'price.min' => '.يجب أن يكون السعر قيمة موجبة',
+        'price.max' => '.لا يمكن أن يزيد السعر عن 100000000',
         'city.in' => '.المدينة المحددة غير صحيحة',
         'location.string' => '.يجب أن يكون الموقع نصًا',
         'location.max' => '.لا يمكن أن يزيد الموقع عن 255 حرفًا',
@@ -178,6 +188,9 @@ class AdvertisementUpdateRequest extends FormRequest
         // Marine Rules
         'marine_type.prohibited' => '.لا يمكنك تعديل نوع المركب البحري',
         'length.prohibited' => '.لا يمكنك تعديل الطول',
+        'width.prohibited' => '.لا يمكنك تعديل العرض',
+        'engine_brand.prohibited' => '.لا يمكنك تعديل علامة المحرك',
+        'body_material.prohibited' => '.لا يمكنك تعديل مادة الهيكل',
         'max_capacity.prohibited' => '.لا يمكنك تعديل السعة القصوى',
         // Land Rules
         'square_meters.prohibited' => '.لا يمكنك تعديل المساحة',

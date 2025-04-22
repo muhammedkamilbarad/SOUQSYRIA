@@ -86,6 +86,10 @@ class Advertisement extends Model
     {
         return $this->hasOne(HouseAdvertisement::class);
     }
+    public function landVehicleAttributes()
+    {
+        return $this->hasOne(LandVehicleAttributes::class);
+    }
     public function landAdvertisement()
     {
         return $this->hasOne(LandAdvertisement::class);

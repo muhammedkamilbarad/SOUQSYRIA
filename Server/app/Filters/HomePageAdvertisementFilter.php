@@ -90,7 +90,6 @@ class HomePageAdvertisementFilter
             ->when(isset($filters['model']), fn($q) => $q->where('model_id', $filters['model']))
             ->when(isset($filters['color']), fn($q) => $q->where('color', $filters['color']))
             ->when(isset($filters['fuel_type']), fn($q) => $q->where('fuel_type', $filters['fuel_type']))
-            ->when(isset($filters['transmission_type']), fn($q) => $q->where('transmission_type', $filters['transmission_type']))
             ->when(isset($filters['condition']), fn($q) => $q->where('condition', $filters['condition']))
             ->when(isset($filters['year']), fn($q) => $q->where('year', $filters['year']));
         });
@@ -102,6 +101,9 @@ class HomePageAdvertisementFilter
         $query->whereHas('motorcycleAdvertisement', function ($q) use ($filters) {
             $q->when(isset($filters['motorcycle_type']), fn($q) => $q->where('motorcycle_type', $filters['motorcycle_type']));
             $q->when(isset($filters['cooling_type']), fn($q) => $q->where('cooling_type', $filters['cooling_type']));
+        });
+        $query->whereHas('landVehicleAttributes', function ($q) use ($filters) {
+            $q->when(isset($filters['transmission_type']), fn($q) => $q->where('transmission_type', $filters['transmission_type']));
         });
     }
 
@@ -125,6 +127,9 @@ class HomePageAdvertisementFilter
         self::filterVehicleAdvertisements($query, $filters);
         $query->whereHas('carAdvertisement', function ($q) use ($filters) {
             $q->when(isset($filters['car_type']), fn($q) => $q->where('car_type', $filters['car_type']));
+        });
+        $query->whereHas('landVehicleAttributes', function ($q) use ($filters) {
+            $q->when(isset($filters['transmission_type']), fn($q) => $q->where('transmission_type', $filters['transmission_type']));
         });
     }
 

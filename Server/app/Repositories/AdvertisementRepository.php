@@ -37,6 +37,7 @@ class AdvertisementRepository extends BaseRepository
             'vehicleAdvertisement' => function($query){
                 $query->with('vehicleBrand', 'vehicleModel');
             },
+            'landVehicleAttributes',
             'carAdvertisement',
             'motorcycleAdvertisement',
             'marineAdvertisement',

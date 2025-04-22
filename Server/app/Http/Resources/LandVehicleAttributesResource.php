@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class MarineAdvertisementResource extends JsonResource
+class LandVehicleAttributesResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,12 +16,10 @@ class MarineAdvertisementResource extends JsonResource
     {
         return [
             'id' => $this->advertisement_id,
-            'length' => $this->length,
-            'width' => $this->width,
-            'engine_brand' => $this->engine_brand,
-            'body_material' => $this->body_material,
-            'max_capacity' => $this->max_capacity,
-            'marine_type' => $this->marine_type,
+            'mileage' => $this->mileage,
+            'engine_capacity' => $this->engine_capacity,
+            'cylinders' => $this->cylinders,
+            'transmission_type' => $this->transmission_type,
         ];
     }
 }

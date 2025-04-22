@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('advertisements', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 255);
+            $table->string('title', 100);
             $table->string('slug');
             $table->text('description');
             $table->decimal('price', 12, 2);
