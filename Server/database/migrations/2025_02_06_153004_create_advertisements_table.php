@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Schema;
 use App\Enums\SyriaCities;
 use App\Enums\CategoryType;
 use Illuminate\Support\Str;
+use App\Enums\OwnerType;
 
 return new class extends Migration
 {
@@ -20,6 +21,7 @@ return new class extends Migration
             $table->string('slug');
             $table->text('description');
             $table->decimal('price', 12, 2);
+            $table->Enum('owner_type', array_column(OwnerType::cases(), 'name'));
             $table->Enum('city', array_column(SyriaCities::cases(), 'name'));
             $table->string('location', 255)->nullable();
             $table->foreignId('category_id')->constrained('categories')->onDelete('restrict');

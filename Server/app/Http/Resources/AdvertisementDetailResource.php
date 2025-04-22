@@ -20,6 +20,7 @@ class AdvertisementDetailResource extends JsonResource
             'slug' => $this->slug,
             'description' => $this->description,
             'price' => $this->price,
+            'owner_type' => $this->owner_type,
             'city' => $this->city,
             'location' => $this->location,
             'video_url' => $this->video_url,
