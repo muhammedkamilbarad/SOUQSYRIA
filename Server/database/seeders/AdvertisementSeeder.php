@@ -29,6 +29,7 @@ use App\Enums\HouseType;
 use App\Enums\CarType;
 use App\Enums\MarineEngineBrands;
 use App\Enums\MarineBodyMaterials;
+use App\Enums\OwnerType;
 
 class AdvertisementSeeder extends Seeder
 {
@@ -96,6 +97,7 @@ class AdvertisementSeeder extends Seeder
         $carTypes = array_map(fn($c) => $c->name, CarType::cases());
         $marineEngineBrands     = array_map(fn($m) => $m->name, MarineEngineBrands::cases());
         $marineBodyMaterials    = array_map(fn($m) => $m->name, MarineBodyMaterials::cases());
+        $ownertypes = array_map(fn($m) => $m->name, OwnerType::cases());
 
         // Example IDs, must exist in your database
         $userIds   = [1, 2];
@@ -126,6 +128,7 @@ class AdvertisementSeeder extends Seeder
                 'ads_status'   => $ad_status,
                 'active_status'=> $active_status,
                 'type'         => $adType,
+                'owner_type'   => $ownertypes[array_rand($ownertypes)],
             ]);
 
             LandAdvertisement::create([
@@ -171,6 +174,7 @@ class AdvertisementSeeder extends Seeder
                 'ads_status'   => $ad_status,
                 'active_status'=> $active_status,
                 'type'         => $adType,
+                'owner_type'   => $ownertypes[array_rand($ownertypes)],
             ]);
 
             HouseAdvertisement::create([
@@ -225,6 +229,7 @@ class AdvertisementSeeder extends Seeder
                 'ads_status'   => $ad_status,
                 'active_status'=> $active_status,
                 'type'         => $adType,
+                'owner_type'   => $ownertypes[array_rand($ownertypes)],
             ]);
 
             VehicleAdvertisement::create([
@@ -295,6 +300,7 @@ class AdvertisementSeeder extends Seeder
                 'ads_status'   => $ad_status,
                 'active_status'=> $active_status,
                 'type'         => $adType,
+                'owner_type'   => $ownertypes[array_rand($ownertypes)],
             ]);
             VehicleAdvertisement::create([
                 'advertisement_id'  => $ad->id,
@@ -359,6 +365,7 @@ class AdvertisementSeeder extends Seeder
                 'ads_status'   => $ad_status,
                 'active_status'=> $active_status,
                 'type'         => $adType,
+                'owner_type'   => $ownertypes[array_rand($ownertypes)],
             ]);
 
             VehicleAdvertisement::create([
