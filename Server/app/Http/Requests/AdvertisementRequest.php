@@ -15,6 +15,7 @@ use App\Enums\CarType;
 use App\Enums\HouseType;
 use App\Enums\MarineBodyMaterials;
 use App\Enums\MarineEngineBrands;
+use App\Enums\OwnerType;
 
 class AdvertisementRequest extends FormRequest
 {
@@ -38,6 +39,7 @@ class AdvertisementRequest extends FormRequest
             'title' => 'required|string|max:100',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0|max:100000000',
+            'owner_type' => 'required|in:' . implode(',', array_column(OwnerType::cases(), 'name')),
             'city' => 'required|in:' . implode(',', array_column(SyriaCities::cases(), 'name')),
             'location' => 'sometimes|string|max:255',
             'category_id' => 'required|exists:categories,id',
@@ -95,7 +97,7 @@ class AdvertisementRequest extends FormRequest
             'number_of_bathrooms' => 'required|integer|min:1|max:15',
             'building_age' => 'required|integer|min:0|max:300',
             'square_meters' => 'required|numeric|min:20|max:10000',
-            'floor' => 'required|integer|min:1|max:50'
+            'floor' => 'required|integer|min:0|max:50'
         ];
     }
     // Car Rules
@@ -113,8 +115,8 @@ class AdvertisementRequest extends FormRequest
     {
         return [
             'marine_type' => 'required|in:' . implode(',', array_column(MarineType::cases(), 'name')),
-            'length' => 'required|numeric|min:0|1000',
-            'width' => 'required|numeric|min:0|1000',
+            'length' => 'required|numeric|min:1|max:500',
+            'width' => 'required|numeric|min:0.5|max:100',
             'engine_brand' => 'required|in:'. implode(',', array_column(MarineEngineBrands::cases(), 'name')),
             'body_material' => 'required|in:' . implode(',', array_column(MarineBodyMaterials::cases(), 'name')),
             'max_capacity' => 'required|integer|min:1|max:10000'
@@ -160,6 +162,8 @@ class AdvertisementRequest extends FormRequest
             'price.numeric' => '.يجب أن يكون السعر رقمًا',
             'price.min' => '.يجب أن يكون السعر قيمة موجبة',
             'price.max' => '.لا يمكن أن يزيد السعر عن 100000000',
+            'owner_type.required' => '.نوع المالك مطلوب',
+            'owner_type.in' => '.نوع المالك المحدد غير صالح',
             'rent_details.rental_period.required_if' => '.يجب تحديد فترة الإيجار عند اختيار نوع الإيجار',
             'rent_details.rental_period.prohibited_if' => '.لا يمكنك تحديد فترة الإيجار إذا كان نوع الإعلان للبيع',
             'rent_details.rental_period.in' => '.يجب أن تكون فترة الإيجار إما يوميًا أو أسبوعيًا أو شهريًا أو سنويًا',
