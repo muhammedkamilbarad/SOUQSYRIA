@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name', 100);
             $table->string('email')->unique();
-            $table->string('phone', 20)->unique();
+            $table->string('phone', 20)->unique()->nullable();
+            $table->string('facebook_id')->nullable()->unique();
+            $table->string('google_id')->nullable()->unique();
             $table->boolean('is_verified')->default(false);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password', 255);

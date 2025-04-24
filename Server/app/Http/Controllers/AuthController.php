@@ -14,6 +14,9 @@ use App\Http\Requests\RefreshTokenRequest;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\ResetPasswordRequest;
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 class AuthController extends Controller
 {
@@ -33,6 +36,98 @@ class AuthController extends Controller
         );
 
         $this->service->setOtpExpirationTime($this->otpExpirationInMinutes);
+    }
+
+    // Redirect to social provider login page
+    protected function redirectToProvider(string $provider): JsonResponse
+    {
+        try {
+            $url = Socialite::driver($provider)->stateless()->redirect()->getTargetUrl();
+            
+            return response()->json([
+                'success' => true,
+                'url' => $url,
+            ], 200);
+        } catch (Exception $e) {
+            Log::error("Error redirecting to {$provider}.", [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => "Error redirecting to {$provider}."
+            ], 500);
+        }
+    }
+
+    // Handle social provider callback
+    protected function handleProviderCallback(string $provider): JsonResponse
+    {
+        try {
+            Log::info("Starting {$provider} callback handler.");
+
+            $socialUser = Socialite::driver($provider)->stateless()->user();
+
+            $data = [
+                "{$provider}_id" => $socialUser->getId(),
+                'email' => $socialUser->getEmail(),
+                'password' => bcrypt(uniqid(rand(1, 10000))),
+                'name' => $socialUser->getName(),
+                'image' => $socialUser->getAvatar(),
+                'created_at' => now(),
+                'verified_at' => now(),
+                'is_verified' => 1,
+                'email_verified_at' => now(),
+            ];
+
+            Log::info("Prepared data for user registration via {$provider}.", $data);
+
+            $result = $this->service->socialAuth($data);
+
+            Log::info("User registered via {$provider}.", ['user_id' => $result['user']->id ?? null]);
+
+            return $this->createSuccessResponse(
+                $result['user'],
+                $result['access_token'],
+                $result['refresh_token'],
+                "User logged in successfully via {$provider}"
+            );
+        } catch (Exception $e) {
+            Log::error("Error during {$provider} authentication.", [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => "{$provider} authentication failed."
+            ], 500);
+        }
+    }
+
+    // Redirect to Facebook login page
+    public function redirectToFacebook(): JsonResponse
+    {
+        return $this->redirectToProvider('facebook');
+    }
+
+    // Redirect to Google login page
+    public function redirectToGoogle(): JsonResponse
+    {
+        return $this->redirectToProvider('google');
+    }
+
+    // Handle Facebook callback
+    public function handleFacebookCallback(): JsonResponse
+    {
+        return $this->handleProviderCallback('facebook');
+    }
+
+    // Handle Google callback
+    public function handleGoogleCallback(): JsonResponse
+    {
+        return $this->handleProviderCallback('google');
     }
 
     public function register(RegisterRequest $request): JsonResponse
