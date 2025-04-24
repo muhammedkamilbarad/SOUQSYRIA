@@ -24,12 +24,19 @@ class ThrottleLogins
 
         $response = $next($request);
 
+        // Check route name for system complaints first
+        if ($request->route()->named('system-complaints.store')) {
+            // Always increment counter for all system complaints submissions regardless of status
+            RateLimiter::hit($key, 60 * $decayMinutes);
+        }
         // Only increment the limiter on successful registration (not on validation failures)
-        if ($request->route()->named('auth.register') && $response->getStatusCode() === 200) {
+        elseif ($request->route()->named('auth.register') && $response->getStatusCode() === 200) {
             RateLimiter::hit($key, 60 * $decayMinutes);
         } elseif ($request->route()->named('auth.resend-otp') && $response->getStatusCode() === 200) {
             // Increment counter even for successful OTP resend
             RateLimiter::hit($key, 60 * $decayMinutes);
+        } elseif (($request->route()->named('auth.forgot-password') || $request->route()->named('auth.forgot-password-mobile')) && $response->getStatusCode() === 200) {
+            RateLimiter::hit($key, 60 * $decayMinutes); 
         } elseif ($response->getStatusCode() !== 200) {
             // Increment for failed login/refresh/resend-otp attempts
             if (!$request->route()->named('auth.register')) {
@@ -47,6 +54,11 @@ class ThrottleLogins
 
     protected function resolveRequestSignature(Request $request): string
     {
+        if ($request->route()->named('system-complaints.store')) {
+            // For system complaints, use user's IP address
+            return 'system_complaints:' . $request->ip();
+        }
+
         if ($request->route()->named('auth.register')) {
             // For registration, throttle based on IP only
             return 'register_ip:' . $request->ip();
@@ -72,6 +84,11 @@ class ThrottleLogins
             // For OTP resend, use email/phone + IP
             $identifier = $request->input('email') ?? $request->input('phone') ?? 'unknown';
             return 'resend_otp:' . Str::lower($identifier) . '|' . $request->ip();
+        }
+
+        if ($request->route()->named('auth.forgot-password') || $request->route()->named('auth.forgot-password-mobile')) {
+            $identifier = $request->input('email') ?? $request->ip();
+            return 'forgot_password:' . Str::lower($identifier) . '|' . $request->ip();
         }
 
         // Fallback to IP only

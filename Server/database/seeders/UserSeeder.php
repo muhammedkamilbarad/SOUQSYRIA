@@ -60,7 +60,7 @@ class UserSeeder extends Seeder
         }
 
         // Create 20 random users
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             $email = $faker->unique()->safeEmail;
             $phone = $faker->unique()->phoneNumber;
             

@@ -22,39 +22,26 @@ class ComplaintController extends Controller
         $userId = auth()->id(); // getting the user who is authenticated
 
         $data = [
-            'title' => $request->title,
             'content' => $request->content,
             'advs_id' => $request->advs_id,
             'user_id' => $userId,
         ];
 
-        $complaint = $this->complaintService->addComplaint($data);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Complaint has been sent',
-            'data' => $complaint,
-        ], 201);
-    }
-
-    public function complaintAboutSystem(ComplaintRequest $request)
-    {
-        $userId = auth()->id(); // getting the user who is authenticated
-
-        $data = [
-            'title' => $request->title,
-            'content' => $request->content,
-            'user_id' => $userId,
-        ];
+        if ($this->complaintService->checkComplaintExistence($userId, $data['advs_id']))
+        {
+            return response()->json([
+                'success' => true,
+                'message' => '.لقد قمت بالابلاغ على هذا الإعلان من قبل',
+            ], 200);
+        }
 
         $complaint = $this->complaintService->addComplaint($data);
 
         return response()->json([
             'success' => true,
-            'message' => 'Complaint has been sent',
+            'message' => 'Complaint has been sent.',
             'data' => $complaint,
         ], 201);
-        
     }
 
     public function getAllComplaintsForUser()
@@ -64,7 +51,7 @@ class ComplaintController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'All complaints for user',
+            'message' => 'All complaints for user.',
             'data' => $complaints,
         ], 200);
     }
@@ -75,7 +62,7 @@ class ComplaintController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Complaints for advertisement',
+            'message' => 'Complaints for advertisement.',
             'data' => $complaints,
         ], 200);
     }
@@ -85,10 +72,10 @@ class ComplaintController extends Controller
     {
         $complaint = $this->complaintService->getComplaintById($id);
         if(!$complaint) {
-            return response()->json(['message' => 'Complaint not found'], 404);
+            return response()->json(['message' => '.هذا الإبلاغ غير موجود'], 404);
         }
         $this->complaintService->deleteComplaint($complaint);
-        return response()->json(['message' => 'Complaint deleted successfully'], 200);
+        return response()->json(['message' => '.تم حذف الإعلان بنجاح'], 200);
     }
 
     public function index()

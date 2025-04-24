@@ -14,4 +14,14 @@ class VehicleModelRepository extends BaseRepository
     {
         parent::__construct($model);
     }
+
+    public function getAll(): Collection
+    {
+        return $this->model->with('vehicleBrand')->get();
+    }
+
+    public function getByBrandId(int $id)
+    {
+        return $this->model->where('brand_id', $id)->with('vehicleBrand')->get();
+    }
 }

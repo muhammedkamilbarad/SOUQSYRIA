@@ -30,7 +30,6 @@ class ComplaintRepository extends BaseRepository
         
         // Create new complaint with provided data
         return $this->model->create([
-            'title' => $data['title'],
             'content' => $data['content'],
             'user_id' => $data['user_id'],
             'advs_id' => $data['advs_id'] ?? null,
@@ -45,6 +44,11 @@ class ComplaintRepository extends BaseRepository
     public function getComplaintsForAdvertisement(int $advertisementId): Collection
     {
         return $this->model->where('advs_id', $advertisementId)->get();
+    }
+
+    public function checkComplaintExistence(int $userId, int $advsId)
+    {
+        return $this->model->where('user_id', $userId)->where('advs_id', $advsId)->exists();
     }
 
 }

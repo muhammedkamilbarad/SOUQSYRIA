@@ -17,7 +17,13 @@ class UserRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:100',
-            'email' => 'required|string|email|max:255|unique:users,email,',
+            'email' => [
+                'required',
+                'string',
+                'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+                'max:255',
+                'unique:users,email,'
+            ],
             'phone' => 'nullable|string|max:20|regex:/^\+?[0-9 ]{7,20}$/|unique:users,phone,',
             'is_verified' => 'boolean',
             'email_verified_at' => 'nullable|date',
@@ -32,7 +38,13 @@ class UserRequest extends FormRequest
 
         return [
             'name' => 'required|string|max:100',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+            'email' => [
+                'required',
+                'string',
+                'regex:/^[a-zA-Z0-9.]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+                'max:255',
+                'unique:users,email,' . $id
+            ],
             'phone' => 'nullable|string|max:20|regex:/^\+?[0-9 ]{7,20}$/|unique:users,phone,' . $id,
             'is_verified' => 'boolean',
             'password' => 'nullable|string|min:8|max:255',
@@ -50,7 +62,7 @@ class UserRequest extends FormRequest
 
             'email.required' => '.البريد الإلكتروني مطلوب',
             'email.string' => '.يجب أن يكون البريد الإلكتروني نصًا صالحًا',
-            'email.email' => '.يجب أن يكون البريد الإلكتروني عنوانًا صالحًا',
+            'email.regex' => 'يرجى إدخال عنوان بريد إلكتروني بتنسيق صحيح.',
             'email.max' => '.يجب ألا يتجاوز البريد الإلكتروني 255 حرفًا',
             'email.unique' => '.هذا البريد الإلكتروني مستخدم بالفعل',
 

@@ -11,13 +11,17 @@ use App\Http\Requests\ResendOTPRequest;
 use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RefreshTokenRequest;
+use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Requests\ForgotPasswordRequest;
+use App\Http\Requests\ResetPasswordRequest;
 
 class AuthController extends Controller
 {
     protected $service;
     // Token expiration times
-    protected $accessTokenExpiresInMinutes = 1000; // 1000 minutes default
-    protected $refreshTokenExpiresInMinutes = 3000; // 3000 minutes default
+    protected $accessTokenExpiresInMinutes = 1000; // 1000 minutes default (about 16 hours)
+    protected $refreshTokenExpiresInMinutes = 3000; // 3000 minutes default (about 50 hours)
+    protected $otpExpirationInMinutes = 3; // 3 minutes
 
     public function __construct(AuthService $service)
     {
@@ -27,6 +31,8 @@ class AuthController extends Controller
             $this->accessTokenExpiresInMinutes,
             $this->refreshTokenExpiresInMinutes
         );
+
+        $this->service->setOtpExpirationTime($this->otpExpirationInMinutes);
     }
 
     public function register(RegisterRequest $request): JsonResponse
@@ -105,9 +111,9 @@ class AuthController extends Controller
     private function handleFailLoginResponse($result): ?JsonResponse
     {
         if ($result === false) {
-            return response()->json(['error' => '.معلومات تسجيل الدخول غير صحيحة'], 401);
+            return response()->json(['error' => '.معلومات تسجيل الدخول غير صحيحة'], 400);
         } elseif ($result === null) {
-            return response()->json(['error' => 'هذا الحساب غير مؤكد يرجى تأكيده'], 403);
+            return response()->json(['error' => '.هذا الحساب غير مؤكد يرجى تأكيده'], 403);
         }
         return null; // No failure condition met
     }
@@ -118,25 +124,25 @@ class AuthController extends Controller
         $refreshToken = $request->cookie('refresh_token');
     
         if (!$refreshToken) {
-            return response()->json(['status' => 0, 'message' => 'Refresh token is missing'], 401);
+            return response()->json(['status' => 0, 'message' => '.رمز التحديث غير موجود'], 419);
         }
         
         $result = $this->service->refreshToken($refreshToken);
         
         if ($result === false) {
             // Clear the invalid cookies
-            return response()->json(['status' => 0, 'message' => 'Invalid or expired refresh token'], 401)
+            return response()->json(['status' => 0, 'message' => '.رمز التحديث غير صالح أو منتهي الصلاحية'], 419)
                 ->cookie('access_token', '', -1)
                 ->cookie('refresh_token', '', -1);
         }
         
         return response()->json([
             'message' => 'Token refreshed successfully',
-            'access_token' => $result['token'],
+            'access_token' => $result['access_token'],
             'refresh_token' => $result['refresh_token'],
             'permissions' => $result['permissions']
         ], 200)
-        ->cookie('access_token', $result['token'], $this->accessTokenExpiresInMinutes, '/', null, true, true, false, 'none')
+        ->cookie('access_token', $result['access_token'], $this->accessTokenExpiresInMinutes, '/', null, true, true, false, 'none')
         ->cookie('refresh_token', $result['refresh_token'], $this->refreshTokenExpiresInMinutes, '/', null, true, true, false, 'none');
     }
 
@@ -152,5 +158,81 @@ class AuthController extends Controller
         }
         
         return response()->json(['error' => 'Unauthorized'], 401);
+    }
+
+    public function changePassword(ChangePasswordRequest $request): JsonResponse
+    {
+        $result = $this->service->changePassword(
+            $request->user(),
+            $request->current_password,
+            $request->new_password
+        );
+
+        if (!$result)
+        {
+            return response()->json([
+                'error' => '.كلمة المرور الحالية غير صحيحة'
+            ], 400);
+        }
+
+        return response()->json([
+            'message' => '.تم تغيير كلمة المرور بنجاح'
+        ], 200);
+    }
+
+    public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
+    {
+        try
+        {
+            $this->service->sendPasswordResetLink($request->email);
+
+            return response()->json([
+                'message' => '.تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
+        
+    }
+
+    public function forgotPasswordMobile(ForgotPasswordRequest $request): JsonResponse
+    {
+        try
+        {
+            $resetToken = $this->service->returnPasswordResetLink($request->email);
+
+            return response()->json([
+                'message' => "Password reset link successfully created",
+                "resetToken" => $resetToken
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
+        
+    }
+
+    public function resetPassword(ResetPasswordRequest $request): JsonResponse
+    {
+        $result = $this->service->resetPasswordWithToken(
+            $request->token,
+            $request->password
+        );
+
+        if (!$result) {
+            return response()->json([
+                'error' => '.رمز غير صالح أو رمز منتهي الصلاحية'
+            ], 400);
+        }
+
+        return response()->json([
+            'message' => '.تم إعادة تعيين كلمة المرور بنجاح'
+        ], 200);
+    }
+
+    public function checkAuth(Request $request): JsonResponse
+    {
+        $isAuthenticated = $this->service->checkAuth($request);
+
+        return response()->json(['authenticated' => $isAuthenticated], 200);
     }
 }

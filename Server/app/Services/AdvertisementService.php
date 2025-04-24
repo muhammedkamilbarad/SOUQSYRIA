@@ -9,7 +9,14 @@ use Illuminate\Support\Arr;
 use App\Enums\CategoryType;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
-
+use App\Jobs\SendRejectionMessageJob;
+use App\Services\RecommendationStrategies\CarRecommendationStrategy;
+use App\Services\RecommendationStrategies\HouseRecommendationStrategy;
+use App\Services\RecommendationStrategies\LandRecommendationStrategy;
+use App\Services\RecommendationStrategies\MarineRecommendationStrategy;
+use App\Services\RecommendationStrategies\MotorcycleRecommendationStrategy;
+use App\Services\RecommendationStrategies\RecommendationStrategyInterface;
+use Illuminate\Database\Eloquent\Collection;
 
 class AdvertisementService
 {
@@ -179,6 +186,19 @@ class AdvertisementService
             'ads_status' => $data['status'],
             'active_status' => ($data['status'] === 'accepted') ? 'active' : 'inactive'
         ];
+
+        // Send rejection email if the status is rejected
+        if ($data['status'] === 'rejected' && isset($data['message']))
+        {
+            // Ensure $data['message'] is a string; fallback to a default if it’s not
+            $rejectionMessage = is_string($data['message']) ? $data['message'] : 'No specific reason provided.';
+            Log::info('Rejection message is: ' . $rejectionMessage . '....' . $advertisement->user->email);
+            SendRejectionMessageJob::dispatch(
+                $advertisement->user->email,
+                $advertisement->user->name,
+                $rejectionMessage
+            );
+        }
         return $this->repository->update($advertisement, $updateData);
     }
 
@@ -257,6 +277,7 @@ class AdvertisementService
         return $specificData;
     }
 
+
     public function deactivateAdvertisementByUser(int $advId, User $user)
     {
         $advertisement = $this->repository->getByIdWithRelations($advId);
@@ -284,6 +305,46 @@ class AdvertisementService
         return $this->repository->update($advertisement, [
             'active_status' => 'active'
         ]);
+
+    // Get similar advertisements based on the given advertisement ID
+    public function getSimilarAdvertisements(int $advertisementId, int $limit = 5): Collection
+    {
+        Log::info("Starting getSimilarAdvertisements with ID: $advertisementId and limit: $limit");
+        
+        // Load advertisement with relationships
+        $advertisement = $this->repository->getByIdWithRelations($advertisementId);
+        $categoryId = $advertisement->category_id;
+        
+        // Get base query for similar advertisements
+        $query = $this->repository->getSimilarAdvertisementsBaseQuery($advertisementId, $categoryId);
+        
+        // Get the appropriate strategy for this category
+        $strategy = $this->getRecommendationStrategy($categoryId);
+        
+        // Add necessary relations to the query based on the strategy
+        $query = $strategy->addRelationsToQuery($query);
+        
+        // Use the strategy to get similar advertisements
+        return $strategy->getSimilarAdvertisements($advertisement, $query, $limit);
+    }
+    
+    // Factory method to get the appropriate recommendation strategy
+    private function getRecommendationStrategy(int $categoryId): RecommendationStrategyInterface
+    {
+        switch ($categoryId) {
+            case CategoryType::LAND->value:
+                return new LandRecommendationStrategy($this->repository);
+            case CategoryType::HOUSE->value:
+                return new HouseRecommendationStrategy($this->repository);
+            case CategoryType::CAR->value:
+                return new CarRecommendationStrategy($this->repository);
+            case CategoryType::MARINE->value:
+                return new MarineRecommendationStrategy($this->repository);
+            case CategoryType::MOTORCYCLE->value:
+                return new MotorcycleRecommendationStrategy($this->repository);
+            default:
+                throw new \InvalidArgumentException("No strategy found for category ID: $categoryId");
+        }
     }
 }
 

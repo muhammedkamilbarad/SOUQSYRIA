@@ -13,7 +13,12 @@ class VerifyAccountRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email|exists:users,email',
+            'email' => [
+                'required',
+                'string',
+                'regex:/^[a-zA-Z0-9.]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+                'exists:users,email'
+            ],
             'otp' => 'required|string|size:6',
         ];
     }
@@ -21,9 +26,10 @@ class VerifyAccountRequest extends FormRequest
     public function messages()
     {
         return [
-            'email.required' => '.عنوان البريد الإلكتروني مطلوب',
-            'email.email' => '.يرجى إدخال عنوان بريد إلكتروني صالح',
-            'email.exists' => '.البريد الإلكتروني المدخل غير مسجل',
+            'email.required' => 'يرجى إدخال عنوان بريدك الإلكتروني.',
+            'email.string' => 'يجب أن يكون عنوان البريد الإلكتروني نص صحيح.',
+            'email.regex' => 'يرجى إدخال عنوان بريد إلكتروني بتنسيق صحيح.',
+            'email.exists' => 'لم نتمكن من العثور على حسابك باستخدام هذا البريد الإلكتروني. يرجى التحقق والمحاولة مرة أخرى.',
 
             'otp.required' => '.رمز التحقق مطلوب',
             'otp.string' => '.يجب أن يكون رمز التحقق نصًا صالحًا',

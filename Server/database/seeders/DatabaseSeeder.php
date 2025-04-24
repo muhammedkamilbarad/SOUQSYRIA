@@ -21,9 +21,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             ColorSeeder::class,
-            CitySeeder::class,
-            TransmissionTypeSeeder::class,
-            FuelTypeSeeder::class,
+            // CitySeeder::class,
+            // TransmissionTypeSeeder::class,
+            // FuelTypeSeeder::class,
             PopularQuestionSeeder::class,
             CategorySeeder::class,
             VehicleBrandSeeder::class,
@@ -33,10 +33,13 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             UserSeeder::class,
             SubscriptionRequestSeeder::class,
-            MarineTypeSeeder::class,
+            // MarineTypeSeeder::class,
             FeatureGroupSeeder::class,
             FeatureSeeder::class,
             AdvertisementSeeder::class,
+            // ArabicFeatureGroupSeeder::class,
+            // ArabicFeaturesSeeder::class,
+            // ArabicAdvertisementSeeder::class,
         ]);
     }
 }

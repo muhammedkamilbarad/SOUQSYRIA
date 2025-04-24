@@ -47,4 +47,11 @@ class VehicleBrandService
     {
         $this->vehicleBrandRepository->delete($vehicleBrand);
     }
+
+    public function getBrandsByCategory(array $data)
+    {
+        $category_id = $data['category_id'] ?? null;
+
+        return $this->vehicleBrandRepository->getBrandsByCategory($category_id);
+    }
 }

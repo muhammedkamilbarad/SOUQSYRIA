@@ -5,25 +5,30 @@ use App\Repositories\SubscriptionRequestRepository;
 use App\Services\SubscribingService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
+use App\Services\ImageUploadService;
 
 class SubscriptionRequestService
 {
     protected $repository;
     protected $subscribingService;
+    protected $imageUploadService;
 
     public function __construct(
         SubscriptionRequestRepository $repository,
-        SubscribingService $subscribingService)
+        SubscribingService $subscribingService,
+        ImageUploadService $imageUploadService)
     {
         $this->repository = $repository;
         $this->subscribingService = $subscribingService;
+        $this->imageUploadService = $imageUploadService;
     }
 
     public function createRequest(array $data)
     {
         if(isset($data['receipt']))
         {
-            $url = $data['receipt']->store('receipts','public');
+            $path = "receipts";
+            $url = $this->imageUploadService->uploadImage($path, $data['receipt']);
             $data['receipt'] = $url;
         }
         return $this->repository->create($data);

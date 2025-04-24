@@ -49,4 +49,9 @@ class ComplaintService
     {
         return $this->complaintRepository->getAll();
     }
+
+    public function checkComplaintExistence(int $userId, int $advsId): bool
+    {
+        return $this->complaintRepository->checkComplaintExistence($userId, $advsId);
+    }
 }

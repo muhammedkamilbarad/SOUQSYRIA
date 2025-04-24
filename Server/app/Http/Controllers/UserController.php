@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Services\UserService;
 use App\Http\Requests\UserRequest;
+use App\Http\Requests\ProfileRequest;
 
 class UserController extends Controller
 {
@@ -144,6 +145,21 @@ class UserController extends Controller
                 'name' => $user->role->name,
                 'permissions' => $user->role->permissions->pluck('name'),
             ],
+        ], 200);
+    }
+
+    public function updateProfile(ProfileRequest $request)
+    {
+        $user = $request->user();
+        $user = $this->userService->getUserById($user->id);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user = $this->userService->updateProfile($user, $request->validated());
+        return response()->json([
+            'message' => 'Profile updated successfully',
+            'data' => $user,
         ], 200);
     }
 }

@@ -8,15 +8,19 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use App\Services\ImageUploadService;
 
 
 class UserService
 {
     protected $userRepository;
+    protected $imageUploadService;
+    protected $imagePath = "profiles";
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, ImageUploadService $imageUploadService)
     {
         $this->userRepository = $userRepository;
+        $this->imageUploadService = $imageUploadService;
     }
 
     public function getUserWithRoleById(int $id): ?Model
@@ -61,6 +65,25 @@ class UserService
         if (isset($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         }
+        return $this->userRepository->update($user, $data);
+    }
+
+    public function updateProfile(Model $user, array $data): Model
+    {
+        \Log::info('update profile service');
+        // Handle the image
+        if (isset($data['image'])) {
+            $image_url = $this->imagePath . '/' . $user->id;
+
+            $status = $this->imageUploadService->deleteImage($image_url);
+            \Log::info('Status ==> ' . $status);
+            $data['image'] = $this->imageUploadService->uploadImage(
+                $image_url,
+                $data['image']
+            );
+            \Log::info('image ==> ' . $data['image']);
+        }
+
         return $this->userRepository->update($user, $data);
     }
 

@@ -22,26 +22,27 @@ use App\Http\Controllers\FeatureGroupController;
 use App\Http\Controllers\FeatureController;
 use App\Http\Middleware\ThrottleLogins;
 use App\Http\Controllers\HomePageController;
+use App\Http\Controllers\SystemComplaintController;
 
 // Protected routes
 Route::middleware(['auth:sanctum'])->group(function () {
     // Color Routes
-    Route::group(['prefix' => 'colors'], function () {
-        Route::get('/', [ColorController::class, 'index'])->middleware('permission:view_color');
-        Route::get('/{id}', [ColorController::class, 'show'])->middleware('permission:view_color');
-        Route::post('/', [ColorController::class, 'store'])->middleware('permission:create_color');
-        Route::put('/{id}', [ColorController::class, 'update'])->middleware('permission:update_color');
-        Route::delete('/{id}', [ColorController::class, 'destroy'])->middleware('permission:delete_color');
-    });
+    // Route::group(['prefix' => 'colors'], function () {
+    //     Route::get('/', [ColorController::class, 'index'])->middleware('permission:view_color');
+    //     Route::get('/{id}', [ColorController::class, 'show'])->middleware('permission:view_color');
+    //     Route::post('/', [ColorController::class, 'store'])->middleware('permission:create_color');
+    //     Route::put('/{id}', [ColorController::class, 'update'])->middleware('permission:update_color');
+    //     Route::delete('/{id}', [ColorController::class, 'destroy'])->middleware('permission:delete_color');
+    // });
 
     // Marine Type Routes
-    Route::group(['prefix' => 'marineTypes'], function () {
-        Route::get('/', [MarineTypeController::class, 'index'])->middleware('permission:view_marineTypes');
-        Route::get('/{id}', [MarineTypeController::class, 'show'])->middleware('permission:view_marineTypes');
-        Route::post('/', [MarineTypeController::class, 'store'])->middleware('permission:create_marineTypes');
-        Route::put('/{id}', [MarineTypeController::class, 'update'])->middleware('permission:update_marineTypes');
-        Route::delete('/{id}', [MarineTypeController::class, 'destroy'])->middleware('permission:delete_marineTypes');
-    });
+    // Route::group(['prefix' => 'marineTypes'], function () {
+    //     Route::get('/', [MarineTypeController::class, 'index'])->middleware('permission:view_marineTypes');
+    //     Route::get('/{id}', [MarineTypeController::class, 'show'])->middleware('permission:view_marineTypes');
+    //     Route::post('/', [MarineTypeController::class, 'store'])->middleware('permission:create_marineTypes');
+    //     Route::put('/{id}', [MarineTypeController::class, 'update'])->middleware('permission:update_marineTypes');
+    //     Route::delete('/{id}', [MarineTypeController::class, 'destroy'])->middleware('permission:delete_marineTypes');
+    // });
 
     // Vehicle Model Routes
     Route::group(['prefix' => 'vehiclemodels'], function () {
@@ -95,7 +96,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/{id}', [PopularQuestionController::class, 'destroy'])->middleware('permission:delete_faq');
     });
 
-    // Package Routes
+    // Package Routes - view should be repeated for home page
     Route::group(['prefix' => 'packages'], function () {
         Route::get('/', [PackageController::class, 'index'])->middleware('permission:view_package');
         Route::get('/{id}', [PackageController::class, 'show'])->middleware('permission:view_package');
@@ -106,12 +107,18 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Complaints Routes
     Route::group(['prefix' => 'complaints'], function () {
-        Route::get('/', [ComplaintsController::class, 'index'])->middleware('permission:view_complaint');
+        Route::get('/', [ComplaintController::class, 'index'])->middleware('permission:view_complaint');
         Route::get('/user/{userId?}', [ComplaintController::class, 'getAllComplaintsForUser'])->middleware('permission:view_complaint');
         Route::get('/advertisement/{advertisementId}', [ComplaintController::class, 'getComplaintsForAdvertisement'])->middleware('permission:view_complaint');
-        Route::post('/advertisement', [ComplaintsController::class, 'complaintAboutAdvertisement']);
-        Route::post('/system', [ComplaintController::class, 'complaintAboutSystem']);
+        Route::post('/advertisement', [ComplaintController::class, 'complaintAboutAdvertisement']);
         Route::delete('/{id}', [ComplaintController::class, 'destroy'])->middleware('permission:delete_complaint');
+    });
+
+    // System Complaints
+    Route::prefix('system-complaints')->group(function () {
+        Route::get('/', [SystemComplaintController::class, 'index'])->middleware('permission:view_complaint');
+        Route::get('{id}', [SystemComplaintController::class, 'show'])->middleware('permission:view_complaint');
+        Route::delete('{id}', [SystemComplaintController::class, 'destroy'])->middleware('permission:delete_complaint');
     });
 
     // Subscription Requests Routes
@@ -139,20 +146,20 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     // Category Routes
-    Route::group(['prefix' => 'categories'], function () {
-        Route::get('/', [CategoryController::class, 'index']);
-        Route::get('/{id}', [CategoryController::class, 'show']);
-    });
+    // Route::group(['prefix' => 'categories'], function () {
+    //     Route::get('/', [CategoryController::class, 'index']);
+    //     Route::get('/{id}', [CategoryController::class, 'show']);
+    // });
 
     // Advertisement Routes
     Route::group(['prefix' => 'advertisements'], function () {
         Route::get('/', [AdvertisementController::class, 'index'])->middleware('permission:view_ad');
+        Route::get('/user/my-ad', [AdvertisementController::class, 'getUserAdvertisements']);
         Route::get('/{id}', [AdvertisementController::class, 'show'])->middleware('permission:view_ad');
-        Route::get('/by-user/{id}', [AdvertisementController::class, 'getUserAdvertisements'])->middleware('permission:view_ad');
-        Route::post('/', [AdvertisementController::class, 'store'])->middleware('permission:create_ad');
-        Route::put('/{id}', [AdvertisementController::class, 'update'])->middleware('permission:update_ad');
-        Route::delete('/{id}', [AdvertisementController::class, 'destroy'])->middleware('permission:delete_ad');
-        Route::post('/process', [AdvertisementController::class, 'process'])->middleware('permission:process_ad');
+        Route::post('/', [AdvertisementController::class, 'store']);
+        Route::put('/{id}', [AdvertisementController::class, 'update']);
+        Route::delete('/{id}', [AdvertisementController::class, 'destroy']);
+        Route::post('/{id}/process', [AdvertisementController::class, 'process'])->middleware('permission:process_ad');
     });
 
     // Feature Routes
@@ -175,13 +182,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     // Auth
+    Route::post('/change-password', [AuthController::class, 'changePassword']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [UserController::class, 'getProfile']);
+    Route::put('/profile', [UserController::class, 'updateProfile']);
+    
     Route::get('/auth-me', [UserController::class, 'getAuthMe']);
     Route::get('/user-permissions', [UserController::class, 'getUserPermissions']);
-
-    // Landing Page
-    Route::get('/home-page', [HomePageController::class, 'index']);
 });
 
 
@@ -206,4 +213,31 @@ Route::post('/resend-otp', [AuthController::class, 'resendOtp'])
     ->middleware('throttle.login:3,15') // 3 attempts, 15 minute decay
     ->name('auth.resend-otp');
 
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
+    ->middleware('throttle.login:3,10') // 3 attempts, 10 minute decay
+    ->name('auth.forgot-password');
+
+Route::post('/forgot-password-mobile', [AuthController::class, 'forgotPasswordMobile'])
+    ->middleware('throttle.login:3,10') // 3 attempts, 10 minute decay
+    ->name('auth.forgot-password-mobile');
+
+Route::post('/system-complaints', [SystemComplaintController::class, 'store'])
+    ->middleware('throttle.login:5,10')  // 5 attempts, 10 minutes decay
+    ->name('system-complaints.store');
+
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 Route::post('/verify-account', [AuthController::class, 'verifyAccount']);
+
+
+// Landing Page
+Route::get('/home-page', [HomePageController::class, 'index']);
+// Route::get('advertisement/{id}/{slug}', [AdvertisementController::class, 'show']);
+Route::get('advertisement/{id}', [AdvertisementController::class, 'advertisementDetails']);
+Route::get('all-advertisements', [AdvertisementController::class, 'getAdvertisementsForHomePage']);
+
+Route::get('check-auth', [AuthController::class, 'checkAuth']);
+
+Route::get('brand/{id}/models', [VehicleModelController::class, 'getVehicleModelsByBrandId']);
+Route::get('brands', [VehicleBrandController::class, 'getBrandsByCategory']);
+Route::get('feature-groups/{id}/category', [FeatureGroupController::class, 'categoryFeatuers']);
+Route::get('package-list', [PackageController::class, 'index']);
