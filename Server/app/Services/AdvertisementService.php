@@ -305,29 +305,30 @@ class AdvertisementService
         return $this->repository->update($advertisement, [
             'active_status' => 'active'
         ]);
+    }
 
     // Get similar advertisements based on the given advertisement ID
     public function getSimilarAdvertisements(int $advertisementId, int $limit = 5): Collection
     {
         Log::info("Starting getSimilarAdvertisements with ID: $advertisementId and limit: $limit");
-        
+
         // Load advertisement with relationships
         $advertisement = $this->repository->getByIdWithRelations($advertisementId);
         $categoryId = $advertisement->category_id;
-        
+
         // Get base query for similar advertisements
         $query = $this->repository->getSimilarAdvertisementsBaseQuery($advertisementId, $categoryId);
-        
+
         // Get the appropriate strategy for this category
         $strategy = $this->getRecommendationStrategy($categoryId);
-        
+
         // Add necessary relations to the query based on the strategy
         $query = $strategy->addRelationsToQuery($query);
-        
+
         // Use the strategy to get similar advertisements
         return $strategy->getSimilarAdvertisements($advertisement, $query, $limit);
     }
-    
+
     // Factory method to get the appropriate recommendation strategy
     private function getRecommendationStrategy(int $categoryId): RecommendationStrategyInterface
     {
