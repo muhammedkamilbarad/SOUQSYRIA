@@ -26,7 +26,8 @@ class AdvertisementController extends Controller
     public function getUserAdvertisements(Request $request)
     {
         try {
-            $advertisements = $this->service->getAdvertisementsByUser(request()->user());
+            $perPage = $request->get('per_page', 5);
+            $advertisements = $this->service->getAdvertisementsByUser(request()->user(), $perPage);
             return response()->json([
                 'success' => true,
                 'data'    => new AdvertisementCollection($advertisements),
@@ -69,6 +70,28 @@ class AdvertisementController extends Controller
     {
         try {
             $advertisement = $this->service->getAdvertisementById($id);
+            if (!$advertisement) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Advertisement not found'
+                ], 404);
+            }
+            return response()->json([
+                'success' => true,
+                'data'    => new AdvertisementDetailResource($advertisement)
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function showByIdAndSlug(int $id, string $slug)
+    {
+        try {
+            $advertisement = $this->service->getAdvertisementByIdAndSlug($id, $slug);
             if (!$advertisement) {
                 return response()->json([
                     'success' => false,
@@ -175,6 +198,32 @@ class AdvertisementController extends Controller
                 'success' => true,
                 'data'    => new AdvertisementCollection($advertisements),
             ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function deactivateAdvertisement(int $advId)
+    {
+        try {
+            $result = $this->service->deactivateAdvertisementByUser($advId, request()->user());
+            return response()->json($result, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function activateAdvertisement(int $advId)
+    {
+        try {
+            $result = $this->service->activateAdvertisementByUser($advId, request()->user());
+            return response()->json($result, 200);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

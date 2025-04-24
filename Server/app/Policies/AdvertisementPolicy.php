@@ -63,4 +63,25 @@ class AdvertisementPolicy
     {
         //
     }
+
+    /**
+     * Determine whether the user can deactivate the model.
+     */
+    public function deactivate(User $user, Advertisement $advertisement): bool
+    {
+        return $user->id === $advertisement->user_id
+                && $advertisement->active_status === 'active'
+                && $advertisement->ads_status === 'accepted';
+    }
+
+    /**
+     * Determine whether the user can activate the model.
+     */
+    public function activate(User $user, Advertisement $advertisement): bool
+    {
+        return $user->id === $advertisement->user_id
+                && $advertisement->active_status === 'inactive'
+                && $advertisement->ads_status === 'accepted'
+                && $user->hasActiveSubscription();
+    }
 }

@@ -21,14 +21,19 @@ class AdvertisementService
     }
 
 
-    public function getAdvertisementsByUser(User $user)
+    public function getAdvertisementsByUser(User $user, int $perPage = 5)
     {
-        return $this->repository->getByUserId($user->id);
+        return $this->repository->getByUserId($user->id, $perPage);
     }
 
     public function getAdvertisementById(int $id)
     {
         return $this->repository->getByIdWithRelations($id);
+    }
+
+    public function getAdvertisementByIdAndSlug(int $id, string $slug)
+    {
+        return $this->repository->getByIdAndSlug($id, $slug);
     }
 
     public function getAllAdvertisements(array $filters = [], int $perPage = 5)
@@ -42,16 +47,16 @@ class AdvertisementService
 
     public function create(array $data, User $user)
     {
-        // if (Gate::denies('create', Advertisement::class)) {
-        //     throw new \Exception('You do not have an active subscription or remaining ads.');
-        // }
+        if (Gate::denies('create', Advertisement::class)) {
+            throw new \Exception('You do not have an active subscription or remaining ads.');
+        }
         $advertisementData = $this->prepareAdvertisementData($data, $user);
         $specificData = $this->prepareSpecificData($data);
         $advertisement = $this->repository->createWithRelated(
             $advertisementData,
             $specificData,
         );
-        //$this->decreaseRemainingAds($user);
+        $this->decreaseRemainingAds($user);
         return [
             'success' => true,
             'advertisement' => $advertisement
@@ -65,6 +70,7 @@ class AdvertisementService
             'description' => $data['description'],
             'price' => $data['price'],
             'city' => $data['city'],
+            'owner_type' => $data['owner_type'],
             'location' => $data['location'] ?? null,
             'video_url' => $data['video_url'] ?? null,
             'category_id' => $data['category_id'],
@@ -249,6 +255,35 @@ class AdvertisementService
             $specificData['rent_details'] = $data['rent_details'];
         }
         return $specificData;
+    }
+
+    public function deactivateAdvertisementByUser(int $advId, User $user)
+    {
+        $advertisement = $this->repository->getByIdWithRelations($advId);
+        if (!$advertisement) {
+            throw new \Exception('Advertisement not found');
+        }
+        if (Gate::denies('deactivate', $advertisement)) {
+            throw new \Exception('.لا يمكنك تعطيل هذا الإعلان');
+        }
+        return $this->repository->update($advertisement, [
+            'active_status' => 'inactive'
+        ]);
+    }
+
+    public function activateAdvertisementByUser(int $advId, User $user)
+    {
+        $advertisement = $this->repository->getByIdWithRelations($advId);
+        if (!$advertisement) {
+            throw new \Exception('Advertisement not found');
+        }
+        if (Gate::denies('activate', $advertisement)) {
+            throw new \Exception('.لا يمكنك تفعيل هذا الإعلان');
+        }
+        $this->decreaseRemainingAds($user);
+        return $this->repository->update($advertisement, [
+            'active_status' => 'active'
+        ]);
     }
 }
 
