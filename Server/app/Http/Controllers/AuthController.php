@@ -87,27 +87,27 @@ class AuthController extends Controller
 
             Log::info("User registered via {$provider}.", ['user_id' => $result['user']->id ?? null]);
 
-            return response()->json([
-                'success' => true,
-                'message' => "User logged in successfully via {$provider}",
-                'data' => [
-                    'user' => $result['user'],
-                    'access_token' => $result['access_token'],
-                    'refresh_token' => $result['refresh_token']
-                ]
-            ], 200)
-            ->cookie('access_token', $result['access_token'], $this->accessTokenExpiresInMinutes, '/', null, true, true, false, 'none')
-            ->cookie('refresh_token', $result['refresh_token'], $this->refreshTokenExpiresInMinutes, '/', null, true, true, false, 'none');
+            // Get the stored redirect URL fron config
+            $frontendUrl = config('services.frontend_url');
+
+            // Create the full redirect URL with the provider parameter
+            $redirectUrl = "{$frontendUrl}/?redirected={$provider}_authentication";
+
+            // Create redirect response with cookies
+            $response = redirect()->away($redirectUrl);
+            $response->cookie('access_token', $result['access_token'], $this->accessTokenExpiresInMinutes, '/', null, true, true, false, 'none');
+            $response->cookie('refresh_token', $result['refresh_token'], $this->refreshTokenExpiresInMinutes, '/', null, true, true, false, 'none');
+
+            return $response;
         } catch (Exception $e) {
             Log::error("Error during {$provider} authentication.", [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => "{$provider} authentication failed."
-            ], 500);
+    
+            // Redirect to frontend with error parameter
+            $frontendUrl = config('services.frontend_url');
+            return redirect()->away("{$frontendUrl}/?auth_error=true");
         }
     }
 
