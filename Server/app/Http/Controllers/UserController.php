@@ -7,14 +7,22 @@ use App\Models\User;
 use App\Services\UserService;
 use App\Http\Requests\UserRequest;
 use App\Http\Requests\ProfileRequest;
+use App\Services\SubscribingService;
+use App\Services\FavoriteService;
 
 class UserController extends Controller
 {
     protected $userService;
+    protected $subscriptionService;
+    protected $favoriteService;
 
-    public function __construct(UserService $userService)
+    public function __construct(UserService $userService, 
+                                SubscribingService $subscriptionService, 
+                                FavoriteService $favoriteService)
     {
         $this->userService = $userService;
+        $this->subscriptionService = $subscriptionService;
+        $this->favoriteService = $favoriteService;
     }
 
     public function index(Request $request)
@@ -111,9 +119,24 @@ class UserController extends Controller
 
     public function getProfile(Request $request)
     {
-        $user = $request->user();
-        $user = $this->userService->getUserById($user->id);
-        return response()->json($user, 200);
+        try {
+            $user = $request->user();
+            $user = $this->userService->getUserById($user->id);
+
+            $favorites = $this->favoriteService->getUserFavorites($user->id);
+            $subscription = $this->subscriptionService->getCurrentActiveSubscription($user->id);
+
+            return response()->json([
+                'user' => $user,
+                'favorites' => $favorites->isEmpty() ? '.قائمة المفضلات فارغة' : $favorites,
+                'subscription' => $subscription ? $subscription : '.لا يوجد اشتراك نشط حالياً',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => '.فشل في جلب بيانات الملف الشخصي',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function getUserPermissions(Request $request)
