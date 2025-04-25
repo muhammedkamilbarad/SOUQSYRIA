@@ -123,12 +123,10 @@ class UserController extends Controller
             $user = $request->user();
             $user = $this->userService->getUserById($user->id);
 
-            $favorites = $this->favoriteService->getUserFavorites($user->id);
             $subscription = $this->subscriptionService->getCurrentActiveSubscription($user->id);
 
             return response()->json([
                 'user' => $user,
-                'favorites' => $favorites->isEmpty() ? '.قائمة المفضلات فارغة' : $favorites,
                 'subscription' => $subscription ? $subscription : '.لا يوجد اشتراك نشط حالياً',
             ], 200);
         } catch (\Exception $e) {
