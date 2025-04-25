@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\VerifyAccountRequest;
 use App\Http\Requests\ResendOTPRequest;
@@ -62,7 +63,7 @@ class AuthController extends Controller
     }
 
     // Handle social provider callback
-    protected function handleProviderCallback(string $provider): JsonResponse
+    protected function handleProviderCallback(string $provider): RedirectResponse
     {
         try {
             Log::info("Starting {$provider} callback handler.");
@@ -111,20 +112,6 @@ class AuthController extends Controller
         }
     }
 
-    // Create a success response with user and token information
-    protected function createSuccessResponse($user, $accessToken, $refreshToken, $message = 'Success'): JsonResponse
-    {
-        return response()->json([
-            'success' => true,
-            'message' => $message,
-            'data' => [
-                'user' => $user,
-                'access_token' => $accessToken,
-                'refresh_token' => $refreshToken
-            ]
-        ], 200);
-    }
-
     // Redirect to Facebook login page
     public function redirectToFacebook(): JsonResponse
     {
@@ -138,13 +125,13 @@ class AuthController extends Controller
     }
 
     // Handle Facebook callback
-    public function handleFacebookCallback(): JsonResponse
+    public function handleFacebookCallback(): RedirectResponse
     {
         return $this->handleProviderCallback('facebook');
     }
 
     // Handle Google callback
-    public function handleGoogleCallback(): JsonResponse
+    public function handleGoogleCallback(): RedirectResponse
     {
         return $this->handleProviderCallback('google');
     }
