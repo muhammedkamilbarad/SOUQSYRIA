@@ -87,12 +87,17 @@ class AuthController extends Controller
 
             Log::info("User registered via {$provider}.", ['user_id' => $result['user']->id ?? null]);
 
-            return $this->createSuccessResponse(
-                $result['user'],
-                $result['access_token'],
-                $result['refresh_token'],
-                "User logged in successfully via {$provider}"
-            );
+            return response()->json([
+                'success' => true,
+                'message' => "User logged in successfully via {$provider}",
+                'data' => [
+                    'user' => $result['user'],
+                    'access_token' => $result['access_token'],
+                    'refresh_token' => $result['refresh_token']
+                ]
+            ], 200)
+            ->cookie('access_token', $result['access_token'], $this->accessTokenExpiresInMinutes, '/', null, true, true, false, 'none')
+            ->cookie('refresh_token', $result['refresh_token'], $this->refreshTokenExpiresInMinutes, '/', null, true, true, false, 'none');
         } catch (Exception $e) {
             Log::error("Error during {$provider} authentication.", [
                 'message' => $e->getMessage(),
@@ -104,6 +109,20 @@ class AuthController extends Controller
                 'message' => "{$provider} authentication failed."
             ], 500);
         }
+    }
+
+    // Create a success response with user and token information
+    protected function createSuccessResponse($user, $accessToken, $refreshToken, $message = 'Success'): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'data' => [
+                'user' => $user,
+                'access_token' => $accessToken,
+                'refresh_token' => $refreshToken
+            ]
+        ], 200);
     }
 
     // Redirect to Facebook login page
