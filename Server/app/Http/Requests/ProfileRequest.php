@@ -20,7 +20,6 @@ class ProfileRequest extends FormRequest
 
     private function updateRules()
     {
-        $id = $this->route('role') ?? $this->route('id');
 
         return [
             // Name field is optional (not required)
@@ -30,7 +29,7 @@ class ProfileRequest extends FormRequest
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
             
             // Phone is optional, must be a string, max length 20 characters, and match the regex pattern
-            'phone' => 'nullable|string|max:20|regex:/^\+?[0-9 ]{7,20}$/|unique:users,phone,',
+            'phone' => 'nullable|string|max:20|regex:/^\+?[0-9 ]{7,20}$/|unique:users,phone,' . auth()->user()->id,
         ];
     }
 
