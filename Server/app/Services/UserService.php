@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\UserRepository;
+use App\Repositories\AuthRepository;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use App\Services\ImageUploadService;
@@ -16,11 +17,15 @@ class UserService
     protected $userRepository;
     protected $imageUploadService;
     protected $imagePath = "profiles";
+    protected $authRepository;
 
-    public function __construct(UserRepository $userRepository, ImageUploadService $imageUploadService)
+    public function __construct(UserRepository $userRepository, 
+                                ImageUploadService $imageUploadService,
+                                AuthRepository $authRepository)
     {
         $this->userRepository = $userRepository;
         $this->imageUploadService = $imageUploadService;
+        $this->authRepository = $authRepository;
     }
 
     public function getUserWithRoleById(int $id): ?Model
@@ -95,6 +100,19 @@ class UserService
     public function SoftDeleteUser(Model $user)
     {
         $this->userRepository->delete($user);
+    }
+
+    public function softDeleteMyAccount(Model $user, string $password)
+    {
+        // Verify current password
+        if (!Hash::check($password, $user->password))
+        {
+            return false;
+        }
+        // Delete tokens of this user
+        $this->authRepository->deleteTokens($user->id);
+        $this->userRepository->delete($user);
+        return true;
     }
 
     public function restoreUser(Model $user, int $id): ?Model
