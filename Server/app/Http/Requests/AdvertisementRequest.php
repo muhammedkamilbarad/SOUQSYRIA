@@ -13,6 +13,9 @@ use App\Enums\CoolingType;
 use App\Enums\TransmissionType;
 use App\Enums\CarType;
 use App\Enums\HouseType;
+use App\Enums\MarineBodyMaterials;
+use App\Enums\MarineEngineBrands;
+use App\Enums\OwnerType;
 
 class AdvertisementRequest extends FormRequest
 {
@@ -33,9 +36,10 @@ class AdvertisementRequest extends FormRequest
     {
         //Add common rules for all categories
         $rules =  [
-            'title' => 'required|string|max:255',
+            'title' => 'required|string|max:100',
             'description' => 'required|string',
-            'price' => 'required|numeric|min:0',
+            'price' => 'required|numeric|min:0|max:100000000',
+            'owner_type' => 'required|in:' . implode(',', array_column(OwnerType::cases(), 'name')),
             'city' => 'required|in:' . implode(',', array_column(SyriaCities::cases(), 'name')),
             'location' => 'sometimes|string|max:255',
             'category_id' => 'required|exists:categories,id',
@@ -44,7 +48,7 @@ class AdvertisementRequest extends FormRequest
             'sale_details.is_swap' => 'boolean|required_if:type,sale|prohibited_if:type,rent',
             'rent_details.rental_period' => 'required_if:type,rent|prohibited_if:type,sale|in:daily,weekly,monthly,yearly',
             'images' => 'required|array|max:10',
-            'images.*' => 'required|image|mimes:jpeg,png,jpg|max:5120',
+            'images.*' => 'required|image|mimes:jpeg,png,jpg|max:3072',
             'features' => 'array',
             'features.*' => 'exists:features,id'
         ];
@@ -54,9 +58,9 @@ class AdvertisementRequest extends FormRequest
         {
             CategoryType::LAND => $this->getLandRules(),
             CategoryType::HOUSE => $this->getHouseRules(),
-            CategoryType::CAR => array_merge($this->getVehicleRules(), $this->getCarRules()),
+            CategoryType::CAR => array_merge($this->getVehicleRules(), $this->getLandVehicleRules(), $this->getCarRules()),
             CategoryType::MARINE => array_merge($this->getVehicleRules(), $this->getMarineRules()),
-            CategoryType::MOTORCYCLE => array_merge($this->getVehicleRules(), $this->getMotorcycleRules()),
+            CategoryType::MOTORCYCLE => array_merge($this->getVehicleRules(), $this->getLandVehicleRules(), $this->getMotorcycleRules()),
             default => []
         };
         return array_merge($rules, $specificRules);
@@ -66,16 +70,22 @@ class AdvertisementRequest extends FormRequest
     {
         return [
             'color' => 'required|in:' . implode(',', array_column(Colors::cases(), 'name')),
-            'mileage' => 'required|numeric|min:0',
             'year' => 'required|integer|min:1990|max:'.date('Y'),
             'brand_id' => 'required|exists:vehicle_brands,id',
             'model_id' => 'required|exists:vehicle_models,id',
             'fuel_type' => 'required|in:' . implode(',', array_column(FuelType::cases(), 'name')),
-            'cylinders' => 'required_unless:fuel_type,ELECTRIC|prohibited_if:fuel_type,ELECTRIC|integer|min:1',
-            'engine_capacity' => 'required_unless:fuel_type,ELECTRIC|prohibited_if:fuel_type,ELECTRIC|numeric|min:0',
-            'horsepower' => 'required|integer|min:0',
-            'transmission_type' => 'required|in:' . implode(',', array_column(TransmissionType::cases(), 'name')),
+            'horsepower' => 'sometimes|integer|min:1|max:10000',
             'condition' => 'required|in:NEW,USED'
+        ];
+    }
+    // Land Vehicle Rules
+    private function getLandVehicleRules(): array
+    {
+        return [
+            'mileage' => 'required|numeric|min:0|max:1000000',
+            'transmission_type' => 'required|in:' . implode(',', array_column(TransmissionType::cases(), 'name')),
+            'cylinders' => 'sometimes|prohibited_if:fuel_type,ELECTRIC|integer|min:1|max:24',
+            'engine_capacity' => 'sometimes|prohibited_if:fuel_type,ELECTRIC|numeric|min:1|max:100000',
         ];
     }
     // House Rules
@@ -83,11 +93,11 @@ class AdvertisementRequest extends FormRequest
     {
         return [
             'house_type' => 'required|in:' . implode(',', array_column(HouseType::cases(), 'name')),
-            'number_of_rooms' => 'required|integer|min:1',
-            'number_of_bathrooms' => 'required|integer|min:1',
-            'building_age' => 'required|integer|min:0',
-            'square_meters' => 'required|numeric|min:0',
-            'floor' => 'required|integer|min:0'
+            'number_of_rooms' => 'required|integer|min:1|max:15',
+            'number_of_bathrooms' => 'required|integer|min:1|max:15',
+            'building_age' => 'required|integer|min:0|max:300',
+            'square_meters' => 'required|numeric|min:20|max:10000',
+            'floor' => 'required|integer|min:0|max:50'
         ];
     }
     // Car Rules
@@ -105,15 +115,18 @@ class AdvertisementRequest extends FormRequest
     {
         return [
             'marine_type' => 'required|in:' . implode(',', array_column(MarineType::cases(), 'name')),
-            'length' => 'sometimes|numeric|min:0',
-            'max_capacity' => 'sometimes|integer|min:1'
+            'length' => 'required|numeric|min:1|max:500',
+            'width' => 'required|numeric|min:0.5|max:100',
+            'engine_brand' => 'required|in:'. implode(',', array_column(MarineEngineBrands::cases(), 'name')),
+            'body_material' => 'required|in:' . implode(',', array_column(MarineBodyMaterials::cases(), 'name')),
+            'max_capacity' => 'required|integer|min:1|max:10000'
         ];
     }
     // Land Rules
     private function getLandRules():array
     {
         return [
-            'square_meters' => 'required|numeric|min:0',
+            'square_meters' => 'required|numeric|min:1|max:10000000',
         ];
     }
     // Motorcycle Rules
@@ -127,10 +140,10 @@ class AdvertisementRequest extends FormRequest
 
     public function messages(): array
     {
-        return [
+        $messages = [
             'title.required' => '.العنوان مطلوب',
             'title.string' => '.يجب أن يكون العنوان نصًا',
-            'title.max' => '.لا يمكن أن يزيد العنوان عن 255 حرفًا',
+            'title.max' => '.لا يمكن أن يزيد العنوان عن 100 حرفًا',
             'description.required' => '.الوصف مطلوب',
             'description.string' => '.يجب أن يكون الوصف نصًا',
             'city.required' => '.المدينة مطلوبة',
@@ -148,6 +161,9 @@ class AdvertisementRequest extends FormRequest
             'price.required' => '.يجب إدخال حقل السعر',
             'price.numeric' => '.يجب أن يكون السعر رقمًا',
             'price.min' => '.يجب أن يكون السعر قيمة موجبة',
+            'price.max' => '.لا يمكن أن يزيد السعر عن 100000000',
+            'owner_type.required' => '.نوع المالك مطلوب',
+            'owner_type.in' => '.نوع المالك المحدد غير صالح',
             'rent_details.rental_period.required_if' => '.يجب تحديد فترة الإيجار عند اختيار نوع الإيجار',
             'rent_details.rental_period.prohibited_if' => '.لا يمكنك تحديد فترة الإيجار إذا كان نوع الإعلان للبيع',
             'rent_details.rental_period.in' => '.يجب أن تكون فترة الإيجار إما يوميًا أو أسبوعيًا أو شهريًا أو سنويًا',
@@ -166,6 +182,7 @@ class AdvertisementRequest extends FormRequest
             'mileage.required' => '.المسافة المقطوعة مطلوبة',
             'mileage.numeric' => '.يجب أن تكون المسافة المقطوعة رقمًا',
             'mileage.min' => '.يجب أن تكون المسافة المقطوعة قيمة موجبة',
+            'mileage.max' => '.لا يمكن أن تزيد المسافة المقطوعة عن 1,000,000',
             'year.required' => '.سنة الصنع مطلوبة',
             'year.integer' => '.يجب أن تكون سنة الصنع رقمًا صحيحًا',
             'year.min' => '.يجب أن تكون سنة الصنع 1990 أو أحدث',
@@ -176,17 +193,17 @@ class AdvertisementRequest extends FormRequest
             'model_id.exists' => '.الموديل المحدد غير صالح',
             'fuel_type.required' => '.نوع الوقود مطلوب',
             'fuel_type.in' => '.نوع الوقود المحدد غير صالح',
-            'cylinders.required_unless' => '.عدد الأسطوانات مطلوب ما لم يكن نوع الوقود كهربائي',
             'cylinders.prohibited_if' => '.لا يُسمح بتحديد عدد الأسطوانات إذا كان نوع الوقود كهربائي',
             'cylinders.integer' => '.يجب أن يكون عدد الأسطوانات رقمًا صحيحًا',
             'cylinders.min' => '.يجب أن يكون عدد الأسطوانات 1 على الأقل',
-            'engine_capacity.required_unless' => '.سعة المحرك مطلوبة ما لم يكن نوع الوقود كهربائي',
+            'cylinders.max' => '.لا يمكن أن يزيد عدد الأسطوانات عن 24',
             'engine_capacity.prohibited_if' => '.لا يُسمح بتحديد سعة المحرك إذا كان نوع الوقود كهربائي',
             'engine_capacity.numeric' => '.يجب أن تكون سعة المحرك رقمًا',
             'engine_capacity.min' => '.يجب أن تكون سعة المحرك قيمة موجبة',
-            'horsepower.required' => '.قوة المحرك مطلوبة',
+            'engine_capacity.max' => '.لا يمكن أن تزيد سعة المحرك عن 100,000',
             'horsepower.integer' => '.يجب أن تكون قوة المحرك رقمًا صحيحًا',
             'horsepower.min' => '.يجب أن تكون قوة المحرك قيمة موجبة',
+            'horsepower.max' => '.لا يمكن أن تزيد قوة المحرك عن 10,000',
             'transmission_type.required' => '.نوع الغيار مطلوب',
             'transmission_type.in' => '.نوع الغيار المحدد غير صالح',
             'condition.required' => '.الحالة مطلوبة',
@@ -197,18 +214,23 @@ class AdvertisementRequest extends FormRequest
             'number_of_rooms.required' => '.عدد الغرف مطلوب',
             'number_of_rooms.integer' => '.يجب أن يكون عدد الغرف رقمًا صحيحًا',
             'number_of_rooms.min' => '.يجب أن يكون عدد الغرف 1 على الأقل',
+            'number_of_rooms.max' => '.لا يمكن أن يزيد عدد الغرف عن 15',
             'number_of_bathrooms.required' => '.عدد الحمامات مطلوب',
             'number_of_bathrooms.integer' => '.يجب أن يكون عدد الحمامات رقمًا صحيحًا',
             'number_of_bathrooms.min' => '.يجب أن يكون عدد الحمامات 1 على الأقل',
+            'number_of_bathrooms.max' => '.لا يمكن أن يزيد عدد الحمامات عن 15',
             'building_age.required' => '.عمر البناء مطلوب',
             'building_age.integer' => '.يجب أن يكون عمر البناء رقمًا صحيحًا',
             'building_age.min' => '.يجب أن يكون عمر البناء قيمة موجبة',
+            'building_age.max' => '.لا يمكن أن يزيد عمر البناء عن 300 سنة',
             'square_meters.required' => '.المساحة مطلوبة',
             'square_meters.numeric' => '.يجب أن تكون المساحة رقمًا',
-            'square_meters.min' => '.يجب أن تكون المساحة قيمة موجبة',
+            'square_meters.min' => '.يجب أن تكون المساحة 20 متر مربع على الأقل',
+            'square_meters.max' => '.لا يمكن أن تزيد المساحة عن 10000 متر مربع',
             'floor.required' => '.رقم الطابق مطلوب ',
             'floor.integer' => '.يجب أن يكون رقم الطابق رقمًا صحيحًا',
             'floor.min' => '.يجب أن يكون رقم الطابق قيمة موجبة',
+            'floor.max' => '.لا يمكن أن يزيد رقم الطابق عن 50',
             // Car Rules
             'car_type.required' => '.نوع السيارة مطلوب',
             'car_type.in' => '.نوع السيارة المحدد غير صالح',
@@ -225,15 +247,35 @@ class AdvertisementRequest extends FormRequest
             // Marine Rules
             'marine_type.required' => '.نوع القارب مطلوب',
             'marine_type.in' => '.نوع القارب المحدد غير صالح',
+            'length.required' => '.الطول مطلوب',
             'length.numeric' => '.يجب أن يكون الطول رقمًا',
             'length.min' => '.يجب أن يكون الطول قيمة موجبة',
+            'length.max' => '.لا يمكن أن يزيد الطول عن 1000',
+            'width.required' => '.العرض مطلوب',
+            'width.numeric' => '.يجب أن يكون العرض رقمًا',
+            'width.min' => '.يجب أن يكون العرض قيمة موجبة',
+            'width.max' => '.لا يمكن أن يزيد العرض عن 1000',
+            'max_capacity.required' => '.ماركة المحرك مطلوبة',
             'max_capacity.integer' => '.يجب أن يكون الحد الأقصى للحمولة رقمًا صحيحًا',
             'max_capacity.min' => '.يجب أن يكون الحد الأقصى للحمولة 1 على الأقل',
+            'max_capacity.max' => '.لا يمكن أن يزيد الحد الأقصى للحمولة عن 10000',
+            'engine_marka.required' => '.ماركة المحرك مطلوبة',
+            'engine_marka.in' => '.ماركة المحرك المحددة غير صالحة',
             // Motorcycle Rules
             'cooling_type.required' => '.نوع التبريد مطلوب',
             'cooling_type.in' => '.نوع التبريد المحدد غير صالح',
             'motorcycle_type.required' => '.نوع الدراجة مطلوب',
             'motorcycle_type.in' => '.نوع الدراجة المحدد غير صالح',
         ];
+        $category = CategoryType::tryFrom((int) $this->input('category_id'));
+        if ($category === CategoryType::HOUSE) {
+            $messages['square_meters.min'] = '.يجب أن تكون المساحة 20 متر مربع على الأقل';
+            $messages['square_meters.max'] = '.لا يمكن أن تزيد المساحة عن 10,000 متر مربع';
+        }
+        if ($category === CategoryType::LAND) {
+            $messages['square_meters.min'] = '.يجب أن تكون المساحة 1 متر مربع على الأقل';
+            $messages['square_meters.max'] = '.لا يمكن أن تزيد المساحة عن 10,000,000 متر مربع';
+        }
+        return $messages;
     }
 }

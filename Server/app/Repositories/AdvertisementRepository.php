@@ -37,6 +37,7 @@ class AdvertisementRepository extends BaseRepository
             'vehicleAdvertisement' => function($query){
                 $query->with('vehicleBrand', 'vehicleModel');
             },
+            'landVehicleAttributes',
             'carAdvertisement',
             'motorcycleAdvertisement',
             'marineAdvertisement',
@@ -49,14 +50,27 @@ class AdvertisementRepository extends BaseRepository
     }
 
 
-    public function getByUserId(int $userId)
+    public function getByUserId(int $userId, int $perPage = 5)
     {
-        return $this->model->with(['user','category'])->where('user_id', $userId)->get();
+        return $this->model->with(['user','category','images'])
+                            ->where('user_id', $userId)
+                            ->orderBy('created_at', 'desc')
+                            ->paginate($perPage);
     }
 
     public function getByIdWithRelations(int $id)
     {
         return $this->model->with($this->getCommonRelations())->find($id);
+    }
+
+    public function getByIdAndSlug(int $id, string $slug)
+    {
+        return $this->model->with($this->getCommonRelations())
+                            ->where('id', $id)
+                            ->where('slug', $slug)
+                            ->where('active_status', 'active')
+                            ->where('ads_status', 'accepted')
+                            ->first();
     }
 
     public function getAllWithRelations(array $filters = [], int $perPage = 5)

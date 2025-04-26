@@ -50,6 +50,49 @@ class AuthService
         $this->otpExpirationsTime = $otpExpirationsTime;
     }
 
+    // Register user with social provider data
+    public function socialAuth(array $data): array
+    {
+        Log::info('Social Register starting');
+
+        $user = $this->repository->findByEmail($data['email']);
+
+        if (!$user) {
+            $user = $this->repository->create($data);
+        } else {
+            // Update the user's social ID if it's missing
+            $providerIdKey = array_key_exists('google_id', $data) ? 'google_id' : 'facebook_id';
+            if (empty($user->{$providerIdKey}) && !empty($data[$providerIdKey])) {
+                $user->{$providerIdKey} = $data[$providerIdKey];
+                $user->save();
+            }
+            
+            // Update profile image if user doesn't have one but provider does
+            if (empty($user->image) && !empty($data['image'])) {
+                $user->image = $data['image'];
+                $user->save();
+            }
+        }
+
+        Log::info('Logging in with the social user');
+        // Log the user in to open session
+        Auth::login($user);
+
+        Log::info('User logged in with ID: ' . $user->id);
+
+        // Delete existing tokens
+        $this->repository->deleteTokens($user->id);
+
+        // Generate new access token
+        $tokens = $this->repository->createTokens($user->id);
+
+        return [
+            'user' => $user,
+            'access_token' => $tokens['access_token'],
+            'refresh_token' => $tokens['refresh_token']
+        ];
+    }
+
     public function registerUser(array $data)
     {
         Log::info('Register section start');

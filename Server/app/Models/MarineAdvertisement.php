@@ -12,6 +12,9 @@ class MarineAdvertisement extends Model
     protected $fillable = [
         'marine_type',
         'length',
+        'width',
+        'engine_brand',
+        'body_material',
         'max_capacity'
     ];
     public function advertisement(): BelongsTo

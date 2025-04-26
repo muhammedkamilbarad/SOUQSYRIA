@@ -28,14 +28,19 @@ class AdvertisementService
     }
 
 
-    public function getAdvertisementsByUser(User $user)
+    public function getAdvertisementsByUser(User $user, int $perPage = 5)
     {
-        return $this->repository->getByUserId($user->id);
+        return $this->repository->getByUserId($user->id, $perPage);
     }
 
     public function getAdvertisementById(int $id)
     {
         return $this->repository->getByIdWithRelations($id);
+    }
+
+    public function getAdvertisementByIdAndSlug(int $id, string $slug)
+    {
+        return $this->repository->getByIdAndSlug($id, $slug);
     }
 
     public function getAllAdvertisements(array $filters = [], int $perPage = 5)
@@ -49,16 +54,16 @@ class AdvertisementService
 
     public function create(array $data, User $user)
     {
-        // if (Gate::denies('create', Advertisement::class)) {
-        //     throw new \Exception('You do not have an active subscription or remaining ads.');
-        // }
+        if (Gate::denies('create', Advertisement::class)) {
+            throw new \Exception('You do not have an active subscription or remaining ads.');
+        }
         $advertisementData = $this->prepareAdvertisementData($data, $user);
         $specificData = $this->prepareSpecificData($data);
         $advertisement = $this->repository->createWithRelated(
             $advertisementData,
             $specificData,
         );
-        //$this->decreaseRemainingAds($user);
+        $this->decreaseRemainingAds($user);
         return [
             'success' => true,
             'advertisement' => $advertisement
@@ -72,6 +77,7 @@ class AdvertisementService
             'description' => $data['description'],
             'price' => $data['price'],
             'city' => $data['city'],
+            'owner_type' => $data['owner_type'],
             'location' => $data['location'] ?? null,
             'video_url' => $data['video_url'] ?? null,
             'category_id' => $data['category_id'],
@@ -87,16 +93,20 @@ class AdvertisementService
         if (in_array($category, [CategoryType::CAR, CategoryType::MOTORCYCLE, CategoryType::MARINE])) {
             $specificData['vehicle'] = [
                 'color' => $data['color'],
-                'mileage' => $data['mileage'],
                 'year' => $data['year'],
-                'engine_capacity' => $data['fuel_type'] === 'ELECTRIC' ? null : $data['engine_capacity'],
                 'brand_id' => $data['brand_id'],
                 'model_id' => $data['model_id'],
                 'fuel_type' => $data['fuel_type'],
-                'horsepower' => $data['horsepower'],
-                'cylinders' => $data['fuel_type'] === 'ELECTRIC' ? null : $data['cylinders'],
-                'transmission_type' => $data['transmission_type'],
+                'horsepower' => $data['horsepower'] ?? null,
                 'condition' => $data['condition']
+            ];
+        }
+        if (in_array($category, [CategoryType::CAR, CategoryType::MOTORCYCLE])) {
+            $specificData['landVehicle'] = [
+                'mileage' => $data['mileage'],
+                'transmission_type' => $data['transmission_type'],
+                'cylinders' =>  $data['cylinders'] ?? null,
+                'engine_capacity' =>  $data['engine_capacity'] ?? null,
             ];
         }
         switch ($category) {
@@ -117,8 +127,11 @@ class AdvertisementService
             case CategoryType::MARINE:
                 $specificData['marine'] = [
                     'marine_type' => $data['marine_type'],
-                    'length' => $data['length'] ?? null,
-                    'max_capacity' => $data['max_capacity'] ?? null,
+                    'length' => $data['length'],
+                    'width' => $data['width'],
+                    'engine_brand' => $data['engine_brand'],
+                    'body_material' => $data['body_material'],
+                    'max_capacity' => $data['max_capacity'],
                 ];
                 break;
             case CategoryType::HOUSE:
@@ -264,28 +277,58 @@ class AdvertisementService
         return $specificData;
     }
 
+
+    public function deactivateAdvertisementByUser(int $advId, User $user)
+    {
+        $advertisement = $this->repository->getByIdWithRelations($advId);
+        if (!$advertisement) {
+            throw new \Exception('Advertisement not found');
+        }
+        if (Gate::denies('deactivate', $advertisement)) {
+            throw new \Exception('.لا يمكنك تعطيل هذا الإعلان');
+        }
+        return $this->repository->update($advertisement, [
+            'active_status' => 'inactive'
+        ]);
+    }
+
+    public function activateAdvertisementByUser(int $advId, User $user)
+    {
+        $advertisement = $this->repository->getByIdWithRelations($advId);
+        if (!$advertisement) {
+            throw new \Exception('Advertisement not found');
+        }
+        if (Gate::denies('activate', $advertisement)) {
+            throw new \Exception('.لا يمكنك تفعيل هذا الإعلان');
+        }
+        $this->decreaseRemainingAds($user);
+        return $this->repository->update($advertisement, [
+            'active_status' => 'active'
+        ]);
+    }
+
     // Get similar advertisements based on the given advertisement ID
     public function getSimilarAdvertisements(int $advertisementId, int $limit = 5): Collection
     {
         Log::info("Starting getSimilarAdvertisements with ID: $advertisementId and limit: $limit");
-        
+
         // Load advertisement with relationships
         $advertisement = $this->repository->getByIdWithRelations($advertisementId);
         $categoryId = $advertisement->category_id;
-        
+
         // Get base query for similar advertisements
         $query = $this->repository->getSimilarAdvertisementsBaseQuery($advertisementId, $categoryId);
-        
+
         // Get the appropriate strategy for this category
         $strategy = $this->getRecommendationStrategy($categoryId);
-        
+
         // Add necessary relations to the query based on the strategy
         $query = $strategy->addRelationsToQuery($query);
-        
+
         // Use the strategy to get similar advertisements
         return $strategy->getSimilarAdvertisements($advertisement, $query, $limit);
     }
-    
+
     // Factory method to get the appropriate recommendation strategy
     private function getRecommendationStrategy(int $categoryId): RecommendationStrategyInterface
     {

@@ -14,6 +14,7 @@ use App\Models\Image;
 use App\Models\Feature;
 use App\Models\SaleDetail;
 use App\Models\RentDetail;
+use App\Models\LandVehicleAttributes;
 
 // Enums
 use App\Enums\CategoryType;
@@ -26,6 +27,9 @@ use App\Enums\MotorcycleType;
 use App\Enums\MarineType;
 use App\Enums\HouseType;
 use App\Enums\CarType;
+use App\Enums\MarineEngineBrands;
+use App\Enums\MarineBodyMaterials;
+use App\Enums\OwnerType;
 
 class AdvertisementSeeder extends Seeder
 {
@@ -91,6 +95,9 @@ class AdvertisementSeeder extends Seeder
         $marineTypes     = array_map(fn($m) => $m->name, MarineType::cases());
         $houseTypes = array_map(fn($h) => $h->name, HouseType::cases());
         $carTypes = array_map(fn($c) => $c->name, CarType::cases());
+        $marineEngineBrands     = array_map(fn($m) => $m->name, MarineEngineBrands::cases());
+        $marineBodyMaterials    = array_map(fn($m) => $m->name, MarineBodyMaterials::cases());
+        $ownertypes = array_map(fn($m) => $m->name, OwnerType::cases());
 
         // Example IDs, must exist in your database
         $userIds   = [1, 2];
@@ -121,6 +128,7 @@ class AdvertisementSeeder extends Seeder
                 'ads_status'   => $ad_status,
                 'active_status'=> $active_status,
                 'type'         => $adType,
+                'owner_type'   => $ownertypes[array_rand($ownertypes)],
             ]);
 
             LandAdvertisement::create([
@@ -166,6 +174,7 @@ class AdvertisementSeeder extends Seeder
                 'ads_status'   => $ad_status,
                 'active_status'=> $active_status,
                 'type'         => $adType,
+                'owner_type'   => $ownertypes[array_rand($ownertypes)],
             ]);
 
             HouseAdvertisement::create([
@@ -220,21 +229,26 @@ class AdvertisementSeeder extends Seeder
                 'ads_status'   => $ad_status,
                 'active_status'=> $active_status,
                 'type'         => $adType,
+                'owner_type'   => $ownertypes[array_rand($ownertypes)],
             ]);
 
             VehicleAdvertisement::create([
                 'advertisement_id'  => $ad->id,
                 'color'             => $colors[array_rand($colors)],
-                'mileage'           => rand(5000, 200000),
                 'year'              => rand(2000, 2023),
                 'brand_id'          => $brandIds[array_rand($brandIds)],
                 'model_id'          => $modelIds[array_rand($modelIds)],
-                'transmission_type' => $transmissions[array_rand($transmissions)],
                 'fuel_type'         => $fuelTypes[array_rand($fuelTypes)],
                 'horsepower'        => rand(80, 300),
+                'condition'         => ['NEW','USED'][array_rand(['NEW','USED'])],
+            ]);
+
+            LandVehicleAttributes::create([
+                'advertisement_id'  => $ad->id,
+                'mileage'           => rand(5000, 200000),
+                'transmission_type' => $transmissions[array_rand($transmissions)],
                 'cylinders'         => rand(3, 8),
                 'engine_capacity'   => rand(10, 30) / 10,
-                'condition'         => ['NEW','USED'][array_rand(['NEW','USED'])],
             ]);
 
             CarAdvertisement::create([
@@ -286,19 +300,16 @@ class AdvertisementSeeder extends Seeder
                 'ads_status'   => $ad_status,
                 'active_status'=> $active_status,
                 'type'         => $adType,
+                'owner_type'   => $ownertypes[array_rand($ownertypes)],
             ]);
             VehicleAdvertisement::create([
                 'advertisement_id'  => $ad->id,
                 'color'             => $colors[array_rand($colors)],
-                'mileage'           => rand(5000, 200000),
                 'year'              => rand(2000, 2023),
                 'brand_id'          => $brandIds[array_rand($brandIds)],
                 'model_id'          => $modelIds[array_rand($modelIds)],
-                'transmission_type' => $transmissions[array_rand($transmissions)],
                 'fuel_type'         => $fuelTypes[array_rand($fuelTypes)],
                 'horsepower'        => rand(80, 300),
-                'cylinders'         => rand(3, 8),
-                'engine_capacity'   => rand(10, 30) / 10,
                 'condition'         => ['NEW','USED'][array_rand(['NEW','USED'])],
             ]);
 
@@ -306,7 +317,10 @@ class AdvertisementSeeder extends Seeder
                 'advertisement_id' => $ad->id,
                 'marine_type'      => $marineTypes[array_rand($marineTypes)],
                 'length'           => rand(40, 100) / 10,
+                'width'           => rand(40, 100) / 10,
                 'max_capacity'     => rand(4, 20),
+                'engine_brand'     => $marineEngineBrands[array_rand($marineEngineBrands)],
+                'body_material'     => $marineBodyMaterials[array_rand($marineBodyMaterials)],
             ]);
 
             // If the ad is for sale, create SaleDetail
@@ -351,21 +365,26 @@ class AdvertisementSeeder extends Seeder
                 'ads_status'   => $ad_status,
                 'active_status'=> $active_status,
                 'type'         => $adType,
+                'owner_type'   => $ownertypes[array_rand($ownertypes)],
             ]);
 
             VehicleAdvertisement::create([
                 'advertisement_id'  => $ad->id,
                 'color'             => $colors[array_rand($colors)],
-                'mileage'           => rand(1000, 30000),
                 'year'              => rand(2000, 2023),
                 'brand_id'          => $brandIds[array_rand($brandIds)],
                 'model_id'          => $modelIds[array_rand($modelIds)],
-                'transmission_type' => $transmissions[array_rand($transmissions)],
                 'fuel_type'         => $fuelTypes[array_rand($fuelTypes)],
                 'horsepower'        => rand(20, 120),
-                'cylinders'         => rand(1, 4),
-                'engine_capacity'   => rand(5, 20) / 10,
                 'condition'         => ['NEW','USED'][array_rand(['NEW','USED'])],
+            ]);
+
+            LandVehicleAttributes::create([
+                'advertisement_id'  => $ad->id,
+                'mileage'           => rand(5000, 200000),
+                'transmission_type' => $transmissions[array_rand($transmissions)],
+                'cylinders'         => rand(3, 8),
+                'engine_capacity'   => rand(10, 30) / 10,
             ]);
 
             MotorcycleAdvertisement::create([

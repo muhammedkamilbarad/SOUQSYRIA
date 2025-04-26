@@ -13,6 +13,7 @@ class Advertisement extends Model
         'description',
         'city',
         'price',
+        'owner_type',
         'location',
         'category_id',
         'user_id',
@@ -85,6 +86,10 @@ class Advertisement extends Model
     public function houseAdvertisement()
     {
         return $this->hasOne(HouseAdvertisement::class);
+    }
+    public function landVehicleAttributes()
+    {
+        return $this->hasOne(LandVehicleAttributes::class);
     }
     public function landAdvertisement()
     {

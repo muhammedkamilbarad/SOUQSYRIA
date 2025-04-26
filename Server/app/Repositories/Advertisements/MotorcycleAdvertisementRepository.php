@@ -11,6 +11,7 @@ class MotorcycleAdvertisementRepository extends SpecificAdvertisementRepository
     public function createSpecific(Advertisement $advertisement, array $specificData): void
     {
         $advertisement->vehicleAdvertisement()->create($specificData['vehicle']);
+        $advertisement->landVehicleAttributes()->create($specificData['landVehicle']);
         $advertisement->motorcycleAdvertisement()->create($specificData['motorcycle']);
     }
     public function updateSpecific(Advertisement $advertisement, array $specificData): void
@@ -26,6 +27,6 @@ class MotorcycleAdvertisementRepository extends SpecificAdvertisementRepository
     }
     public function getRelations(): array
     {
-        return ['vehicleAdvertisement', 'motorcycleAdvertisement'];
+        return ['vehicleAdvertisement', 'motorcycleAdvertisement', 'landVehicleAttributes'];
     }
 }

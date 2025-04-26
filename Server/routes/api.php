@@ -130,12 +130,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Subscribing Routes
     Route::group(['prefix' => 'subscriptions'], function () {
+        Route::get('/my-subscription', [SubscribingController::class, 'show_my_subscription'])->name('subscriptions.my');
+        
         Route::get('/', [SubscribingController::class, 'index'])->middleware('permission:view_subscription');
         Route::get('/{id}', [SubscribingController::class, 'show'])->middleware('permission:view_subscription');
         Route::post('/', [SubscribingController::class, 'store'])->middleware('permission:create_subscription');
         Route::put('/{id}', [SubscribingController::class, 'update'])->middleware('permission:update_subscription');
         Route::delete('/{id}', [SubscribingController::class, 'destroy'])->middleware('permission:delete_subscription');
-        Route::get('/my-subscription', [SubscribingController::class, 'show_my_subscription'])->name('subscriptions.my');
+        
     });
 
     // Favorite Routes
@@ -153,13 +155,18 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Advertisement Routes
     Route::group(['prefix' => 'advertisements'], function () {
+        Route::get('/my-ads', [AdvertisementController::class, 'getUserAdvertisements']);
+        
+
         Route::get('/', [AdvertisementController::class, 'index'])->middleware('permission:view_ad');
-        Route::get('/user/my-ad', [AdvertisementController::class, 'getUserAdvertisements']);
         Route::get('/{id}', [AdvertisementController::class, 'show'])->middleware('permission:view_ad');
+        Route::post('/{id}/process', [AdvertisementController::class, 'process'])->middleware('permission:process_ad');
         Route::post('/', [AdvertisementController::class, 'store']);
         Route::put('/{id}', [AdvertisementController::class, 'update']);
         Route::delete('/{id}', [AdvertisementController::class, 'destroy']);
-        Route::post('/{id}/process', [AdvertisementController::class, 'process'])->middleware('permission:process_ad');
+        
+        Route::put('/deactivate/{id}', [AdvertisementController::class, 'deactivateAdvertisement']);
+        Route::put('/activate/{id}', [AdvertisementController::class, 'activateAdvertisement']);
     });
 
     // Feature Routes
@@ -232,7 +239,8 @@ Route::post('/verify-account', [AuthController::class, 'verifyAccount']);
 // Landing Page
 Route::get('/home-page', [HomePageController::class, 'index']);
 // Route::get('advertisement/{id}/{slug}', [AdvertisementController::class, 'show']);
-Route::get('advertisement/{id}', [AdvertisementController::class, 'advertisementDetails']);
+Route::get('advertisement/{id}/{slug}', [AdvertisementController::class, 'showByIdAndSlug']);
+// Route::get('advertisement/{id}', [AdvertisementController::class, 'advertisementDetails']);
 Route::get('all-advertisements', [AdvertisementController::class, 'getAdvertisementsForHomePage']);
 
 Route::get('check-auth', [AuthController::class, 'checkAuth']);
@@ -241,3 +249,8 @@ Route::get('brand/{id}/models', [VehicleModelController::class, 'getVehicleModel
 Route::get('brands', [VehicleBrandController::class, 'getBrandsByCategory']);
 Route::get('feature-groups/{id}/category', [FeatureGroupController::class, 'categoryFeatuers']);
 Route::get('package-list', [PackageController::class, 'index']);
+
+Route::get('auth/facebook', [AuthController::class, 'redirectToFacebook']);
+Route::get('auth/facebook/callback', [AuthController::class, 'handleFacebookCallback']);
+Route::get('auth/google', [AuthController::class, 'redirectToGoogle']);
+Route::get('auth/google/callback', [AuthController::class, 'handleGoogleCallback']);

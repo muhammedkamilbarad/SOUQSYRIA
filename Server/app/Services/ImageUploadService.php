@@ -82,7 +82,7 @@ class ImageUploadService
     public function deleteAdvertisementImages(int $advertisementId)
     {
         try {
-            $path = "advertisemens/{$advertisementId}";
+            $path = "advertisements/{$advertisementId}";
             $files = Storage::disk('s3')->files($path);
             Storage::disk('s3')->delete($files);
         } catch (\Exception $e) {

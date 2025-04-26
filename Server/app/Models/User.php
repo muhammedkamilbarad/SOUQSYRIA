@@ -12,7 +12,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
-    protected $fillable = ['name', 'email', 'password', 'role_id', 'image', 'phone', 'is_verified', 'email_verified_at'];
+    protected $fillable = ['name', 
+                            'email', 
+                            'password', 
+                            'role_id', 
+                            'image', 
+                            'phone', 
+                            'is_verified', 
+                            'email_verified_at', 
+                            'facebook_id', 
+                            'google_id'
+                        ];
     protected $dates = ['deleted_at'];
     protected $casts = [
         'email_verified_at' => 'datetime:Y-m-d\TH:i:s.u\Z',

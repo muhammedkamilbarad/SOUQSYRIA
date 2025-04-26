@@ -17,15 +17,11 @@ return new class extends Migration
         Schema::create('vehicle_advertisements', function (Blueprint $table) {
             $table->foreignId('advertisement_id')->primary()->constrained('advertisements')->onDelete('cascade');
             $table->Enum('color', array_column(Colors::cases(), 'name'));
-            $table->integer('mileage')->unsigned();
             $table->integer('year');
             $table->foreignId('brand_id')->constrained('vehicle_brands')->onDelete('restrict');
             $table->foreignId('model_id')->constrained('vehicle_models')->onDelete('restrict');
-            $table->Enum('transmission_type', array_column(TransmissionType::cases(), 'name'));
             $table->Enum('fuel_type', array_column(FuelType::cases(), 'name'));
-            $table->integer('horsepower')->unsigned();
-            $table->tinyInteger('cylinders')->unsigned()->nullable();
-            $table->decimal('engine_capacity', 8, 2)->nullable();
+            $table->integer('horsepower')->unsigned()->nullable();
             $table->Enum('condition', ['NEW', 'USED'])->default('USED');
             $table->timestamps();
 
