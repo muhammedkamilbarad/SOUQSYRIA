@@ -33,13 +33,13 @@ class ChangePasswordRequest extends FormRequest
     public function messages()
     {
         return [
-            'current_password.required' => 'كلمة المرور الحالية مطلوبة.',
-            'new_password.required' => 'كلمة المرور الجديدة مطلوبة.',
-            'new_password.min' => 'يجب أن تتكون كلمة المرور الجديدة من 8 أحرف على الأقل.',
-            'new_password.max' => 'يجب ألا تتجاوز كلمة المرور الجديدة 16 حرفًا.',
-            'new_password.confirmed' => 'تأكيد كلمة المرور الجديدة غير متطابق.',
-            'new_password.regex' => 'يجب أن تحتوي كلمة المرور الجديدة على الأقل على رقم واحد، وحرف صغير واحد، وحرف كبير واحد، ورمز خاص واحد (!@#$%^&*(),.?":{}|<>).',
-            'new_password_confirmation.required' => 'تأكيد كلمة المرور مطلوب.'
+            'current_password.required' => '.كلمة المرور الحالية مطلوبة',
+            'new_password.required' => '.كلمة المرور الجديدة مطلوبة',
+            'new_password.min' => '.يجب أن تتكون كلمة المرور الجديدة من 8 أحرف على الأقل',
+            'new_password.max' => '.يجب ألا تتجاوز كلمة المرور الجديدة 16 حرفًا',
+            'new_password.confirmed' => '.تأكيد كلمة المرور الجديدة غير متطابق',
+            'new_password.regex' => '.يجب أن تحتوي كلمة المرور الجديدة على الأقل على رقم واحد، وحرف صغير واحد، وحرف كبير واحد، ورمز خاص واحد',
+            'new_password_confirmation.required' => '.تأكيد كلمة المرور مطلوب'
         ];
     }
 }

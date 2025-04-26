@@ -26,7 +26,7 @@ class PopularQuestionRequest extends FormRequest
             'answer.string' => '.يجب أن تكون الإجابة نصًا صالحًا',
             'category.required' => '.حقل الفئة (فئة السؤال) مطلوب',
             'category.in' => '.يجب أن تكون الفئة واحدة من التالي: الدفع، الاشتراك، الإعلان، النظام، أو عام',
-            'priority.required' => 'حقل الأولوية مطلوب.',
+            'priority.required' => '.حقل الأولوية مطلوب',
             'priority.in' => '.يجب أن تكون الأولوية واحدة من التالي: عالية، متوسطة، أو منخفضة',
             'status.required' => '.حقل الحالة مطلوب',
             'status.boolean' => '.يجب أن تكون الحالة إما فعال أو غير فعال',

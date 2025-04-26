@@ -17,8 +17,8 @@ class GetBrandByCategoryRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'number.integer' => 'يجب أن يكون الحقل رقمًا صحيحًا.',
-            'number.between' => 'يجب أن يكون الرقم بين 3 و 5.',
+            'number.integer' => '.يجب أن يكون الحقل رقمًا صحيحًا',
+            'number.between' => '.يجب أن يكون الرقم بين 3 و 5',
         ];
     }
 }

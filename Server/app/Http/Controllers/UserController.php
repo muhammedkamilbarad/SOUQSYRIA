@@ -9,6 +9,7 @@ use App\Http\Requests\UserRequest;
 use App\Http\Requests\ProfileRequest;
 use App\Services\SubscribingService;
 use App\Services\FavoriteService;
+use App\Http\Requests\DeleteMyAccountRequest;
 
 class UserController extends Controller
 {
@@ -103,6 +104,25 @@ class UserController extends Controller
 
         $this->userService->softDeleteUser($user);
         return response()->json(['message' => 'User soft deleted successfully'], 200);
+    }
+
+    public function deleteMyAccount(DeleteMyAccountRequest $request)
+    {
+        $result = $this->userService->softDeleteMyAccount(
+            $request->user(),
+            $request->password
+        );
+
+        if (!$result)
+        {
+            return response()->json([
+                'error' => '.كلمة المرور الحالية غير صحيحة'
+            ], 400);
+        }
+
+        return response()->json([
+            'message' => '.تم حذف حسابك بنجاح'
+        ], 200);
     }
 
 
