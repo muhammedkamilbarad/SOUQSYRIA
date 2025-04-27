@@ -14,6 +14,29 @@ class FavoriteRepository extends BaseRepository
         parent::__construct($model);
     }
 
+    public function getAdvertisementCommonRelations(): array
+    {
+        return [
+            'saleDetail',
+            'rentDetail',
+            'user',
+            'category',
+            'images',
+            'vehicleAdvertisement' => function($query){
+                $query->with('vehicleBrand', 'vehicleModel');
+            },
+            'landVehicleAttributes',
+            'carAdvertisement',
+            'motorcycleAdvertisement',
+            'marineAdvertisement',
+            'houseAdvertisement',
+            'landAdvertisement',
+            'features' => function($query){
+                $query->with('featureGroup');
+            },
+        ];
+    }
+
     public function addFavorite(int $userId, int $advertisementId)
     {
         $existingFavorite = Favorite::where('user_id', $userId)->where('advs_id', $advertisementId)->first();
@@ -30,9 +53,11 @@ class FavoriteRepository extends BaseRepository
 
     public function getUserFavorites(int $userId)
     {
-        return $this->model->with('advertisement')
-                           ->where('user_id', $userId)
-                           ->get();
+        return $this->model->with(['advertisement' => function($query) {
+                                $query->with($this->getAdvertisementCommonRelations());
+                            }])
+                        ->where('user_id', $userId)
+                        ->get();
     }
 
     public function removeFavorite(int $userId, int $advertisementId)
