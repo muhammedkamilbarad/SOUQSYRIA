@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\FavoriteRequest;
 use App\Services\FavoriteService;
+use App\Http\Resources\FavoriteCollection;
 
 class FavoriteController extends Controller
 {
@@ -58,7 +59,7 @@ class FavoriteController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $favorites,
+            'data' => new FavoriteCollection($favorites),
         ], 200);
     }
 
