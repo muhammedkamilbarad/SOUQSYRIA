@@ -57,6 +57,8 @@ class FavoriteController extends Controller
 
         $favorites = $this->favoriteService->getUserFavorites($userId);
 
+        
+
         return response()->json([
             'success' => true,
             'data' => new FavoriteCollection($favorites),
