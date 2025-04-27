@@ -53,11 +53,13 @@ class FavoriteRepository extends BaseRepository
 
     public function getUserFavorites(int $userId)
     {
-        return $this->model->with(['advertisement' => function($query) {
-                                $query->with($this->getAdvertisementCommonRelations());
-                            }])
-                        ->where('user_id', $userId)
-                        ->get();
+        return $this->model
+            ->with(['advertisement' => function($query) {
+                $query->with($this->getAdvertisementCommonRelations())
+                    ->where('active_status', 'active');
+            }])
+            ->where('user_id', $userId)
+            ->get();
     }
 
     public function removeFavorite(int $userId, int $advertisementId)
