@@ -49,13 +49,49 @@ class AdvertisementRepository extends BaseRepository
         ];
     }
 
-
-    public function getByUserId(int $userId, int $perPage = 5)
+    public function getAdvertisementStatsByUserId(int $userId): array
     {
-        return $this->model->with(['user','category','images'])
-                            ->where('user_id', $userId)
-                            ->orderBy('created_at', 'desc')
-                            ->paginate($perPage);
+        $pendingCount = $this->model->where('user_id', $userId)
+                                    ->where('ads_status', 'pending')
+                                    ->count();
+
+        $acceptedActiveCount = $this->model->where('user_id', $userId)
+                                        ->where('ads_status', 'accepted')
+                                        ->where('active_status', 'active')
+                                        ->count();
+
+        $acceptedInactiveCount = $this->model->where('user_id', $userId)
+                                            ->where('ads_status', 'accepted')
+                                            ->where('active_status', 'inactive')
+                                            ->count();
+
+        $rejectedCount = $this->model->where('user_id', $userId)
+                                        ->where('ads_status', 'rejected')
+                                        ->count();
+
+        $mostUsedCategory = $this->model->select('category_id')
+                                        ->where('user_id', $userId)
+                                        ->groupBy('category_id')
+                                        ->orderByRaw('COUNT(*) DESC')
+                                        ->value('category_id');
+
+        return [
+            'pending_count' => $pendingCount,
+            'accepted_active_count' => $acceptedActiveCount,
+            'accepted_inactive_count' => $acceptedInactiveCount,
+            'rejected_count' => $rejectedCount,
+            'most_used_category_id' => $mostUsedCategory,
+        ];
+    }
+
+
+
+    public function getByUserId(int $userId, array $filters = [], int $perPage = 5)
+    {
+        $query = $this->model->with(['user','category','images'])
+                                ->where('user_id', $userId)
+                                ->orderBy('created_at', 'desc');
+        return AdvertisementFilter::apply($query, $filters)->paginate($perPage);
     }
 
     public function getByIdWithRelations(int $id)

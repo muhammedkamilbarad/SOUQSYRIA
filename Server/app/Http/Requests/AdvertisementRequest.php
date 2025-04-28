@@ -105,7 +105,7 @@ class AdvertisementRequest extends FormRequest
     {
         return [
             'car_type' => 'required|in:' . implode(',', array_column(CarType::cases(), 'name')),
-            'seats' => 'required|integer|min:2|max:9',
+            'seats' => 'required|integer|min:2|max:20',
             'doors' => 'required|integer|min:2|max:5',
             'seats_color' => 'required|in:' . implode(',', array_column(Colors::cases(), 'name'))
         ];
@@ -173,7 +173,7 @@ class AdvertisementRequest extends FormRequest
             'images.*.required' => '.كل صورة مطلوبة',
             'images.*.image' => '.يجب أن تكون كل صورة من نوع صورة صالحة',
             'images.*.mimes' => '. jpeg أو png أو jpg يجب أن تكون الصورة بامتداد',
-            'images.*.max' => '.الحد الأقصى لحجم الصورة هو 5 ميغابايت',
+            'images.*.max' => '.الحد الأقصى لحجم الصورة هو 3 ميغابايت',
             'features.array' => '.يجب أن تكون الميزات في شكل مصفوفة',
             'features.*.exists' => '.إحدى الميزات المحددة غير صالحة',
             // Vehicle Rules
@@ -237,7 +237,7 @@ class AdvertisementRequest extends FormRequest
             'seats.required' => '.عدد المقاعد مطلوب',
             'seats.integer' => '.يجب أن يكون عدد المقاعد رقمًا صحيحًا',
             'seats.min' => '.يجب أن يكون عدد المقاعد 2 على الأقل',
-            'seats.max' => '.لا يمكن أن يزيد عدد المقاعد عن 9',
+            'seats.max' => '.لا يمكن أن يزيد عدد المقاعد عن 20',
             'doors.required' => '.عدد الأبواب مطلوب',
             'doors.integer' => '.يجب أن يكون عدد الأبواب رقمًا صحيحًا',
             'doors.min' => '.يجب أن يكون عدد الأبواب 2 على الأقل',

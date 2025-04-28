@@ -28,11 +28,17 @@ class AdvertisementController extends Controller
     public function getUserAdvertisements(Request $request)
     {
         try {
+            $filters = $request->only([
+                'ads_status',
+                'active_status',
+                'category_id',
+            ]);
             $perPage = $request->get('per_page', 5);
-            $advertisements = $this->service->getAdvertisementsByUser(request()->user(), $perPage);
+            $result = $this->service->getAdvertisementsByUser(request()->user(), $filters, $perPage);
             return response()->json([
                 'success' => true,
-                'data'    => new AdvertisementCollection($advertisements),
+                'stats'   => $result['stats'],
+                'data'    => new AdvertisementCollection($result['advertisements']),
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
