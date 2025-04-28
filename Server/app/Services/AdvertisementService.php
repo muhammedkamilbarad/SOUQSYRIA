@@ -28,9 +28,15 @@ class AdvertisementService
     }
 
 
-    public function getAdvertisementsByUser(User $user, int $perPage = 5)
+    public function getAdvertisementsByUser(User $user, array $filters = [], int $perPage = 5)
     {
-        return $this->repository->getByUserId($user->id, $perPage);
+        $advertisements = $this->repository->getByUserId($user->id, $filters, $perPage);
+        $stats = $this->repository->getAdvertisementStatsByUserId($user->id);
+
+        return [
+            'stats' => $stats,
+            'advertisements' => $advertisements,
+        ];
     }
 
     public function getAdvertisementById(int $id)
@@ -184,9 +190,12 @@ class AdvertisementService
         }
         $updateData = [
             'ads_status' => $data['status'],
-            'active_status' => ($data['status'] === 'accepted') ? 'active' : 'inactive'
+            'active_status' => ($data['status'] === 'accepted') ? 'active' : 'inactive',
+            //'activated_at' => ($data['status'] === 'accepted') ? now() : null,
         ];
-
+        if ($data['status'] === 'accepted' && is_null($advertisement->activated_at)) {
+            $updateData['activated_at'] = now();
+        }
         // Send rejection email if the status is rejected
         if ($data['status'] === 'rejected' && isset($data['message']))
         {
@@ -288,7 +297,8 @@ class AdvertisementService
             throw new \Exception('.لا يمكنك تعطيل هذا الإعلان');
         }
         return $this->repository->update($advertisement, [
-            'active_status' => 'inactive'
+            'active_status' => 'inactive',
+            'activated_at' => null
         ]);
     }
 
@@ -303,7 +313,7 @@ class AdvertisementService
         }
         $this->decreaseRemainingAds($user);
         return $this->repository->update($advertisement, [
-            'active_status' => 'active'
+            'ads_status' => 'pending',
         ]);
     }
 

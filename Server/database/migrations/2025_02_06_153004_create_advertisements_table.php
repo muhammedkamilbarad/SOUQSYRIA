@@ -30,6 +30,7 @@ return new class extends Migration
             $table->Enum('active_status', ['active', 'inactive'])->default('inactive');
             $table->Enum('type', ['rent', 'sale']);
             $table->string('video_url')->nullable();
+            $table->timestamp('activated_at')->nullable();
             $table->timestamps();
 
             $table->index('ads_status');
