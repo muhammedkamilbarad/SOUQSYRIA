@@ -112,10 +112,12 @@ class AdvertisementSeeder extends Seeder
         for ($i = 0; $i < $landCount; $i++) {
             $adType = $types[array_rand($types)]; // pick 'rent' or 'sale'
             $ad_status = $adsStatuses[array_rand($adsStatuses)];
+            $activated_at = null;
             if ($ad_status === 'rejected' || $ad_status === 'pending') {
                 $active_status = 'inactive';
             } else {
                 $active_status = 'active';
+                $activated_at = now();
             }
             $ad = Advertisement::create([
                 'title'        => "Land #$i",
@@ -129,6 +131,7 @@ class AdvertisementSeeder extends Seeder
                 'active_status'=> $active_status,
                 'type'         => $adType,
                 'owner_type'   => $ownertypes[array_rand($ownertypes)],
+                'activated_at' => $activated_at,
             ]);
 
             LandAdvertisement::create([
@@ -158,10 +161,12 @@ class AdvertisementSeeder extends Seeder
         for ($i = 0; $i < $houseCount; $i++) {
             $adType = $types[array_rand($types)]; // pick 'rent' or 'sale'
             $ad_status = $adsStatuses[array_rand($adsStatuses)];
+            $activated_at = null;
             if ($ad_status === 'rejected' || $ad_status === 'pending') {
                 $active_status = 'inactive';
             } else {
                 $active_status = 'active';
+                $activated_at = now();
             }
             $ad = Advertisement::create([
                 'title'        => "House #$i",
@@ -175,6 +180,7 @@ class AdvertisementSeeder extends Seeder
                 'active_status'=> $active_status,
                 'type'         => $adType,
                 'owner_type'   => $ownertypes[array_rand($ownertypes)],
+                'activated_at' => $activated_at,
             ]);
 
             HouseAdvertisement::create([
@@ -213,10 +219,12 @@ class AdvertisementSeeder extends Seeder
         for ($i = 0; $i < $carCount; $i++) {
             $adType = $types[array_rand($types)]; // pick 'rent' or 'sale'
             $ad_status = $adsStatuses[array_rand($adsStatuses)];
+            $activated_at = null;
             if ($ad_status === 'rejected' || $ad_status === 'pending') {
                 $active_status = 'inactive';
             } else {
                 $active_status = 'active';
+                $activated_at = now();
             }
             $ad = Advertisement::create([
                 'title'        => "Car #$i",
@@ -230,6 +238,7 @@ class AdvertisementSeeder extends Seeder
                 'active_status'=> $active_status,
                 'type'         => $adType,
                 'owner_type'   => $ownertypes[array_rand($ownertypes)],
+                'activated_at' => $activated_at,
             ]);
 
             VehicleAdvertisement::create([
@@ -284,10 +293,12 @@ class AdvertisementSeeder extends Seeder
         for ($i = 0; $i < $marineCount; $i++) {
             $adType = $types[array_rand($types)]; // pick 'rent' or 'sale'
             $ad_status = $adsStatuses[array_rand($adsStatuses)];
+            $activated_at = null;
             if ($ad_status === 'rejected' || $ad_status === 'pending') {
                 $active_status = 'inactive';
             } else {
                 $active_status = 'active';
+                $activated_at = now();
             }
             $ad = Advertisement::create([
                 'title'        => "Marine #$i",
@@ -301,6 +312,7 @@ class AdvertisementSeeder extends Seeder
                 'active_status'=> $active_status,
                 'type'         => $adType,
                 'owner_type'   => $ownertypes[array_rand($ownertypes)],
+                'activated_at' => $activated_at,
             ]);
             VehicleAdvertisement::create([
                 'advertisement_id'  => $ad->id,
@@ -349,10 +361,12 @@ class AdvertisementSeeder extends Seeder
         for ($i = 0; $i < $motorcycleCount; $i++) {
             $adType = $types[array_rand($types)]; // pick 'rent' or 'sale'
             $ad_status = $adsStatuses[array_rand($adsStatuses)];
+            $activated_at = null;
             if ($ad_status === 'rejected' || $ad_status === 'pending') {
                 $active_status = 'inactive';
             } else {
                 $active_status = 'active';
+                $activated_at = now();
             }
             $ad = Advertisement::create([
                 'title'        => "Motorcycle #$i",
@@ -366,6 +380,7 @@ class AdvertisementSeeder extends Seeder
                 'active_status'=> $active_status,
                 'type'         => $adType,
                 'owner_type'   => $ownertypes[array_rand($ownertypes)],
+                'activated_at' => $activated_at,
             ]);
 
             VehicleAdvertisement::create([
