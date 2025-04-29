@@ -243,4 +243,34 @@ class AdvertisementRepository extends BaseRepository
         $otherCityQuery = clone $query;
         return $otherCityQuery->where('city', '!=', $city)->get();
     }
+
+    // Deactivate all advertisements owned by a specific user
+    // Sets the activated_at field to null for all matching advertisements
+    public function deactivateAllUserAdvertisements(int $userId): int
+    {
+        $affected = DB::transaction(function () use ($userId) {
+            return $this->model->where('user_id', $userId)
+                                ->where('active_status', 'active')
+                                ->update([
+                                    'active_status' => 'inactive',
+                                    'activated_at' => null,
+                                ]);
+        });
+
+        return $affected;
+    }
+    
+    // Deactivate all Advertisements that have been active since 30 days ago
+    public function deactivateExpiredAdvertisements(): int
+    {
+        return \DB::transaction(function () {
+            return $this->model->whereNotNull('activated_at')
+                ->where('activated_at', '<=', now()->subDays(30))
+                ->where('active_status', 'active')
+                ->update([
+                    'active_status' => 'inactive',
+                    'activated_at' => null,
+                ]);
+        });
+    }
 }
