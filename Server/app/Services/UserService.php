@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\UserRepository;
 use App\Repositories\AuthRepository;
+use App\Repositories\AdvertisementRepository;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use App\Services\ImageUploadService;
@@ -18,14 +19,17 @@ class UserService
     protected $imageUploadService;
     protected $imagePath = "profiles";
     protected $authRepository;
+    protected $advertisementRepository;
 
     public function __construct(UserRepository $userRepository, 
                                 ImageUploadService $imageUploadService,
-                                AuthRepository $authRepository)
+                                AuthRepository $authRepository, 
+                                AdvertisementRepository $advertisementRepository)
     {
         $this->userRepository = $userRepository;
         $this->imageUploadService = $imageUploadService;
         $this->authRepository = $authRepository;
+        $this->advertisementRepository = $advertisementRepository;
     }
 
     public function getUserWithRoleById(int $id): ?Model
@@ -110,8 +114,10 @@ class UserService
             return false;
         }
         // Delete tokens of this user
+        $count = $this->advertisementRepository->deactivateAllUserAdvertisements($user->id);
         $this->authRepository->deleteTokens($user->id);
         $this->userRepository->delete($user);
+        \Log::info('Deactivate Advertisements => ' . $count);
         return true;
     }
 
