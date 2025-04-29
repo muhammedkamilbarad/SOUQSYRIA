@@ -357,6 +357,18 @@ class AdvertisementService
                 throw new \InvalidArgumentException("No strategy found for category ID: $categoryId");
         }
     }
+
+    // Deactivate all Advertisements that have been active since 30 days ago
+    public function deactivateExpiredAdvertisements(): array
+    {
+        $affected = $this->repository->deactivateExpiredAdvertisements();
+
+        return [
+            'success' => true,
+            'message' => "$affected advertisements have been automatically deactivated due to expiration.",
+        ];
+    }
+
 }
 
 
