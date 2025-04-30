@@ -156,6 +156,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Advertisement Routes
     Route::group(['prefix' => 'advertisements'], function () {
         Route::get('/my-ads', [AdvertisementController::class, 'getUserAdvertisements']);
+        Route::get('/my-ads/{id}/{slug}', [AdvertisementController::class, 'getUserAdvertisementByIdAndSlug']);
         
 
         Route::get('/', [AdvertisementController::class, 'index'])->middleware('permission:view_ad');
