@@ -32,6 +32,7 @@ class AdvertisementController extends Controller
                 'ads_status',
                 'active_status',
                 'category_id',
+                'type',
             ]);
             $perPage = $request->get('per_page', 5);
             $result = $this->service->getAdvertisementsByUser(request()->user(), $filters, $perPage);
@@ -39,6 +40,28 @@ class AdvertisementController extends Controller
                 'success' => true,
                 'stats'   => $result['stats'],
                 'data'    => new AdvertisementCollection($result['advertisements']),
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function getUserAdvertisementByIdAndSlug(int $id, string $slug)
+    {
+        try {
+            $advertisement = $this->service->getAdvertisementForOwnerUser(request()->user()->id, $id, $slug);
+            if (!$advertisement) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Advertisement not found'
+                ], 404);
+            }
+            return response()->json([
+                'success' => true,
+                'data'    => new AdvertisementDetailResource($advertisement)
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

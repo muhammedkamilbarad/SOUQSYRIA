@@ -51,6 +51,8 @@ class AdvertisementRepository extends BaseRepository
 
     public function getAdvertisementStatsByUserId(int $userId): array
     {
+        $totalCount = $this->model->where('user_id', $userId)->count();
+
         $pendingCount = $this->model->where('user_id', $userId)
                                     ->where('ads_status', 'pending')
                                     ->count();
@@ -76,6 +78,7 @@ class AdvertisementRepository extends BaseRepository
                                         ->value('category_id');
 
         return [
+            'total_count' => $totalCount,
             'pending_count' => $pendingCount,
             'accepted_active_count' => $acceptedActiveCount,
             'accepted_inactive_count' => $acceptedInactiveCount,
@@ -92,6 +95,15 @@ class AdvertisementRepository extends BaseRepository
                                 ->where('user_id', $userId)
                                 ->orderBy('created_at', 'desc');
         return AdvertisementFilter::apply($query, $filters)->paginate($perPage);
+    }
+
+    public function getByUserIdAndIdAndSlug(int $userId, int $id, string $slug)
+    {
+        return $this->model->with($this->getCommonRelations())
+                            ->where('user_id', $userId)
+                            ->where('id', $id)
+                            ->where('slug', $slug)
+                            ->first();
     }
 
     public function getByIdWithRelations(int $id)
@@ -259,7 +271,7 @@ class AdvertisementRepository extends BaseRepository
 
         return $affected;
     }
-    
+
     // Deactivate all Advertisements that have been active since 30 days ago
     public function deactivateExpiredAdvertisements(): int
     {
