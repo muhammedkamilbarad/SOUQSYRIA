@@ -57,6 +57,10 @@ class AdvertisementService
     {
         return $this->repository->getAllForHomePage($filters, $perPage);
     }
+    public function getAdvertisementForOwnerUser(int $userId, int $id, string $slug)
+    {
+        return $this->repository->getByUserIdAndIdAndSlug($userId, $id, $slug);
+    }
 
     public function create(array $data, User $user)
     {

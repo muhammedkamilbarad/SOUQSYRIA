@@ -12,6 +12,7 @@ class AdvertisementFilter
             'user_query' => 'filterByUser',
             'category_id' => 'filterByCategory',
             'city' => 'filterByCity',
+            'type' => 'filterByType',
         ];
         foreach($filters as $name => $value)
         {
@@ -43,6 +44,10 @@ class AdvertisementFilter
     private static function filterByCity(Builder $query, $value):Builder
     {
         return $query->where('city', $value);
+    }
+    private static function filterByType(Builder $query, $value):Builder
+    {
+        return $query->where('type', $value);
     }
 
 }
