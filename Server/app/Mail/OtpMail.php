@@ -33,7 +33,6 @@ class OtpMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address('no-reply@syriasouq.com', 'خدمة العملاء في سوريا سوق'),
             subject: 'رمز التحقق من البريد الإلكتروني',
         );
     }
