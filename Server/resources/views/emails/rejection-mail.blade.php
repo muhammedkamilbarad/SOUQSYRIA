@@ -130,7 +130,7 @@
     <div class="container">
         <div class="card">
             <div class="logo">
-                <img src="{{ asset('images/logo.png') }}" alt="شعار الشركة">
+                <img src="{{ asset('images/logo.png') }}" alt="شعار سوق سوريا">
             </div>
             <h1>تحديث حالة الإعلان</h1>
             <p class="greeting">عزيزي {{ $name }}،</p>

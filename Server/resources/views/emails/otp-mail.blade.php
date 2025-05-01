@@ -142,7 +142,7 @@
     <div class="container">
         <div class="card">
             <div class="logo">
-                <img src="https://i.ibb.co/k6yXNyLs/logo.png" alt="شعار سوق سوريا">
+                <img src="{{ asset('images/logo.png') }}" alt="شعار سوق سوريا">
             </div>
             <h2>رمز التحقق من البريد الإلكتروني</h2>
             <p class="greeting">عزيزي {{ $userName }}،</p>
