@@ -130,7 +130,6 @@
     <div class="container">
         <div class="card">
             <div class="logo">
-                {{-- <img src="https://i.ibb.co/k6yXNyLs/logo.png" alt="شعار الشركة"> --}}
                 <img src="{{ asset('images/logo.png') }}" alt="شعار الشركة">
             </div>
             <h1>تحديث حالة الإعلان</h1>
@@ -142,7 +141,7 @@
         </div>
         <div class="footer">
             <p>هذه رسالة آلية. يرجى عدم الرد مباشرة على هذا البريد الإلكتروني.</p>
-            <p>هل لديك أسئلة؟ <a href="mailto:ads-support@company.com">اتصل بفريق دعم الإعلانات لدينا</a></p>
+            <p>هل لديك أسئلة؟ <a href="mailto:support@syr-souq.com">اتصل بفريق دعم الإعلانات لدينا</a></p>
             <p>© {{ date('Y') }} اسم شركتك. جميع الحقوق محفوظة.</p>
             <p><a href="#">سياسة الخصوصية</a> | <a href="#">اتصل بنا</a></p>
         </div>
