@@ -28,7 +28,6 @@ class PasswordResetEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address('no-reply@syriasouq.com', 'خدمة العملاء في سوريا سوق'),
             subject: 'إعادة تعيين كلمة المرور',
         );
     }
