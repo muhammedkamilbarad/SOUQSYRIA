@@ -149,7 +149,7 @@
     <div class="container">
         <div class="card">
             <div class="logo">
-                <img src="{{ asset('images/logo.png') }}" alt="شعار سوق سوريا">
+                <img src="https://syr-souq.fra1.cdn.digitaloceanspaces.com/logos/logo.png" alt="شعار سوق سوريا">
             </div>
             <h1>طلب إعادة تعيين كلمة المرور</h1>
             <p class="greeting">مرحبًا {{ $name }}،</p>
