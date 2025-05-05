@@ -19,4 +19,9 @@ class SubscriptionRequestRepository extends BaseRepository
         return $this->model->with(['user', 'package'])->get();
     }
 
+    public function checkPendingByUserId(int $userId)
+    {
+        return $this->model->where('user_id', $userId)->where('status', 'pending')
+        ->first();
+    }
 }

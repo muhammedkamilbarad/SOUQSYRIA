@@ -56,33 +56,6 @@ class SubscribingService
         return $this->subscribingRepository->create($data);
     }
 
-    /*
-     * Promote or update the subscribing:
-     *  - expiry_date   += package->period
-     *  - remaining_ads += package->max_ads
-     */
-    public function updateSubscribing(Model $subscribing, array $data): Model
-    {
-        // If your "update" means "promote" logic, then:
-        $package = Package::findOrFail($data['package_id']);
-
-        // Extend expiry_date
-        $newExpiry = $subscribing->expiry_date->addDays($package->period);
-        $newRemainingAds = $subscribing->remaining_ads + $package->max_of_ads;
-
-        $updatedData = [
-            'package_id' => $package->id,
-            'expiry_date'   => $newExpiry,
-            'remaining_ads' => $newRemainingAds,
-        ];
-        // return $this->subscribingRepository->update($subscribing, $updatedData);
-        // Update the model
-        $this->subscribingRepository->update($subscribing, $updatedData);
-
-        // Refresh the model to get the latest data from the database
-        return $subscribing->refresh()->load('package');
-    }
-
     public function deleteSubscribing(Model $subscribing)
     {
         $this->subscribingRepository->delete($subscribing);

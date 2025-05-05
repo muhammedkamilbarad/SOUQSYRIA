@@ -86,4 +86,19 @@ class PackageRepository extends BaseRepository
         }
     }
 
+    public function getActivePackages()
+    {
+        return $this->model->where('is_active', true)
+            ->where('id', '!=', 1) // Exclude the free package with ID 1
+            ->withCount([
+                'subscribings as active_subscribers_count' => function ($query) {
+                    $query->where('expiry_date', '>', now())
+                        ->where('remaining_ads', '>', 0);
+                },
+                'subscribings as total_subscribers_count'
+            ])
+            ->orderBy('id', 'asc')
+            ->get();
+    }
+
 }
