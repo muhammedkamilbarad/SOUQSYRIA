@@ -56,7 +56,6 @@ class PermissionSeeder extends Seeder
             ['name' => 'view_subscription_requests'],
             ['name' => 'view_subscription'],
             ['name' => 'create_subscription'],
-            ['name' => 'update_subscription'],
             ['name' => 'delete_subscription'],
             ['name' => 'view_feature'],
             ['name' => 'create_feature'],

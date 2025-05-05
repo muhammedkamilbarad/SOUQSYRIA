@@ -135,7 +135,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/', [SubscribingController::class, 'index'])->middleware('permission:view_subscription');
         Route::get('/{id}', [SubscribingController::class, 'show'])->middleware('permission:view_subscription');
         Route::post('/', [SubscribingController::class, 'store'])->middleware('permission:create_subscription');
-        Route::put('/{id}', [SubscribingController::class, 'update'])->middleware('permission:update_subscription');
         Route::delete('/{id}', [SubscribingController::class, 'destroy'])->middleware('permission:delete_subscription');
         
     });
@@ -256,3 +255,5 @@ Route::get('auth/facebook', [AuthController::class, 'redirectToFacebook']);
 Route::get('auth/facebook/callback', [AuthController::class, 'handleFacebookCallback']);
 Route::get('auth/google', [AuthController::class, 'redirectToGoogle']);
 Route::get('auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+
+Route::get('available-packages', [PackageController::class,'getActivePackages']);

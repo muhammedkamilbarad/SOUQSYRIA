@@ -21,6 +21,11 @@ class PackageService
         return $this->PackageRepository->getPackagesWithSubscribersCount();
     }
 
+    public function getAllActivePackages(): Collection
+    {
+        return $this->PackageRepository->getActivePackages();
+    }
+
     public function getPackageById(int $id): ?Model
     {
         try {

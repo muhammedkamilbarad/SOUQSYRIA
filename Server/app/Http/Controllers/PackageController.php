@@ -59,4 +59,18 @@ class PackageController extends Controller
             'data' => $package
         ], 200);
     }
+
+    public function getActivePackages()
+    {
+        $packages = $this->packageService->getAllActivePackages();
+        if (!$packages) {
+            return response()->json(['message' => '.لا يوجد أي باقات متاحة حاليا'], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'packages' => $packages
+        ], 200);
+
+    }
 }

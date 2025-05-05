@@ -6,6 +6,8 @@ use App\Services\SubscribingService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use App\Services\ImageUploadService;
+use Illuminate\Validation\ValidationException;
+
 
 class SubscriptionRequestService
 {
@@ -25,6 +27,23 @@ class SubscriptionRequestService
 
     public function createRequest(array $data)
     {
+        // Check if user already has an active subscription
+        $activeSubscription = $this->subscribingService->getCurrentActiveSubscription($data['user_id']);
+        if ($activeSubscription) {
+            throw ValidationException::withMessages([
+                'subscription' => ['You already have an active subscription. Please wait until it expires before requesting a new one.']
+            ]);
+        }
+
+        // Also check if user has a pending subscription request
+        $pendingRequest = $this->repository->checkPendingByUserId($data['user_id']);
+            
+        if ($pendingRequest) {
+            throw ValidationException::withMessages([
+                'subscription' => ['You already have a pending subscription request. Please wait for it to be processed.']
+            ]);
+        }
+
         if(isset($data['receipt']))
         {
             $path = "receipts";
@@ -32,6 +51,14 @@ class SubscriptionRequestService
             $data['receipt'] = $url;
         }
         return $this->repository->create($data);
+
+        // if(isset($data['receipt']))
+        // {
+        //     $path = "receipts";
+        //     $url = $this->imageUploadService->uploadImage($path, $data['receipt']);
+        //     $data['receipt'] = $url;
+        // }
+        // return $this->repository->create($data);
     }
 
     public function processRequest(int $requestId, array $data)

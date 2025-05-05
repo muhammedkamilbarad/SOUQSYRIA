@@ -44,19 +44,6 @@ class SubscribingController extends Controller
         }
         return response()->json($subscribing, 200);
     }
-    
-    public function update(SubscribingRequest $request, int $id): JsonResponse
-    {
-        $subscribing = $this->subscribingService->getSubscribingById($id);
-        if (!$subscribing) {
-            return response()->json(['message' => 'Subscribing not found'], 404);
-        }
-
-        // If we want to do the "promote" logic (expiry_date, remaining_ads)
-        // we rely on the updateSubscribing method from service
-        $updatedSubscribing = $this->subscribingService->updateSubscribing($subscribing, $request->validated());
-        return response()->json($updatedSubscribing, 200);
-    }
 
     public function destroy(int $id): JsonResponse
     {
