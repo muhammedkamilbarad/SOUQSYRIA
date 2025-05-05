@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\AuthRepository;
+use App\Repositories\PackageRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -21,15 +22,19 @@ use Illuminate\Support\Facades\Auth;
 class AuthService
 {
     protected $repository;
+    protected $packageRepository;
     protected $subscribingService;
     protected $otpExpirationsTime;
 
     protected $accessTokenExpiresInMinutes;
     protected $refreshTokenExpiresInMinutes;
 
-    public function __construct(AuthRepository $repository, SubscribingService $subscribingService)
+    public function __construct(AuthRepository $repository, 
+                                PackageRepository $packageRepository, 
+                                SubscribingService $subscribingService)
     {
         $this->repository = $repository;
+        $this->packageRepository = $packageRepository;
         $this->subscribingService = $subscribingService;
         $this->otpExpirationsTime = 3; // Default value
         $this->accessTokenExpiresInMinutes = 60; // Default value
@@ -59,6 +64,8 @@ class AuthService
 
         if (!$user) {
             $user = $this->repository->create($data);
+            // create free subscription for new user
+            $this->addFreeSubscriptionForNewUser($user->id);
         } else {
             // Update the user's social ID if it's missing
             $providerIdKey = array_key_exists('google_id', $data) ? 'google_id' : 'facebook_id';
@@ -148,16 +155,27 @@ class AuthService
         $tokens = $this->repository->createTokens($user->id);
         
         // create free subscription for new user
-        $data = [
-            "user_id" => $user->id,
-            "package_id" => 1, // free package for new users
-        ];
-        $this->subscribingService->createSubscribing($data);
+        $this->addFreeSubscriptionForNewUser($user->id);
 
         return [
             'access_token' => $tokens['access_token'],
             'refresh_token' => $tokens['refresh_token']
         ];
+    }
+
+    protected function addFreeSubscriptionForNewUser(int $userId)
+    {
+        // Check if the freee package is active
+        $freePackage = $this->packageRepository->isFreePackageActive();
+        if (!$freePackage) {
+            return;
+        }
+        // create free subscription for new user
+        $data = [
+            "user_id" => $userId,
+            "package_id" => 1, // free package for new users
+        ];
+        $this->subscribingService->createSubscribing($data);
     }
 
     public function regenerateOtp(string $email)
