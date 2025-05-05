@@ -101,4 +101,18 @@ class PackageRepository extends BaseRepository
             ->get();
     }
 
+    // Check if the free package is active
+    public function isFreePackageActive(): bool
+    {
+        // Assuming the free package has ID 1
+        $freePackage = $this->model->find(1);
+        
+        // Return false if the freee package doesn't exist
+        if (!$freePackage)
+        {
+            return false;
+        }
+        return true;
+    }
+
 }
