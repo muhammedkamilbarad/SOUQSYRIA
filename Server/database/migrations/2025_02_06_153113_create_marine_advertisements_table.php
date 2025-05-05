@@ -21,7 +21,7 @@ return new class extends Migration
             $table->decimal('width', 8, 2);
             $table->Enum('engine_brand', array_column(MarineEngineBrands::cases(), 'name'))->default('OTHER');
             $table->Enum('body_material', array_column(MarineBodyMaterials::cases(), 'name'));
-            $table->integer('max_capacity')->unsigned();
+            $table->integer('max_capacity')->unsigned()->nullable();
             $table->timestamps();
 
             $table->index('marine_type');

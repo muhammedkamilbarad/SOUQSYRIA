@@ -141,7 +141,7 @@ class AdvertisementService
                     'width' => $data['width'],
                     'engine_brand' => $data['engine_brand'],
                     'body_material' => $data['body_material'],
-                    'max_capacity' => $data['max_capacity'],
+                    'max_capacity' => $data['max_capacity'] ?? null,
                 ];
                 break;
             case CategoryType::HOUSE:
@@ -195,7 +195,6 @@ class AdvertisementService
         $updateData = [
             'ads_status' => $data['status'],
             'active_status' => ($data['status'] === 'accepted') ? 'active' : 'inactive',
-            //'activated_at' => ($data['status'] === 'accepted') ? now() : null,
         ];
         if ($data['status'] === 'accepted' && is_null($advertisement->activated_at)) {
             $updateData['activated_at'] = now();

@@ -119,7 +119,7 @@ class AdvertisementRequest extends FormRequest
             'width' => 'required|numeric|min:0.5|max:100',
             'engine_brand' => 'required|in:'. implode(',', array_column(MarineEngineBrands::cases(), 'name')),
             'body_material' => 'required|in:' . implode(',', array_column(MarineBodyMaterials::cases(), 'name')),
-            'max_capacity' => 'required|integer|min:1|max:10000'
+            'max_capacity' => 'sometimes|integer|min:1|max:10000'
         ];
     }
     // Land Rules
@@ -255,7 +255,6 @@ class AdvertisementRequest extends FormRequest
             'width.numeric' => '.يجب أن يكون العرض رقمًا',
             'width.min' => '.يجب أن يكون العرض قيمة موجبة',
             'width.max' => '.لا يمكن أن يزيد العرض عن 1000',
-            'max_capacity.required' => '.ماركة المحرك مطلوبة',
             'max_capacity.integer' => '.يجب أن يكون الحد الأقصى للحمولة رقمًا صحيحًا',
             'max_capacity.min' => '.يجب أن يكون الحد الأقصى للحمولة 1 على الأقل',
             'max_capacity.max' => '.لا يمكن أن يزيد الحد الأقصى للحمولة عن 10000',
