@@ -12,4 +12,9 @@ class PopularQuestionRepository extends BaseRepository
     {
         parent::__construct($popularQuestion);
     }
+
+    public function getAllActiveQuestions(): Collection
+    {
+        return $this->model->where('status', true)->get();
+    }
 }

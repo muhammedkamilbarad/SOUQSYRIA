@@ -40,7 +40,7 @@ class SubscribingController extends Controller
         $userId = auth()->user()->id;
         $subscribing = $this->subscribingService->getCurrentActiveSubscription($userId);
         if (!$subscribing) {
-            return response()->json(['message' => 'No active subscription found'], 404);
+            return response()->json(['message' => '.لا يوجد لديك أي إشتراك فعال'], 200);
         }
         return response()->json($subscribing, 200);
     }

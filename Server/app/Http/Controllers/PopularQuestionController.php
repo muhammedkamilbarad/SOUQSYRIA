@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\PopularQuestion;
 use App\Services\PopularQuestionService;
@@ -20,6 +21,22 @@ class PopularQuestionController extends Controller
     {
         $PopularQuestion = $this->popularQuestionService->getAllPopularQuestions();
         return response()->json($PopularQuestion, 200);
+    }
+
+    public function getAllActive(): JsonResponse
+    {
+        $popularQuestion = $this->popularQuestionService->getAllActivePopularQuestions();
+        if ($popularQuestion) {
+            return response()->json([
+                'success'=> true,
+                'data'=> $popularQuestion,
+            ], 200);
+        } else {
+            return response()->json([
+                'success'=> true,
+                'message'=> '.لا يوجد اي أسئلة شائعة متاحة للعرض حاليا',
+            ], 200);
+        }
     }
 
     public function store(PopularQuestionRequest $request)
