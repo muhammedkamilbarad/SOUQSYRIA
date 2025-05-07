@@ -257,3 +257,5 @@ Route::get('auth/google', [AuthController::class, 'redirectToGoogle']);
 Route::get('auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
 
 Route::get('available-packages', [PackageController::class,'getActivePackages']);
+
+Route::get('faqs', [PopularQuestionController::class, 'getAllActive']);

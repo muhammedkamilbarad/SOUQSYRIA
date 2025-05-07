@@ -21,6 +21,11 @@ class PopularQuestionService
         return $this->PopularQuestionsRepository->getAll();
     }
 
+    public function getAllActivePopularQuestions(): Collection
+    {
+        return $this->PopularQuestionsRepository->getAllActiveQuestions();
+    }
+
     public function getPopularQuestionById(int $id): ?Model
     {
         try {
