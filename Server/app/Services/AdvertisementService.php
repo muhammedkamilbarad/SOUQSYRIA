@@ -258,11 +258,10 @@ class AdvertisementService
     {
         $updateData = [];
         $allowed_fileds = ['title', 'description', 'price', 'city', 'location', 'video_url'];
-        foreach($allowed_fileds as $filed)
+        foreach($allowed_fileds as $field)
         {
-            if(isset($data[$filed]))
-            {
-                $updateData[$filed] = $data[$filed];
+            if(array_key_exists($field, $data)) {
+                $updateData[$field] = $data[$field];
             }
         }
         return $updateData;

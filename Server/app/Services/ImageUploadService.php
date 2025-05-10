@@ -95,7 +95,7 @@ class ImageUploadService
     {
         foreach ($images as $image) {
             try {
-                $path = ltrim(parse_url($image['urfl'], PHP_URL_PATH), '/');
+                $path = ltrim(parse_url($image['url'], PHP_URL_PATH), '/');
                 Storage::disk('s3')->delete($path);
             } catch (\Exception $e) {
                 throw new \Exception("فشل تحديث الصور");
