@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SubscribingRequest;
 use App\Services\SubscribingService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use App\Http\Resources\SubscriptionCollection;
+
+
 class SubscribingController extends Controller
 {
     protected $subscribingService;
@@ -14,10 +18,31 @@ class SubscribingController extends Controller
         $this->subscribingService = $subscribingService;
     }
 
-    public function index(): JsonResponse
+    // Get all subscriptions with pagination, filters and search
+    public function index(Request $request): JsonResponse
     {
-        $subscribing = $this->subscribingService->getAllSubscribings();
-        return response()->json($subscribing, 200);
+        try {
+            $filters = $request->only([
+                'package_id',
+                'expiry_date_from',
+                'expiry_date_to',
+                'user_email',
+                'is_active'
+            ]);
+
+            $perPage = $request->input('per_page', 15);
+            $subscriptions = $this->subscribingService->getAllSubscribings($filters, $perPage);
+
+            return response()->json([
+                'success' => true,
+                'data' => new SubscriptionCollection($subscriptions),
+            ], 200);
+        } catch(\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 400);
+        }
     }
 
     public function store(SubscribingRequest $request): JsonResponse
