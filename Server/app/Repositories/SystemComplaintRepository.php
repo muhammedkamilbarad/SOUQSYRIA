@@ -13,4 +13,9 @@ class SystemComplaintRepository extends BaseRepository
     {
         parent::__construct($model);
     }
+
+    public function getPaginated(int $perPage = 5)
+    {
+        return $this->model->paginate($perPage);
+    }
 }

@@ -73,13 +73,13 @@ class HomePageAdvertisementFilter
 
     private static function applySorting(Builder $query, array $filters): void
     {
-        $sortBy = $filters['sort_by'] ?? 'created_at';
+        $sortBy = $filters['sort_by'] ?? 'activated_at';
         $direction = $filters['sort_direction'] ?? 'desc';
-        $allowedColumns = ['created_at', 'price'];
+        $allowedColumns = ['activated_at', 'price'];
         if (in_array($sortBy, $allowedColumns)) {
             $query->orderBy($sortBy, $direction);
         } else {
-            $query->orderBy('created_at', 'desc');
+            $query->orderBy('activated_at', 'desc');
         }
     }
 

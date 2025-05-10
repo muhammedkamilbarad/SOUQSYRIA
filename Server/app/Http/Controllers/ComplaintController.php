@@ -78,13 +78,29 @@ class ComplaintController extends Controller
         return response()->json(['message' => '.تم حذف الإعلان بنجاح'], 200);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $complaints = $this->complaintService->getAllComplaints();
-
-        return response()->json([
-            'success' => true,
-            'data' => $complaints,
-        ], 200);
+        try{
+            $perPage = $request->get('per_page', 5);
+            $adv_id = $request->get('adv_id');
+            $complaints = $this->complaintService->getAllComplaints($perPage, $adv_id);
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'current_page' => $complaints->currentPage(),
+                    'per_page' => $complaints->perPage(),
+                    'total' => $complaints->total(),
+                    'total_pages' => $complaints->lastPage(),
+                    'next_page' => $complaints->nextPageUrl() ? $complaints->currentPage() + 1 : null,
+                    'complaints' => $complaints->items()
+                ]
+            ], 200);
+        }catch (Exception $e) {
+            Log::error('Failed to fetch complaints: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch complaints'
+            ], 500);
+        }
     }
 }
