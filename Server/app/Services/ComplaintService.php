@@ -45,9 +45,10 @@ class ComplaintService
         }
     }
 
-    public function getAllComplaints(): Collection
+    public function getAllComplaints(int $perPage = 5, $adv_id = null)
     {
-        return $this->complaintRepository->getAll();
+        return $this->complaintRepository->getPaginated($perPage, $adv_id);
+        
     }
 
     public function checkComplaintExistence(int $userId, int $advsId): bool

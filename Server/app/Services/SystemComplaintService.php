@@ -17,9 +17,9 @@ class SystemComplaintService
         $this->systemComplaintRepository = $systemComplaintRepository;
     }
 
-    public function getSystemComplaints(): Collection
+    public function getSystemComplaints(int $perPage = 5)
     {
-        return $this->systemComplaintRepository->getAll();
+        return $this->systemComplaintRepository->getPaginated($perPage);
     }
 
     public function getSystemComplaintById(int $id): ?Model

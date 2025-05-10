@@ -20,14 +20,22 @@ class SystemComplaintController extends Controller
     }
 
     // Display a listing of the system complaints.
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $systemComplaints = $this->systemComplaintService->getSystemComplaints();
+            $perPage = $request->get('per_page', 5);
+            $systemComplaints = $this->systemComplaintService->getSystemComplaints($perPage);
             return response()->json([
                 'success' => true,
                 'message' => 'System complaints fetched successfully',
-                'data' => $systemComplaints
+                'data' => [
+                    'current_page' => $systemComplaints->currentPage(),
+                    'per_page' => $systemComplaints->perPage(),
+                    'total' => $systemComplaints->total(),
+                    'total_pages' => $systemComplaints->lastPage(),
+                    'next_page' => $systemComplaints->nextPageUrl() ? $systemComplaints->currentPage() + 1 : null,
+                    'system complaints' => $systemComplaints->items()
+                ]
             ], 200);
         } catch (Exception $e) {
             Log::error('Failed to fetch system complaints: ' . $e->getMessage());

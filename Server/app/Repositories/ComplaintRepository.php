@@ -51,4 +51,12 @@ class ComplaintRepository extends BaseRepository
         return $this->model->where('user_id', $userId)->where('advs_id', $advsId)->exists();
     }
 
+    public function getPaginated(int $perPage = 5, $adv_id = null)
+    {
+        if(isset($adv_id)){
+            return $this->model->where('advs_id', $adv_id)->paginate($perPage);
+        }
+        return $this->model->paginate($perPage);
+    }
+
 }

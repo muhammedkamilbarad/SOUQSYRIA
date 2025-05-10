@@ -33,6 +33,7 @@ class AdvertisementDetailResource extends JsonResource
             'features' => new FeatureCollection($this->whenLoaded('features')),
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
+            'activated_at' => $this->activated_at,
         ];
 
         $advertisementRelations = [
