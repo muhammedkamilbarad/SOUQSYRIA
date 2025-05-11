@@ -5,6 +5,8 @@ use App\Http\Requests\SubscriptionRequestStoreRequest;
 use App\Http\Requests\SubscriptionRequestProcessRequest;
 use App\Services\SubscriptionRequestService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use App\Http\Resources\SubscriptionRequestCollection;
 
 class SubscriptionRequestController extends Controller
 {
@@ -29,9 +31,32 @@ class SubscriptionRequestController extends Controller
         return response()->json($subscriptionRequest, 200);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $subscriptionRequests = $this->service->getAllWithRelations();
-        return response()->json($subscriptionRequests, 200);
+        try {
+            $filters = $request->only([
+                'status',
+                'created_at_from',
+                'created_at_to',
+                'processed_at_from',
+                'processed_at_to',
+                'package_id',
+                'user_email'
+            ]);
+
+            $perPage = $request->input('per_page', 15);
+
+            $subscriptionRequests = $this->service->getAllWithRelations($filters, $perPage);
+
+            return response()->json([
+                'success' => true,
+                'data' => new SubscriptionRequestCollection($subscriptionRequests),
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error'=> $e->getMessage(),
+            ], 400);
+        }
     }
 }
