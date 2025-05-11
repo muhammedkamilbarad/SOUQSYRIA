@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Carbon\Carbon;
+use Illuminate\Pagination\LengthAwarePaginator;
+use LengthException;
 
 class SubscribingService
 {
@@ -19,9 +21,9 @@ class SubscribingService
         $this->subscribingRepository = $subscribingRepository;
     }
 
-    public function getAllSubscribings(): Collection
+    public function getAllSubscribings(array $filters=[], int $perPage=15): LengthAwarePaginator
     {
-        return $this->subscribingRepository->getAllWithUsersAndPackages();
+        return $this->subscribingRepository->getAllWithFiltersAndPagination($filters, $perPage);
     }
 
     public function getSubscribingById(int $id): ?Model

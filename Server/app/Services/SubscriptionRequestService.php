@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use App\Services\ImageUploadService;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 
 class SubscriptionRequestService
@@ -85,9 +86,9 @@ class SubscriptionRequestService
         return $this->repository->update($request, $request->toArray());
     }
 
-    public function getAllWithRelations()
+    public function getAllWithRelations(array $filters=[], int $perPage = 15): LengthAwarePaginator
     {
-        return $this->repository->getAllWithRelations();
+        return $this->repository->getAllWithFiltersAndPagination($filters, $perPage);
     }
 
 }

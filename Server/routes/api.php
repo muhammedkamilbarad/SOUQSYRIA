@@ -135,8 +135,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/', [SubscribingController::class, 'index'])->middleware('permission:view_subscription');
         Route::get('/{id}', [SubscribingController::class, 'show'])->middleware('permission:view_subscription');
         Route::post('/', [SubscribingController::class, 'store'])->middleware('permission:create_subscription');
-        Route::delete('/{id}', [SubscribingController::class, 'destroy'])->middleware('permission:delete_subscription');
-        
     });
 
     // Favorite Routes
