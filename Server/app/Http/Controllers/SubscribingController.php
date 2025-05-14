@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SubscribingRequest;
 use App\Services\SubscribingService;
+use App\Services\SubscriptionRequestService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Resources\SubscriptionCollection;
@@ -12,10 +13,13 @@ use App\Http\Resources\SubscriptionCollection;
 class SubscribingController extends Controller
 {
     protected $subscribingService;
+    protected $subcriptionRequestService;
 
-    public function __construct(SubscribingService $subscribingService)
+    public function __construct(SubscribingService $subscribingService, 
+                                SubscriptionRequestService $subcriptionRequestService)
     {
         $this->subscribingService = $subscribingService;
+        $this->subcriptionRequestService = $subcriptionRequestService;
     }
 
     // Get all subscriptions with pagination, filters and search
@@ -65,10 +69,24 @@ class SubscribingController extends Controller
         $userId = auth()->user()->id;
         $subscribing = $this->subscribingService->getCurrentActiveSubscription($userId);
         if (!$subscribing) {
-            return response()->json(['message' => '.لا يوجد لديك أي إشتراك فعال'], 200);
+            if ($this->subcriptionRequestService->checkPendingByUserId($userId)) {
+                return response()->json([
+                    'active_subscription' => false,
+                    'has_pending' => true,
+                    'message' => '.لديك طلب إشتراك في قائمة الإنتظار. ستتم معالجة طلبك في أسرع وقت'
+                ]);
+            }
+            return response()->json([
+                'active_subscription' => false,
+                'has_pending' => false,
+                'message' => '.لا يوجد لديك أي إشتراك فعال'
+            ], 200);
         }
-        return response()->json($subscribing, 200);
+        return response()->json([
+            $subscribing,
+        ], 200);
     }
+
 
     public function destroy(int $id): JsonResponse
     {
