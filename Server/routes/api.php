@@ -247,7 +247,7 @@ Route::get('check-auth', [AuthController::class, 'checkAuth']);
 Route::get('brand/{id}/models', [VehicleModelController::class, 'getVehicleModelsByBrandId']);
 Route::get('brands', [VehicleBrandController::class, 'getBrandsByCategory']);
 Route::get('feature-groups/{id}/category', [FeatureGroupController::class, 'categoryFeatuers']);
-Route::get('package-list', [PackageController::class, 'index']);
+// Route::get('package-list', [PackageController::class, 'index']);
 
 Route::get('auth/facebook', [AuthController::class, 'redirectToFacebook']);
 Route::get('auth/facebook/callback', [AuthController::class, 'handleFacebookCallback']);

@@ -91,4 +91,9 @@ class SubscriptionRequestService
         return $this->repository->getAllWithFiltersAndPagination($filters, $perPage);
     }
 
+    public function checkPendingByUserId(int $userId)
+    {
+        return $this->repository->checkPendingByUserId($userId);
+    }
+
 }
