@@ -82,9 +82,7 @@ class SubscribingController extends Controller
                 'message' => '.لا يوجد لديك أي إشتراك فعال'
             ], 200);
         }
-        return response()->json([
-            $subscribing,
-        ], 200);
+        return response()->json($subscribing, 200);
     }
 
 
