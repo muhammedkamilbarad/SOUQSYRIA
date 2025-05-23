@@ -21,7 +21,6 @@ class Advertisement extends Model
         'active_status',
         'video_url',
         'type',
-        'activated_at',
     ];
 
 
